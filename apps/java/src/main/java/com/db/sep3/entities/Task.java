@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 
 import java.sql.Date;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
 
 @Entity @Table(name = "task")
