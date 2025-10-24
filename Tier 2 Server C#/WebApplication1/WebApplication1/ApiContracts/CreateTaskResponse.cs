@@ -1,6 +1,8 @@
-namespace WebApplication1.Controllers;
-
+namespace WebApplication1.ApiContracts;
 public class CreateTaskResponse
 {
-    
+    public int Id { get; set; }
+    public required string Title { get; set; }
+    public required string Description { get; set; }
+    public DateTime CreatedAt { get; set; }
 }

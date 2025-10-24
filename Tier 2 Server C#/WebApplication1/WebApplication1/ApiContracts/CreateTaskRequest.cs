@@ -1,8 +1,8 @@
-namespace WebApplication1.Controllers;
+namespace WebApplication1.ApiContracts;
 
 public class CreateTaskRequest
 {
-    public string Title { get; set; }
-    public string Description { get; set; }
-    public long CreatedByUserId { get; set; }
+    public required string Title { get; set; }
+    public required string Description { get; set; }
+    
 }
