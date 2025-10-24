@@ -24,8 +24,8 @@ public class Task
   @Column(nullable=false)
   private Date createdAt;
 
-  @ManyToOne(optional = false, fetch = FetchType.LAZY)
-  @JoinColumn(name = "created_by", nullable = false)
+  @ManyToOne(optional = true, fetch = FetchType.LAZY)
+  @JoinColumn(name = "created_by", nullable = true)
   private User createdBy;
 
 
