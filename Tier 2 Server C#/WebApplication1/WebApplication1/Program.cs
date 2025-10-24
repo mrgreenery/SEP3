@@ -3,9 +3,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddSwaggerGen();
 
-var app = builder.Build();
+builder.Services.AddScoped<ITaskService, TaskService>(); 
 
-app.MapControllers();
+var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
@@ -13,5 +13,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.MapControllers();
 app.UseHttpsRedirection();
+
 app.Run();

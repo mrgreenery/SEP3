@@ -1,4 +1,5 @@
 using WebApplication1.ApiContracts;
+using WepApplication1.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApplication1.Controllers;
@@ -8,23 +9,19 @@ namespace WebApplication1.Controllers;
 public class TasksController : ControllerBase
 {
 
-    //need some sort of service here, like private readonly ITaskService _taskService;
-    //and then make constructor to instantiate this service
+    private readonly ITaskService _taskService;
+
+    public TasksControllers(ItaskService taskService)
+    {
+        _taskService = taskService;
+    }
     
     [HttpPost]
     public async Task<ActionResult<CreateTaskResponse>> CreateTask([FromBody] CreateTaskRequest request)
     {
         try
         {
-            //and then here to pass this service to the response
-            CreateTaskResponse response = new CreateTaskResponse
-            {
-                Id = 1,
-                Title = request.Title,
-                Description = request.Description,
-                CreatedAt = DateTime.UtcNow
-            };
-
+           var response = await _taskService.CreateTaskAsync(request);
             return Created($"/api/tasks/{response.Id}", response);
         }
         catch (Exception e)
