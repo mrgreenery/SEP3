@@ -8,16 +8,6 @@ option java_outer_classname = "BusinessProto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 
-    syntax = "proto3";
-
-package business;
-option java_multiple_files = true;
-option java_package = "com.sep3.business.grpc";
-option java_outer_classname = "BusinessProto";
-
-import "google/protobuf/empty.proto";
-import "google/protobuf/timestamp.proto";
-
 // ===== Models =====
 message User {
   int64 id = 1;
