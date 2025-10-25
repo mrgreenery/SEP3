@@ -1,9 +1,12 @@
+using CLI.DTO;
+using CLI.ViewModels.Tasks;
+
 namespace CLI.Views.Task;
 using System.Threading.Tasks;
 
-public class TaskForm
+public class TaskForm(Tasks tasksVM)
 {
-    public static async Task CreateTask()
+    public async Task CreateTask()
     {
         Console.WriteLine("--- Task Creation ---");
         
@@ -12,7 +15,8 @@ public class TaskForm
         
         Console.WriteLine("Provide task description: ");
         var taskDescription = Console.ReadLine();
-        
-        //forward to request wrapper
+
+        KanbanTaskDTO kanbanTaskDto = await tasksVM.CreateTask(taskTitle, taskDescription);
+        Console.WriteLine($"Task created: {kanbanTaskDto}");
     }
 }

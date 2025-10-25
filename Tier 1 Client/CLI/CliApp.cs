@@ -6,6 +6,7 @@ public class CliApp
 {
     static HttpClient client = new HttpClient();
     
+    
     public void Start()
     {
         GetClient().GetAwaiter().GetResult();
