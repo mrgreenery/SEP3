@@ -1,0 +1,65 @@
+syntax = "proto3";
+
+package data;
+option java_multiple_files = true;
+option java_package = "com.sep3.data.grpc";
+option java_outer_classname = "DataProto";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+
+// ===== Entities =====
+message UserEntity {
+  int64 id = 1;
+  string email = 2;
+  string password = 3;
+  string displayName = 4;
+}
+
+message TaskEntity {
+  int64 id = 1;
+  string title = 2;
+  string description = 3;
+  int32 status = 4;
+  google.protobuf.Timestamp createdAt = 5;
+  UserEntity user = 6;
+google.protobuf.Timestamp startDate = 7;
+google.protobuf.Timestamp endDate = 8;
+}
+
+// ===== Requests / Responses =====
+message IdRequest {
+  int32 id = 1;
+}
+
+message CreateTaskRequest {
+  TaskEntity task = 1;
+}
+
+message UpdateTaskRequest {
+  int32 taskId = 1;
+}
+
+message TaskList {
+  repeated TaskEntity tasks = 1;
+}
+
+message UserList{
+  repeated UserEntity users = 1;
+}
+
+// ===== Database service =====
+service DataService {
+
+  rpc CreateUser (UserEntity) returns (UserEntity);
+  rpc GetUserById (IdRequest) returns (UserEntity);
+  rpc GetAllUsers (google.protobuf.Empty) returns (UserList);
+  rpc UpdateUser (IdRequest) returns (UserEntity);
+  rpc DeleteUser (IdRequest) returns (google.protobuf.Empty);
+
+  rpc CreateTask (CreateTaskRequest) returns (TaskEntity);
+  rpc GetTasksById (IdRequest) returns (TaskEntity);
+  rpc GetAllTasks (google.protobuf.Empty) returns (TaskList);
+  rpc UpdateTask (IdRequest) returns (TaskEntity);
+  rpc DeleteTask (IdRequest) returns (google.protobuf.Empty);
+}
