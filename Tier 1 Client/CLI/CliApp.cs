@@ -1,11 +1,22 @@
 using CLI.Views.Task;
+using WebAPI.ApiContracts;
 
 namespace CLI;
 
 public class CliApp
 {
+    private static readonly HttpClient Client =new HttpClient
+    {
+        BaseAddress = new Uri("http://localhost:5268")
+    };
+    private static readonly ITaskApi TaskApi = new TaskApi(Client);
+    private static readonly TaskViewModel TaskViewModel = new(TaskApi);
+    private static readonly TaskView TaskView = new(TaskViewModel);
+    
     public void Start()
     {
+        GetClient().GetAwaiter().GetResult();
+        
         while (true)
         {
             Console.WriteLine("Welcome to SEP3 Team 1 Proof of Concept!");
@@ -16,12 +27,30 @@ public class CliApp
             switch (choice)
             {
                 case "1":
-                    TaskForm.CreateTask().GetAwaiter().GetResult();
+                    TaskView.CreateTask().GetAwaiter().GetResult();
                     break;
                 default:
                     Console.WriteLine("Invalid option. Please try again.");
                     break;
             }
         }
+    }
+    
+    private async Task GetClient()
+    {
+        // Call asynchronous network methods in a try/catch block to handle exceptions.
+        try
+        {
+            using HttpResponseMessage response = await Client.GetAsync("");
+            response.EnsureSuccessStatusCode();
+            string responseBody = await response.Content.ReadAsStringAsync();
+            Console.WriteLine(responseBody);
+        }
+        catch (HttpRequestException e)
+        {
+            Console.WriteLine("\nException Caught!");
+            Console.WriteLine("Message :{0} ", e.Message);
+        }
+
     }
 }

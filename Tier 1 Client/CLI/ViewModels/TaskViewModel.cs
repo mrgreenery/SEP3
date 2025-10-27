@@ -1,13 +1,15 @@
 namespace WebAPI.ApiContracts;
 
-public class TaskViewModel
+public class TaskViewModel(ITaskApi taskApi)
 {
-    public async Task<KanbanTaskDTO> CreateTask(string title,
+    public async Task<CreateTaskResponse> CreateTask(string title,
         string description)
     {
-        CreateTaskRequest request = new CreateTaskRequest(title, description);
-        CreateTaskResponse response =
-            taskApi.CreateTask(request).Result;
-        return new KanbanTaskDTO(response.Id, response.Title, response.Description, response.createdAt);
+        CreateTaskRequest request = new CreateTaskRequest(title, description)
+        {
+            Title = title,
+            Description = description
+        };
+        return await taskApi.CreateTask(request);
     }
 }

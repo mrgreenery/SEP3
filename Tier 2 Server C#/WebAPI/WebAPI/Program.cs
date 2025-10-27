@@ -17,4 +17,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.MapControllers();
 
+app.MapGet("/", () => Results.Ok("Tier 2 is up"));
+app.MapGet("/health", () => Results.Ok("healthy"));
+
+
 app.Run();

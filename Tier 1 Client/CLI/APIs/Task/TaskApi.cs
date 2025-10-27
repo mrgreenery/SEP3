@@ -1,3 +1,5 @@
+using System.Net.Http.Json;
+
 namespace WebAPI.ApiContracts;
 
 public class TaskApi(HttpClient client) : ITaskApi
