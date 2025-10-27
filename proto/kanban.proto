@@ -29,7 +29,7 @@ google.protobuf.Timestamp endDate = 8;
 
 // ===== Requests / Responses =====
 message IdRequest {
-  int32 id = 1;
+  int64 id = 1;
 }
 
 message CreateTaskRequest {
@@ -37,7 +37,7 @@ message CreateTaskRequest {
 }
 
 message UpdateTaskRequest {
-  int32 taskId = 1;
+  TaskEntity task = 1;
 }
 
 message TaskList {
@@ -60,6 +60,8 @@ service DataService {
   rpc CreateTask (CreateTaskRequest) returns (TaskEntity);
   rpc GetTasksById (IdRequest) returns (TaskEntity);
   rpc GetAllTasks (google.protobuf.Empty) returns (TaskList);
-  rpc UpdateTask (IdRequest) returns (TaskEntity);
+  rpc UpdateTask (UpdateTaskRequest) returns (TaskEntity);
   rpc DeleteTask (IdRequest) returns (google.protobuf.Empty);
 }
+
+
