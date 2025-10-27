@@ -1,8 +1,10 @@
-namespace WebApplication1.Controllers;
+using WebAPI.ApiContracts; 
+
+namespace WebAPI.Services;
 
 public class TaskService : ITaskService
 {
-   public Task<CreateTaskResponse> CreateTaskAsync(CreateTaskRequest request, CancellationToken cancellationToken = default)
+   public Task<CreateTaskResponse> CreateTaskAsync(CreateTaskRequest request)
     {
         if (request is null) throw new ArgumentNullException(nameof(request));
 
@@ -17,6 +19,6 @@ public class TaskService : ITaskService
             CreatedAt = DateTime.UtcNow
         };
 
-        return response;
+        return Task.FromResult(response);
     }
 }

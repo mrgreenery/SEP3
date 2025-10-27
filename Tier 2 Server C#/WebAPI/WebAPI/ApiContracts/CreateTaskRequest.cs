@@ -1,4 +1,4 @@
-namespace WebApplication1.ApiContracts;
+namespace WebAPI.ApiContracts;
 
 public class CreateTaskRequest
 {
