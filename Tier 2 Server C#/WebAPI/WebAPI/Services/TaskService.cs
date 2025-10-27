@@ -11,7 +11,7 @@ public class TaskService : ITaskService
         //temporary implementation. Delete this after grcp is implemented
         var response = new CreateTaskResponse
         {
-            Id = 1, // Later krijg je dit van Tier 3
+            Id = 1, 
             Title = request.Title,
             Description = request.Description,
             CreatedAt = DateTime.UtcNow
