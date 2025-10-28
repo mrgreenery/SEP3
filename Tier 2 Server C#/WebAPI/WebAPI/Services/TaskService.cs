@@ -1,24 +1,50 @@
-using WebAPI.ApiContracts; 
+using WebAPI.ApiContracts;
+using Data;
+using Grpc.Net.Client;
+using Google.Protobuf.WellKnownTypes;
 
 namespace WebAPI.Services;
 
 public class TaskService : ITaskService
 {
-   public Task<CreateTaskResponse> CreateTaskAsync(CreateTaskRequest request)
+    private readonly DataService.DataServiceClient _grpcClient;
+
+    public TaskService()
+    {
+        var channel = GrpcChannel.ForAddress("http://localhost:9090");
+        _grpcClient = new DataService.DataServiceClient(channel);
+    }
+
+  public async Task<CreateTaskResponse> CreateTaskAsync(WebAPI.ApiContracts.CreateTaskRequest request)
     {
         if (request is null) throw new ArgumentNullException(nameof(request));
 
-        //TODO: gRPC-call to Tier 3 
-       
-        //temporary implementation. Delete this after grcp is implemented
-        var response = new CreateTaskResponse
+        // Create proto task entity
+        var taskEntity = new TaskEntity
         {
-            Id = 1, 
             Title = request.Title,
             Description = request.Description,
+            Status = 0
+        };
+
+        // Create gRPC request
+      	var grpcRequest = new Data.CreateTaskRequest
+        {
+            Task = taskEntity
+        };
+
+        // Call gRPC service
+        var grpcResponse = await _grpcClient.CreateTaskAsync(grpcRequest);
+
+        // Map to API response
+        var response = new CreateTaskResponse
+        {
+            Id = (int)grpcResponse.Id,
+            Title = grpcResponse.Title,
+            Description = grpcResponse.Description,
             CreatedAt = DateTime.UtcNow
         };
 
-        return Task.FromResult(response);
+        return response;
     }
 }
