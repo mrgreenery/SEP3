@@ -8,12 +8,13 @@ namespace WebAPI.Controllers;
 [Route("api/[controller]")]
 public class TasksController : ControllerBase
 {
-
     private readonly ITaskService _taskService;
+    private readonly ILogger<TasksController> _logger;
 
-    public TasksController(ITaskService taskService)
+    public TasksController(ITaskService taskService, ILogger<TasksController> logger)
     {
         _taskService = taskService;
+        _logger = logger;
     }
     
     [HttpPost]
@@ -21,12 +22,15 @@ public class TasksController : ControllerBase
     {
         try
         {
-           var response = await _taskService.CreateTaskAsync(request);
+            _logger.LogInformation("Creating task: {Title}", request.Title);
+            var response = await _taskService.CreateTaskAsync(request);
+            _logger.LogInformation("Task created successfully with ID: {Id}", response.Id);
             return Created($"/api/tasks/{response.Id}", response);
         }
         catch (Exception e)
         {
-            return StatusCode(500, e.Message);
+            _logger.LogError(e, "Error creating task");
+            return StatusCode(500, new { error = e.Message, details = e.ToString() });
         }
     }
 
@@ -35,7 +39,6 @@ public class TasksController : ControllerBase
     {
         try
         {
-            //and here as well pass this servive to the response
             return Ok(new CreateTaskResponse
             {
                 Id = id,
