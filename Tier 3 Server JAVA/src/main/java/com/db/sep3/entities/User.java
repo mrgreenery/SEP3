@@ -1,4 +1,4 @@
-package com.db.sep3.entities;
+package main.java.com.db.sep3.entities;
 
 import jakarta.persistence.*;
 
