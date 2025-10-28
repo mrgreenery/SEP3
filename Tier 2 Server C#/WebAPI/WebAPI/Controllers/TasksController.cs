@@ -1,8 +1,8 @@
-using WebApplication1.ApiContracts;
-using WepApplication1.Services;
+using WebAPI.ApiContracts;
+using WebAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 
-namespace WebApplication1.Controllers;
+namespace WebAPI.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -11,7 +11,7 @@ public class TasksController : ControllerBase
 
     private readonly ITaskService _taskService;
 
-    public TasksControllers(ItaskService taskService)
+    public TasksController(ITaskService taskService)
     {
         _taskService = taskService;
     }

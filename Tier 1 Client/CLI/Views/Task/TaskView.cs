@@ -1,9 +1,11 @@
+using WebAPI.ApiContracts;
+
 namespace CLI.Views.Task;
 using System.Threading.Tasks;
 
-public class TaskForm
+public class TaskView(TaskViewModel taskViewModel)
 {
-    public static async Task CreateTask()
+    public async Task CreateTask()
     {
         Console.WriteLine("--- Task Creation ---");
         
@@ -12,7 +14,10 @@ public class TaskForm
         
         Console.WriteLine("Provide task description: ");
         var taskDescription = Console.ReadLine();
+
+        CreateTaskResponse response = await taskViewModel.CreateTask(taskTitle, taskDescription);
         
-        //forward to request wrapper
+        Console.WriteLine($"Task created successfully:\nid: {response.Id},created at: {response.CreatedAt}, \ntitle:{response.Title},\ndescription: {response.Description}");
+
     }
 }

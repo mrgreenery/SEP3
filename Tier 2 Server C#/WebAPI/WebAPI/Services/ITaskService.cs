@@ -1,7 +1,8 @@
-namespace WebApplication1.Controllers;
+using WebAPI.ApiContracts; 
 
-public class ITaskService
+namespace WebAPI.Services;
+
+public interface ITaskService
 {
     Task<CreateTaskResponse> CreateTaskAsync(CreateTaskRequest request);
-
 }
