@@ -79,11 +79,11 @@ public class QuestServiceImpl extends DataServiceGrpc.DataServiceImplBase
 //        responseObserver.onCompleted();
 //    }
 
-    // ===== Task Methods =====
+    // ===== Quest Methods =====
     @Override
     public void createQuest(CreateQuestRequest request, StreamObserver<QuestEntity> responseObserver) {
         try {
-            System.out.println("=== Creating Task ===");
+            System.out.println("=== Creating Quest ===");
             System.out.println("Title: " + request.getQuest().getTitle());
             System.out.println("Description: " + request.getQuest().getDescription());
 
@@ -97,7 +97,7 @@ public class QuestServiceImpl extends DataServiceGrpc.DataServiceImplBase
             // Save to database
             Quest saved = questRepository.save(quest);
 
-            System.out.println("Task saved with ID: " + saved.getId());
+            System.out.println("Quest saved with ID: " + saved.getId());
 
             // Convert to proto
             Timestamp createdAtTimestamp = Timestamp.newBuilder()
@@ -115,9 +115,9 @@ public class QuestServiceImpl extends DataServiceGrpc.DataServiceImplBase
             responseObserver.onNext(response);
             responseObserver.onCompleted();
 
-            System.out.println("=== Task Created Successfully ===");
+            System.out.println("=== Quest Created Successfully ===");
         } catch (Exception e) {
-            System.err.println("Error creating task: " + e.getMessage());
+            System.err.println("Error creating quest: " + e.getMessage());
             e.printStackTrace();
             responseObserver.onError(e);
         }
@@ -125,13 +125,13 @@ public class QuestServiceImpl extends DataServiceGrpc.DataServiceImplBase
 
     @Override
     public void getQuestsById(IdRequest request, StreamObserver<QuestEntity> responseObserver) {
-        QuestEntity task = QuestEntity.newBuilder()
+        QuestEntity quest = QuestEntity.newBuilder()
                 .setId(request.getId())
-                .setTitle("Example Task")
+                .setTitle("Example Quest")
                 .setDescription("Demo description")
                 .setStatus(1)
                 .build();
-        responseObserver.onNext(task);
+        responseObserver.onNext(quest);
         responseObserver.onCompleted();
     }
 

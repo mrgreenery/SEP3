@@ -11,7 +11,7 @@ import java.sql.Date;
 
 public interface QuestRepository extends JpaRepository<Quest, Long> {
 
-  // tasks assigned to a given user (ManyToMany)
+  // quests assigned to a given user (ManyToMany)
   Page<Quest> findByAssignees_Id(Long userId, Pageable pageable);
 
   // same as above but filtered by status too
@@ -25,7 +25,7 @@ public interface QuestRepository extends JpaRepository<Quest, Long> {
       @Param("userId") Long userId,
       Pageable pageable);
 
-  // tasks created by a given user (ManyToOne)
+  // quests created by a given user (ManyToOne)
   Page<Quest> findByCreatedBy_Id(Long userId, Pageable pageable);
 
   // by status only

@@ -6,7 +6,7 @@ import java.sql.Date;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-@Entity @Table(name = "task")
+@Entity @Table(name = "quest")
 public class Quest
 {
   @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,8 +31,8 @@ public class Quest
 
   @ManyToMany(fetch = FetchType.LAZY)
   @JoinTable(
-      name = "task_assignees",
-      joinColumns = @JoinColumn(name = "task_id"),
+      name = "quest_assignees",
+      joinColumns = @JoinColumn(name = "quest_id"),
       inverseJoinColumns = @JoinColumn(name = "user_id")
   )
   private Set<User> assignees = new LinkedHashSet<>();
