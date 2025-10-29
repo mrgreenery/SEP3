@@ -2,7 +2,7 @@ using WebAPI.ApiContracts;
 
 namespace WebAPI.Services;
 
-public interface ITaskService
+public interface IQuestService
 {
-    Task<CreateTaskResponse> CreateTaskAsync(CreateTaskRequest request);
+    Task<CreateQuestResponse> CreateQuestAsync(CreateQuestRequest request);
 }

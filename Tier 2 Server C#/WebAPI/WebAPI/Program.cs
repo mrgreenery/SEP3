@@ -13,7 +13,7 @@ builder.Services.AddGrpcClient<DataService.DataServiceClient>(options =>
     options.Address = new Uri("http://localhost:9090");
 });
 
-builder.Services.AddScoped<ITaskService, TaskService>();
+builder.Services.AddScoped<IQuestService, QuestService>();
 
 var app = builder.Build();
 
