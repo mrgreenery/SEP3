@@ -1,11 +1,11 @@
 using WebAPI.ApiContracts;
 
 namespace CLI.Views.Quest;
-using System.Threading.Quests;
+using System.Threading.Tasks;
 
 public class QuestView(QuestViewModel questViewModel)
 {
-    public async Quest CreateQuest()
+    public async Task CreateQuest()
     {
         Console.WriteLine("--- Quest Creation ---");
         

@@ -2,5 +2,5 @@ namespace WebAPI.ApiContracts;
 
 public interface IQuestApi
 {
-    Quest<CreateQuestResponse> CreateQuest(CreateQuestRequest request, CancellationToken ct = default);
+    Task<CreateQuestResponse> CreateQuest(CreateQuestRequest request, CancellationToken ct = default);
 }

@@ -4,7 +4,7 @@ namespace WebAPI.ApiContracts;
 
 public class QuestApi(HttpClient client) : IQuestApi
 {
-    public async Quest<CreateQuestResponse> CreateQuest(CreateQuestRequest request, CancellationToken ct = default)
+    public async Task<CreateQuestResponse> CreateQuest(CreateQuestRequest request, CancellationToken ct = default)
     {
         using var response =
             await client.PostAsJsonAsync("api/quests", request, ct);

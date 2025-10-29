@@ -1,4 +1,4 @@
-using CLI.Views.Task;
+using CLI.Views.Quest;
 using WebAPI.ApiContracts;
 
 namespace CLI;
@@ -36,7 +36,7 @@ public class CliApp
         }
     }
     
-    private async Quest GetClient()
+    private async Task GetClient()
     {
         // Call asynchronous network methods in a try/catch block to handle exceptions.
         try
