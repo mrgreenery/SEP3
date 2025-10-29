@@ -5,22 +5,22 @@ using Google.Protobuf.WellKnownTypes;
 
 namespace WebAPI.Services;
 
-public class TaskService : ITaskService
+public class QuestService : IQuestService
 {
     private readonly DataService.DataServiceClient _grpcClient;
 
-    public TaskService()
+    public QuestService()
     {
         var channel = GrpcChannel.ForAddress("http://localhost:9090");
         _grpcClient = new DataService.DataServiceClient(channel);
     }
 
-  public async Task<CreateTaskResponse> CreateTaskAsync(WebAPI.ApiContracts.CreateTaskRequest request)
+  public async Task<CreateQuestResponse> CreateQuestAsync(WebAPI.ApiContracts.CreateQuestRequest request)
     {
         if (request is null) throw new ArgumentNullException(nameof(request));
 
-        // Create proto task entity
-        var taskEntity = new TaskEntity
+        // Create proto quest entity
+        var questEntity = new QuestEntity
         {
             Title = request.Title,
             Description = request.Description,
@@ -28,16 +28,16 @@ public class TaskService : ITaskService
         };
 
         // Create gRPC request
-      	var grpcRequest = new Data.CreateTaskRequest
+      	var grpcRequest = new Data.CreateQuestRequest
         {
-            Task = taskEntity
+            Quest = questEntity
         };
 
         // Call gRPC service
-        var grpcResponse = await _grpcClient.CreateTaskAsync(grpcRequest);
+        var grpcResponse = await _grpcClient.CreateQuestAsync(grpcRequest);
 
         // Map to API response
-        var response = new CreateTaskResponse
+        var response = new CreateQuestResponse
         {
             Id = (int)grpcResponse.Id,
             Title = grpcResponse.Title,

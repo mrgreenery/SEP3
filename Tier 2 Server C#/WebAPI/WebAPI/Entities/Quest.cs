@@ -2,7 +2,7 @@ using System;
 
 namespace WebAPI.Entities;
 
-public class Task
+public class Quest
 {
     private long Id{ get; set; }
     private string? Title{ get; set; }

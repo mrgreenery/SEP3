@@ -9,9 +9,9 @@ public class CliApp
     {
         BaseAddress = new Uri("http://localhost:5268")
     };
-    private static readonly ITaskApi TaskApi = new TaskApi(Client);
-    private static readonly TaskViewModel TaskViewModel = new(TaskApi);
-    private static readonly TaskView TaskView = new(TaskViewModel);
+    private static readonly IQuestApi QuestApi = new QuestApi(Client);
+    private static readonly QuestViewModel QuestViewModel = new(QuestApi);
+    private static readonly QuestView QuestView = new(QuestViewModel);
     
     public void Start()
     {
@@ -20,14 +20,14 @@ public class CliApp
         while (true)
         {
             Console.WriteLine("Welcome to SEP3 Team 1 Proof of Concept!");
-            Console.WriteLine("1. Create task");
+            Console.WriteLine("1. Create quest");
             Console.Write("Choose an option and press Enter: ");
             
             var choice = Console.ReadLine();
             switch (choice)
             {
                 case "1":
-                    TaskView.CreateTask().GetAwaiter().GetResult();
+                    QuestView.CreateQuest().GetAwaiter().GetResult();
                     break;
                 default:
                     Console.WriteLine("Invalid option. Please try again.");
@@ -36,7 +36,7 @@ public class CliApp
         }
     }
     
-    private async Task GetClient()
+    private async Quest GetClient()
     {
         // Call asynchronous network methods in a try/catch block to handle exceptions.
         try
