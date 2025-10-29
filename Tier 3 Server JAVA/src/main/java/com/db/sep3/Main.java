@@ -1,8 +1,7 @@
 package com.db.sep3;
 
-import com.db.sep3.DAO.TaskRepository;
+import com.db.sep3.DAO.QuestRepository;
 import com.db.sep3.DAO.UserRepository;
-import com.db.sep3.entities.User;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -18,7 +17,7 @@ public class Main
 
 
   @Bean CommandLineRunner seedAndRead(UserRepository users,
-      TaskRepository tasks)
+      QuestRepository tasks)
   {
     return args -> {
       System.out.println("=== Users in DB ===");

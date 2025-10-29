@@ -21,30 +21,30 @@ public final class DataProto {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_data_UserEntity_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_data_TaskEntity_descriptor;
+    internal_static_data_QuestEntity_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_data_TaskEntity_fieldAccessorTable;
+      internal_static_data_QuestEntity_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
     internal_static_data_IdRequest_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_data_IdRequest_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_data_CreateTaskRequest_descriptor;
+    internal_static_data_CreateQuestRequest_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_data_CreateTaskRequest_fieldAccessorTable;
+      internal_static_data_CreateQuestRequest_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_data_UpdateTaskRequest_descriptor;
+    internal_static_data_UpdateQuestRequest_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_data_UpdateTaskRequest_fieldAccessorTable;
+      internal_static_data_UpdateQuestRequest_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_data_TaskList_descriptor;
+    internal_static_data_QuestList_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_data_TaskList_fieldAccessorTable;
+      internal_static_data_QuestList_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
     internal_static_data_UserList_descriptor;
   static final 
@@ -63,33 +63,34 @@ public final class DataProto {
       "pty.proto\032\037google/protobuf/timestamp.pro" +
       "to\"N\n\nUserEntity\022\n\n\002id\030\001 \001(\003\022\r\n\005email\030\002 " +
       "\001(\t\022\020\n\010password\030\003 \001(\t\022\023\n\013displayName\030\004 \001" +
-      "(\t\"\367\001\n\nTaskEntity\022\n\n\002id\030\001 \001(\003\022\r\n\005title\030\002" +
-      " \001(\t\022\023\n\013description\030\003 \001(\t\022\016\n\006status\030\004 \001(" +
-      "\005\022-\n\tcreatedAt\030\005 \001(\0132\032.google.protobuf.T" +
-      "imestamp\022\036\n\004user\030\006 \001(\0132\020.data.UserEntity" +
-      "\022-\n\tstartDate\030\007 \001(\0132\032.google.protobuf.Ti" +
-      "mestamp\022+\n\007endDate\030\010 \001(\0132\032.google.protob" +
-      "uf.Timestamp\"\027\n\tIdRequest\022\n\n\002id\030\001 \001(\003\"3\n" +
-      "\021CreateTaskRequest\022\036\n\004task\030\001 \001(\0132\020.data." +
-      "TaskEntity\"3\n\021UpdateTaskRequest\022\036\n\004task\030" +
-      "\001 \001(\0132\020.data.TaskEntity\"+\n\010TaskList\022\037\n\005t" +
-      "asks\030\001 \003(\0132\020.data.TaskEntity\"+\n\010UserList" +
-      "\022\037\n\005users\030\001 \003(\0132\020.data.UserEntity2\243\004\n\013Da" +
-      "taService\0220\n\nCreateUser\022\020.data.UserEntit" +
-      "y\032\020.data.UserEntity\0220\n\013GetUserById\022\017.dat" +
-      "a.IdRequest\032\020.data.UserEntity\0225\n\013GetAllU" +
-      "sers\022\026.google.protobuf.Empty\032\016.data.User" +
-      "List\022/\n\nUpdateUser\022\017.data.IdRequest\032\020.da" +
-      "ta.UserEntity\0225\n\nDeleteUser\022\017.data.IdReq" +
-      "uest\032\026.google.protobuf.Empty\0227\n\nCreateTa" +
-      "sk\022\027.data.CreateTaskRequest\032\020.data.TaskE" +
-      "ntity\0221\n\014GetTasksById\022\017.data.IdRequest\032\020" +
-      ".data.TaskEntity\0225\n\013GetAllTasks\022\026.google" +
-      ".protobuf.Empty\032\016.data.TaskList\0227\n\nUpdat" +
-      "eTask\022\027.data.UpdateTaskRequest\032\020.data.Ta" +
-      "skEntity\0225\n\nDeleteTask\022\017.data.IdRequest\032" +
-      "\026.google.protobuf.EmptyB!\n\022com.sep3.data" +
-      ".grpcB\tDataProtoP\001b\006proto3"
+      "(\t\"\370\001\n\013QuestEntity\022\n\n\002id\030\001 \001(\003\022\r\n\005title\030" +
+      "\002 \001(\t\022\023\n\013description\030\003 \001(\t\022\016\n\006status\030\004 \001" +
+      "(\005\022-\n\tcreatedAt\030\005 \001(\0132\032.google.protobuf." +
+      "Timestamp\022\036\n\004user\030\006 \001(\0132\020.data.UserEntit" +
+      "y\022-\n\tstartDate\030\007 \001(\0132\032.google.protobuf.T" +
+      "imestamp\022+\n\007endDate\030\010 \001(\0132\032.google.proto" +
+      "buf.Timestamp\"\027\n\tIdRequest\022\n\n\002id\030\001 \001(\003\"6" +
+      "\n\022CreateQuestRequest\022 \n\005quest\030\001 \001(\0132\021.da" +
+      "ta.QuestEntity\"6\n\022UpdateQuestRequest\022 \n\005" +
+      "quest\030\001 \001(\0132\021.data.QuestEntity\".\n\tQuestL" +
+      "ist\022!\n\006quests\030\001 \003(\0132\021.data.QuestEntity\"+" +
+      "\n\010UserList\022\037\n\005users\030\001 \003(\0132\020.data.UserEnt" +
+      "ity2\256\004\n\013DataService\0220\n\nCreateUser\022\020.data" +
+      ".UserEntity\032\020.data.UserEntity\0220\n\013GetUser" +
+      "ById\022\017.data.IdRequest\032\020.data.UserEntity\022" +
+      "5\n\013GetAllUsers\022\026.google.protobuf.Empty\032\016" +
+      ".data.UserList\022/\n\nUpdateUser\022\017.data.IdRe" +
+      "quest\032\020.data.UserEntity\0225\n\nDeleteUser\022\017." +
+      "data.IdRequest\032\026.google.protobuf.Empty\022:" +
+      "\n\013CreateQuest\022\030.data.CreateQuestRequest\032" +
+      "\021.data.QuestEntity\0223\n\rGetQuestsById\022\017.da" +
+      "ta.IdRequest\032\021.data.QuestEntity\0227\n\014GetAl" +
+      "lQuests\022\026.google.protobuf.Empty\032\017.data.Q" +
+      "uestList\022:\n\013UpdateQuest\022\030.data.UpdateQue" +
+      "stRequest\032\021.data.QuestEntity\0226\n\013DeleteQu" +
+      "est\022\017.data.IdRequest\032\026.google.protobuf.E" +
+      "mptyB!\n\022com.sep3.data.grpcB\tDataProtoP\001b" +
+      "\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -103,11 +104,11 @@ public final class DataProto {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_data_UserEntity_descriptor,
         new java.lang.String[] { "Id", "Email", "Password", "DisplayName", });
-    internal_static_data_TaskEntity_descriptor =
+    internal_static_data_QuestEntity_descriptor =
       getDescriptor().getMessageTypes().get(1);
-    internal_static_data_TaskEntity_fieldAccessorTable = new
+    internal_static_data_QuestEntity_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_data_TaskEntity_descriptor,
+        internal_static_data_QuestEntity_descriptor,
         new java.lang.String[] { "Id", "Title", "Description", "Status", "CreatedAt", "User", "StartDate", "EndDate", });
     internal_static_data_IdRequest_descriptor =
       getDescriptor().getMessageTypes().get(2);
@@ -115,24 +116,24 @@ public final class DataProto {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_data_IdRequest_descriptor,
         new java.lang.String[] { "Id", });
-    internal_static_data_CreateTaskRequest_descriptor =
+    internal_static_data_CreateQuestRequest_descriptor =
       getDescriptor().getMessageTypes().get(3);
-    internal_static_data_CreateTaskRequest_fieldAccessorTable = new
+    internal_static_data_CreateQuestRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_data_CreateTaskRequest_descriptor,
-        new java.lang.String[] { "Task", });
-    internal_static_data_UpdateTaskRequest_descriptor =
+        internal_static_data_CreateQuestRequest_descriptor,
+        new java.lang.String[] { "Quest", });
+    internal_static_data_UpdateQuestRequest_descriptor =
       getDescriptor().getMessageTypes().get(4);
-    internal_static_data_UpdateTaskRequest_fieldAccessorTable = new
+    internal_static_data_UpdateQuestRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_data_UpdateTaskRequest_descriptor,
-        new java.lang.String[] { "Task", });
-    internal_static_data_TaskList_descriptor =
+        internal_static_data_UpdateQuestRequest_descriptor,
+        new java.lang.String[] { "Quest", });
+    internal_static_data_QuestList_descriptor =
       getDescriptor().getMessageTypes().get(5);
-    internal_static_data_TaskList_fieldAccessorTable = new
+    internal_static_data_QuestList_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_data_TaskList_descriptor,
-        new java.lang.String[] { "Tasks", });
+        internal_static_data_QuestList_descriptor,
+        new java.lang.String[] { "Quests", });
     internal_static_data_UserList_descriptor =
       getDescriptor().getMessageTypes().get(6);
     internal_static_data_UserList_fieldAccessorTable = new

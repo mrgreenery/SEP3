@@ -173,159 +173,159 @@ public final class DataServiceGrpc {
     return getDeleteUserMethod;
   }
 
-  private static volatile io.grpc.MethodDescriptor<com.sep3.data.grpc.CreateTaskRequest,
-      com.sep3.data.grpc.TaskEntity> getCreateTaskMethod;
+  private static volatile io.grpc.MethodDescriptor<com.sep3.data.grpc.CreateQuestRequest,
+      com.sep3.data.grpc.QuestEntity> getCreateQuestMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
-      fullMethodName = SERVICE_NAME + '/' + "CreateTask",
-      requestType = com.sep3.data.grpc.CreateTaskRequest.class,
-      responseType = com.sep3.data.grpc.TaskEntity.class,
+      fullMethodName = SERVICE_NAME + '/' + "CreateQuest",
+      requestType = com.sep3.data.grpc.CreateQuestRequest.class,
+      responseType = com.sep3.data.grpc.QuestEntity.class,
       methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
-  public static io.grpc.MethodDescriptor<com.sep3.data.grpc.CreateTaskRequest,
-      com.sep3.data.grpc.TaskEntity> getCreateTaskMethod() {
-    io.grpc.MethodDescriptor<com.sep3.data.grpc.CreateTaskRequest, com.sep3.data.grpc.TaskEntity> getCreateTaskMethod;
-    if ((getCreateTaskMethod = DataServiceGrpc.getCreateTaskMethod) == null) {
+  public static io.grpc.MethodDescriptor<com.sep3.data.grpc.CreateQuestRequest,
+      com.sep3.data.grpc.QuestEntity> getCreateQuestMethod() {
+    io.grpc.MethodDescriptor<com.sep3.data.grpc.CreateQuestRequest, com.sep3.data.grpc.QuestEntity> getCreateQuestMethod;
+    if ((getCreateQuestMethod = DataServiceGrpc.getCreateQuestMethod) == null) {
       synchronized (DataServiceGrpc.class) {
-        if ((getCreateTaskMethod = DataServiceGrpc.getCreateTaskMethod) == null) {
-          DataServiceGrpc.getCreateTaskMethod = getCreateTaskMethod =
-              io.grpc.MethodDescriptor.<com.sep3.data.grpc.CreateTaskRequest, com.sep3.data.grpc.TaskEntity>newBuilder()
+        if ((getCreateQuestMethod = DataServiceGrpc.getCreateQuestMethod) == null) {
+          DataServiceGrpc.getCreateQuestMethod = getCreateQuestMethod =
+              io.grpc.MethodDescriptor.<com.sep3.data.grpc.CreateQuestRequest, com.sep3.data.grpc.QuestEntity>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
-              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "CreateTask"))
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "CreateQuest"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  com.sep3.data.grpc.CreateTaskRequest.getDefaultInstance()))
+                  com.sep3.data.grpc.CreateQuestRequest.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  com.sep3.data.grpc.TaskEntity.getDefaultInstance()))
-              .setSchemaDescriptor(new DataServiceMethodDescriptorSupplier("CreateTask"))
+                  com.sep3.data.grpc.QuestEntity.getDefaultInstance()))
+              .setSchemaDescriptor(new DataServiceMethodDescriptorSupplier("CreateQuest"))
               .build();
         }
       }
     }
-    return getCreateTaskMethod;
+    return getCreateQuestMethod;
   }
 
   private static volatile io.grpc.MethodDescriptor<com.sep3.data.grpc.IdRequest,
-      com.sep3.data.grpc.TaskEntity> getGetTasksByIdMethod;
+      com.sep3.data.grpc.QuestEntity> getGetQuestsByIdMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
-      fullMethodName = SERVICE_NAME + '/' + "GetTasksById",
+      fullMethodName = SERVICE_NAME + '/' + "GetQuestsById",
       requestType = com.sep3.data.grpc.IdRequest.class,
-      responseType = com.sep3.data.grpc.TaskEntity.class,
+      responseType = com.sep3.data.grpc.QuestEntity.class,
       methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
   public static io.grpc.MethodDescriptor<com.sep3.data.grpc.IdRequest,
-      com.sep3.data.grpc.TaskEntity> getGetTasksByIdMethod() {
-    io.grpc.MethodDescriptor<com.sep3.data.grpc.IdRequest, com.sep3.data.grpc.TaskEntity> getGetTasksByIdMethod;
-    if ((getGetTasksByIdMethod = DataServiceGrpc.getGetTasksByIdMethod) == null) {
+      com.sep3.data.grpc.QuestEntity> getGetQuestsByIdMethod() {
+    io.grpc.MethodDescriptor<com.sep3.data.grpc.IdRequest, com.sep3.data.grpc.QuestEntity> getGetQuestsByIdMethod;
+    if ((getGetQuestsByIdMethod = DataServiceGrpc.getGetQuestsByIdMethod) == null) {
       synchronized (DataServiceGrpc.class) {
-        if ((getGetTasksByIdMethod = DataServiceGrpc.getGetTasksByIdMethod) == null) {
-          DataServiceGrpc.getGetTasksByIdMethod = getGetTasksByIdMethod =
-              io.grpc.MethodDescriptor.<com.sep3.data.grpc.IdRequest, com.sep3.data.grpc.TaskEntity>newBuilder()
+        if ((getGetQuestsByIdMethod = DataServiceGrpc.getGetQuestsByIdMethod) == null) {
+          DataServiceGrpc.getGetQuestsByIdMethod = getGetQuestsByIdMethod =
+              io.grpc.MethodDescriptor.<com.sep3.data.grpc.IdRequest, com.sep3.data.grpc.QuestEntity>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
-              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "GetTasksById"))
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "GetQuestsById"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   com.sep3.data.grpc.IdRequest.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  com.sep3.data.grpc.TaskEntity.getDefaultInstance()))
-              .setSchemaDescriptor(new DataServiceMethodDescriptorSupplier("GetTasksById"))
+                  com.sep3.data.grpc.QuestEntity.getDefaultInstance()))
+              .setSchemaDescriptor(new DataServiceMethodDescriptorSupplier("GetQuestsById"))
               .build();
         }
       }
     }
-    return getGetTasksByIdMethod;
+    return getGetQuestsByIdMethod;
   }
 
   private static volatile io.grpc.MethodDescriptor<com.google.protobuf.Empty,
-      com.sep3.data.grpc.TaskList> getGetAllTasksMethod;
+      com.sep3.data.grpc.QuestList> getGetAllQuestsMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
-      fullMethodName = SERVICE_NAME + '/' + "GetAllTasks",
+      fullMethodName = SERVICE_NAME + '/' + "GetAllQuests",
       requestType = com.google.protobuf.Empty.class,
-      responseType = com.sep3.data.grpc.TaskList.class,
+      responseType = com.sep3.data.grpc.QuestList.class,
       methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
   public static io.grpc.MethodDescriptor<com.google.protobuf.Empty,
-      com.sep3.data.grpc.TaskList> getGetAllTasksMethod() {
-    io.grpc.MethodDescriptor<com.google.protobuf.Empty, com.sep3.data.grpc.TaskList> getGetAllTasksMethod;
-    if ((getGetAllTasksMethod = DataServiceGrpc.getGetAllTasksMethod) == null) {
+      com.sep3.data.grpc.QuestList> getGetAllQuestsMethod() {
+    io.grpc.MethodDescriptor<com.google.protobuf.Empty, com.sep3.data.grpc.QuestList> getGetAllQuestsMethod;
+    if ((getGetAllQuestsMethod = DataServiceGrpc.getGetAllQuestsMethod) == null) {
       synchronized (DataServiceGrpc.class) {
-        if ((getGetAllTasksMethod = DataServiceGrpc.getGetAllTasksMethod) == null) {
-          DataServiceGrpc.getGetAllTasksMethod = getGetAllTasksMethod =
-              io.grpc.MethodDescriptor.<com.google.protobuf.Empty, com.sep3.data.grpc.TaskList>newBuilder()
+        if ((getGetAllQuestsMethod = DataServiceGrpc.getGetAllQuestsMethod) == null) {
+          DataServiceGrpc.getGetAllQuestsMethod = getGetAllQuestsMethod =
+              io.grpc.MethodDescriptor.<com.google.protobuf.Empty, com.sep3.data.grpc.QuestList>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
-              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "GetAllTasks"))
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "GetAllQuests"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   com.google.protobuf.Empty.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  com.sep3.data.grpc.TaskList.getDefaultInstance()))
-              .setSchemaDescriptor(new DataServiceMethodDescriptorSupplier("GetAllTasks"))
+                  com.sep3.data.grpc.QuestList.getDefaultInstance()))
+              .setSchemaDescriptor(new DataServiceMethodDescriptorSupplier("GetAllQuests"))
               .build();
         }
       }
     }
-    return getGetAllTasksMethod;
+    return getGetAllQuestsMethod;
   }
 
-  private static volatile io.grpc.MethodDescriptor<com.sep3.data.grpc.UpdateTaskRequest,
-      com.sep3.data.grpc.TaskEntity> getUpdateTaskMethod;
+  private static volatile io.grpc.MethodDescriptor<com.sep3.data.grpc.UpdateQuestRequest,
+      com.sep3.data.grpc.QuestEntity> getUpdateQuestMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
-      fullMethodName = SERVICE_NAME + '/' + "UpdateTask",
-      requestType = com.sep3.data.grpc.UpdateTaskRequest.class,
-      responseType = com.sep3.data.grpc.TaskEntity.class,
+      fullMethodName = SERVICE_NAME + '/' + "UpdateQuest",
+      requestType = com.sep3.data.grpc.UpdateQuestRequest.class,
+      responseType = com.sep3.data.grpc.QuestEntity.class,
       methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
-  public static io.grpc.MethodDescriptor<com.sep3.data.grpc.UpdateTaskRequest,
-      com.sep3.data.grpc.TaskEntity> getUpdateTaskMethod() {
-    io.grpc.MethodDescriptor<com.sep3.data.grpc.UpdateTaskRequest, com.sep3.data.grpc.TaskEntity> getUpdateTaskMethod;
-    if ((getUpdateTaskMethod = DataServiceGrpc.getUpdateTaskMethod) == null) {
+  public static io.grpc.MethodDescriptor<com.sep3.data.grpc.UpdateQuestRequest,
+      com.sep3.data.grpc.QuestEntity> getUpdateQuestMethod() {
+    io.grpc.MethodDescriptor<com.sep3.data.grpc.UpdateQuestRequest, com.sep3.data.grpc.QuestEntity> getUpdateQuestMethod;
+    if ((getUpdateQuestMethod = DataServiceGrpc.getUpdateQuestMethod) == null) {
       synchronized (DataServiceGrpc.class) {
-        if ((getUpdateTaskMethod = DataServiceGrpc.getUpdateTaskMethod) == null) {
-          DataServiceGrpc.getUpdateTaskMethod = getUpdateTaskMethod =
-              io.grpc.MethodDescriptor.<com.sep3.data.grpc.UpdateTaskRequest, com.sep3.data.grpc.TaskEntity>newBuilder()
+        if ((getUpdateQuestMethod = DataServiceGrpc.getUpdateQuestMethod) == null) {
+          DataServiceGrpc.getUpdateQuestMethod = getUpdateQuestMethod =
+              io.grpc.MethodDescriptor.<com.sep3.data.grpc.UpdateQuestRequest, com.sep3.data.grpc.QuestEntity>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
-              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "UpdateTask"))
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "UpdateQuest"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  com.sep3.data.grpc.UpdateTaskRequest.getDefaultInstance()))
+                  com.sep3.data.grpc.UpdateQuestRequest.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  com.sep3.data.grpc.TaskEntity.getDefaultInstance()))
-              .setSchemaDescriptor(new DataServiceMethodDescriptorSupplier("UpdateTask"))
+                  com.sep3.data.grpc.QuestEntity.getDefaultInstance()))
+              .setSchemaDescriptor(new DataServiceMethodDescriptorSupplier("UpdateQuest"))
               .build();
         }
       }
     }
-    return getUpdateTaskMethod;
+    return getUpdateQuestMethod;
   }
 
   private static volatile io.grpc.MethodDescriptor<com.sep3.data.grpc.IdRequest,
-      com.google.protobuf.Empty> getDeleteTaskMethod;
+      com.google.protobuf.Empty> getDeleteQuestMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
-      fullMethodName = SERVICE_NAME + '/' + "DeleteTask",
+      fullMethodName = SERVICE_NAME + '/' + "DeleteQuest",
       requestType = com.sep3.data.grpc.IdRequest.class,
       responseType = com.google.protobuf.Empty.class,
       methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
   public static io.grpc.MethodDescriptor<com.sep3.data.grpc.IdRequest,
-      com.google.protobuf.Empty> getDeleteTaskMethod() {
-    io.grpc.MethodDescriptor<com.sep3.data.grpc.IdRequest, com.google.protobuf.Empty> getDeleteTaskMethod;
-    if ((getDeleteTaskMethod = DataServiceGrpc.getDeleteTaskMethod) == null) {
+      com.google.protobuf.Empty> getDeleteQuestMethod() {
+    io.grpc.MethodDescriptor<com.sep3.data.grpc.IdRequest, com.google.protobuf.Empty> getDeleteQuestMethod;
+    if ((getDeleteQuestMethod = DataServiceGrpc.getDeleteQuestMethod) == null) {
       synchronized (DataServiceGrpc.class) {
-        if ((getDeleteTaskMethod = DataServiceGrpc.getDeleteTaskMethod) == null) {
-          DataServiceGrpc.getDeleteTaskMethod = getDeleteTaskMethod =
+        if ((getDeleteQuestMethod = DataServiceGrpc.getDeleteQuestMethod) == null) {
+          DataServiceGrpc.getDeleteQuestMethod = getDeleteQuestMethod =
               io.grpc.MethodDescriptor.<com.sep3.data.grpc.IdRequest, com.google.protobuf.Empty>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
-              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "DeleteTask"))
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "DeleteQuest"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   com.sep3.data.grpc.IdRequest.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   com.google.protobuf.Empty.getDefaultInstance()))
-              .setSchemaDescriptor(new DataServiceMethodDescriptorSupplier("DeleteTask"))
+              .setSchemaDescriptor(new DataServiceMethodDescriptorSupplier("DeleteQuest"))
               .build();
         }
       }
     }
-    return getDeleteTaskMethod;
+    return getDeleteQuestMethod;
   }
 
   /**
@@ -416,37 +416,37 @@ public final class DataServiceGrpc {
 
     /**
      */
-    default void createTask(com.sep3.data.grpc.CreateTaskRequest request,
-        io.grpc.stub.StreamObserver<com.sep3.data.grpc.TaskEntity> responseObserver) {
-      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getCreateTaskMethod(), responseObserver);
+    default void createQuest(com.sep3.data.grpc.CreateQuestRequest request,
+        io.grpc.stub.StreamObserver<com.sep3.data.grpc.QuestEntity> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getCreateQuestMethod(), responseObserver);
     }
 
     /**
      */
-    default void getTasksById(com.sep3.data.grpc.IdRequest request,
-        io.grpc.stub.StreamObserver<com.sep3.data.grpc.TaskEntity> responseObserver) {
-      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getGetTasksByIdMethod(), responseObserver);
+    default void getQuestsById(com.sep3.data.grpc.IdRequest request,
+        io.grpc.stub.StreamObserver<com.sep3.data.grpc.QuestEntity> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getGetQuestsByIdMethod(), responseObserver);
     }
 
     /**
      */
-    default void getAllTasks(com.google.protobuf.Empty request,
-        io.grpc.stub.StreamObserver<com.sep3.data.grpc.TaskList> responseObserver) {
-      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getGetAllTasksMethod(), responseObserver);
+    default void getAllQuests(com.google.protobuf.Empty request,
+        io.grpc.stub.StreamObserver<com.sep3.data.grpc.QuestList> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getGetAllQuestsMethod(), responseObserver);
     }
 
     /**
      */
-    default void updateTask(com.sep3.data.grpc.UpdateTaskRequest request,
-        io.grpc.stub.StreamObserver<com.sep3.data.grpc.TaskEntity> responseObserver) {
-      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getUpdateTaskMethod(), responseObserver);
+    default void updateQuest(com.sep3.data.grpc.UpdateQuestRequest request,
+        io.grpc.stub.StreamObserver<com.sep3.data.grpc.QuestEntity> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getUpdateQuestMethod(), responseObserver);
     }
 
     /**
      */
-    default void deleteTask(com.sep3.data.grpc.IdRequest request,
+    default void deleteQuest(com.sep3.data.grpc.IdRequest request,
         io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
-      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getDeleteTaskMethod(), responseObserver);
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getDeleteQuestMethod(), responseObserver);
     }
   }
 
@@ -525,42 +525,42 @@ public final class DataServiceGrpc {
 
     /**
      */
-    public void createTask(com.sep3.data.grpc.CreateTaskRequest request,
-        io.grpc.stub.StreamObserver<com.sep3.data.grpc.TaskEntity> responseObserver) {
+    public void createQuest(com.sep3.data.grpc.CreateQuestRequest request,
+        io.grpc.stub.StreamObserver<com.sep3.data.grpc.QuestEntity> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
-          getChannel().newCall(getCreateTaskMethod(), getCallOptions()), request, responseObserver);
+          getChannel().newCall(getCreateQuestMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
      */
-    public void getTasksById(com.sep3.data.grpc.IdRequest request,
-        io.grpc.stub.StreamObserver<com.sep3.data.grpc.TaskEntity> responseObserver) {
+    public void getQuestsById(com.sep3.data.grpc.IdRequest request,
+        io.grpc.stub.StreamObserver<com.sep3.data.grpc.QuestEntity> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
-          getChannel().newCall(getGetTasksByIdMethod(), getCallOptions()), request, responseObserver);
+          getChannel().newCall(getGetQuestsByIdMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
      */
-    public void getAllTasks(com.google.protobuf.Empty request,
-        io.grpc.stub.StreamObserver<com.sep3.data.grpc.TaskList> responseObserver) {
+    public void getAllQuests(com.google.protobuf.Empty request,
+        io.grpc.stub.StreamObserver<com.sep3.data.grpc.QuestList> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
-          getChannel().newCall(getGetAllTasksMethod(), getCallOptions()), request, responseObserver);
+          getChannel().newCall(getGetAllQuestsMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
      */
-    public void updateTask(com.sep3.data.grpc.UpdateTaskRequest request,
-        io.grpc.stub.StreamObserver<com.sep3.data.grpc.TaskEntity> responseObserver) {
+    public void updateQuest(com.sep3.data.grpc.UpdateQuestRequest request,
+        io.grpc.stub.StreamObserver<com.sep3.data.grpc.QuestEntity> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
-          getChannel().newCall(getUpdateTaskMethod(), getCallOptions()), request, responseObserver);
+          getChannel().newCall(getUpdateQuestMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
      */
-    public void deleteTask(com.sep3.data.grpc.IdRequest request,
+    public void deleteQuest(com.sep3.data.grpc.IdRequest request,
         io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
-          getChannel().newCall(getDeleteTaskMethod(), getCallOptions()), request, responseObserver);
+          getChannel().newCall(getDeleteQuestMethod(), getCallOptions()), request, responseObserver);
     }
   }
 
@@ -620,37 +620,37 @@ public final class DataServiceGrpc {
 
     /**
      */
-    public com.sep3.data.grpc.TaskEntity createTask(com.sep3.data.grpc.CreateTaskRequest request) {
+    public com.sep3.data.grpc.QuestEntity createQuest(com.sep3.data.grpc.CreateQuestRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
-          getChannel(), getCreateTaskMethod(), getCallOptions(), request);
+          getChannel(), getCreateQuestMethod(), getCallOptions(), request);
     }
 
     /**
      */
-    public com.sep3.data.grpc.TaskEntity getTasksById(com.sep3.data.grpc.IdRequest request) {
+    public com.sep3.data.grpc.QuestEntity getQuestsById(com.sep3.data.grpc.IdRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
-          getChannel(), getGetTasksByIdMethod(), getCallOptions(), request);
+          getChannel(), getGetQuestsByIdMethod(), getCallOptions(), request);
     }
 
     /**
      */
-    public com.sep3.data.grpc.TaskList getAllTasks(com.google.protobuf.Empty request) {
+    public com.sep3.data.grpc.QuestList getAllQuests(com.google.protobuf.Empty request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
-          getChannel(), getGetAllTasksMethod(), getCallOptions(), request);
+          getChannel(), getGetAllQuestsMethod(), getCallOptions(), request);
     }
 
     /**
      */
-    public com.sep3.data.grpc.TaskEntity updateTask(com.sep3.data.grpc.UpdateTaskRequest request) {
+    public com.sep3.data.grpc.QuestEntity updateQuest(com.sep3.data.grpc.UpdateQuestRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
-          getChannel(), getUpdateTaskMethod(), getCallOptions(), request);
+          getChannel(), getUpdateQuestMethod(), getCallOptions(), request);
     }
 
     /**
      */
-    public com.google.protobuf.Empty deleteTask(com.sep3.data.grpc.IdRequest request) {
+    public com.google.protobuf.Empty deleteQuest(com.sep3.data.grpc.IdRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
-          getChannel(), getDeleteTaskMethod(), getCallOptions(), request);
+          getChannel(), getDeleteQuestMethod(), getCallOptions(), request);
     }
   }
 
@@ -715,42 +715,42 @@ public final class DataServiceGrpc {
 
     /**
      */
-    public com.google.common.util.concurrent.ListenableFuture<com.sep3.data.grpc.TaskEntity> createTask(
-        com.sep3.data.grpc.CreateTaskRequest request) {
+    public com.google.common.util.concurrent.ListenableFuture<com.sep3.data.grpc.QuestEntity> createQuest(
+        com.sep3.data.grpc.CreateQuestRequest request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
-          getChannel().newCall(getCreateTaskMethod(), getCallOptions()), request);
+          getChannel().newCall(getCreateQuestMethod(), getCallOptions()), request);
     }
 
     /**
      */
-    public com.google.common.util.concurrent.ListenableFuture<com.sep3.data.grpc.TaskEntity> getTasksById(
+    public com.google.common.util.concurrent.ListenableFuture<com.sep3.data.grpc.QuestEntity> getQuestsById(
         com.sep3.data.grpc.IdRequest request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
-          getChannel().newCall(getGetTasksByIdMethod(), getCallOptions()), request);
+          getChannel().newCall(getGetQuestsByIdMethod(), getCallOptions()), request);
     }
 
     /**
      */
-    public com.google.common.util.concurrent.ListenableFuture<com.sep3.data.grpc.TaskList> getAllTasks(
+    public com.google.common.util.concurrent.ListenableFuture<com.sep3.data.grpc.QuestList> getAllQuests(
         com.google.protobuf.Empty request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
-          getChannel().newCall(getGetAllTasksMethod(), getCallOptions()), request);
+          getChannel().newCall(getGetAllQuestsMethod(), getCallOptions()), request);
     }
 
     /**
      */
-    public com.google.common.util.concurrent.ListenableFuture<com.sep3.data.grpc.TaskEntity> updateTask(
-        com.sep3.data.grpc.UpdateTaskRequest request) {
+    public com.google.common.util.concurrent.ListenableFuture<com.sep3.data.grpc.QuestEntity> updateQuest(
+        com.sep3.data.grpc.UpdateQuestRequest request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
-          getChannel().newCall(getUpdateTaskMethod(), getCallOptions()), request);
+          getChannel().newCall(getUpdateQuestMethod(), getCallOptions()), request);
     }
 
     /**
      */
-    public com.google.common.util.concurrent.ListenableFuture<com.google.protobuf.Empty> deleteTask(
+    public com.google.common.util.concurrent.ListenableFuture<com.google.protobuf.Empty> deleteQuest(
         com.sep3.data.grpc.IdRequest request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
-          getChannel().newCall(getDeleteTaskMethod(), getCallOptions()), request);
+          getChannel().newCall(getDeleteQuestMethod(), getCallOptions()), request);
     }
   }
 
@@ -759,11 +759,11 @@ public final class DataServiceGrpc {
   private static final int METHODID_GET_ALL_USERS = 2;
   private static final int METHODID_UPDATE_USER = 3;
   private static final int METHODID_DELETE_USER = 4;
-  private static final int METHODID_CREATE_TASK = 5;
-  private static final int METHODID_GET_TASKS_BY_ID = 6;
-  private static final int METHODID_GET_ALL_TASKS = 7;
-  private static final int METHODID_UPDATE_TASK = 8;
-  private static final int METHODID_DELETE_TASK = 9;
+  private static final int METHODID_CREATE_QUEST = 5;
+  private static final int METHODID_GET_QUESTS_BY_ID = 6;
+  private static final int METHODID_GET_ALL_QUESTS = 7;
+  private static final int METHODID_UPDATE_QUEST = 8;
+  private static final int METHODID_DELETE_QUEST = 9;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -802,24 +802,24 @@ public final class DataServiceGrpc {
           serviceImpl.deleteUser((com.sep3.data.grpc.IdRequest) request,
               (io.grpc.stub.StreamObserver<com.google.protobuf.Empty>) responseObserver);
           break;
-        case METHODID_CREATE_TASK:
-          serviceImpl.createTask((com.sep3.data.grpc.CreateTaskRequest) request,
-              (io.grpc.stub.StreamObserver<com.sep3.data.grpc.TaskEntity>) responseObserver);
+        case METHODID_CREATE_QUEST:
+          serviceImpl.createQuest((com.sep3.data.grpc.CreateQuestRequest) request,
+              (io.grpc.stub.StreamObserver<com.sep3.data.grpc.QuestEntity>) responseObserver);
           break;
-        case METHODID_GET_TASKS_BY_ID:
-          serviceImpl.getTasksById((com.sep3.data.grpc.IdRequest) request,
-              (io.grpc.stub.StreamObserver<com.sep3.data.grpc.TaskEntity>) responseObserver);
+        case METHODID_GET_QUESTS_BY_ID:
+          serviceImpl.getQuestsById((com.sep3.data.grpc.IdRequest) request,
+              (io.grpc.stub.StreamObserver<com.sep3.data.grpc.QuestEntity>) responseObserver);
           break;
-        case METHODID_GET_ALL_TASKS:
-          serviceImpl.getAllTasks((com.google.protobuf.Empty) request,
-              (io.grpc.stub.StreamObserver<com.sep3.data.grpc.TaskList>) responseObserver);
+        case METHODID_GET_ALL_QUESTS:
+          serviceImpl.getAllQuests((com.google.protobuf.Empty) request,
+              (io.grpc.stub.StreamObserver<com.sep3.data.grpc.QuestList>) responseObserver);
           break;
-        case METHODID_UPDATE_TASK:
-          serviceImpl.updateTask((com.sep3.data.grpc.UpdateTaskRequest) request,
-              (io.grpc.stub.StreamObserver<com.sep3.data.grpc.TaskEntity>) responseObserver);
+        case METHODID_UPDATE_QUEST:
+          serviceImpl.updateQuest((com.sep3.data.grpc.UpdateQuestRequest) request,
+              (io.grpc.stub.StreamObserver<com.sep3.data.grpc.QuestEntity>) responseObserver);
           break;
-        case METHODID_DELETE_TASK:
-          serviceImpl.deleteTask((com.sep3.data.grpc.IdRequest) request,
+        case METHODID_DELETE_QUEST:
+          serviceImpl.deleteQuest((com.sep3.data.grpc.IdRequest) request,
               (io.grpc.stub.StreamObserver<com.google.protobuf.Empty>) responseObserver);
           break;
         default:
@@ -876,40 +876,40 @@ public final class DataServiceGrpc {
               com.google.protobuf.Empty>(
                 service, METHODID_DELETE_USER)))
         .addMethod(
-          getCreateTaskMethod(),
+          getCreateQuestMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
-              com.sep3.data.grpc.CreateTaskRequest,
-              com.sep3.data.grpc.TaskEntity>(
-                service, METHODID_CREATE_TASK)))
+              com.sep3.data.grpc.CreateQuestRequest,
+              com.sep3.data.grpc.QuestEntity>(
+                service, METHODID_CREATE_QUEST)))
         .addMethod(
-          getGetTasksByIdMethod(),
+          getGetQuestsByIdMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
               com.sep3.data.grpc.IdRequest,
-              com.sep3.data.grpc.TaskEntity>(
-                service, METHODID_GET_TASKS_BY_ID)))
+              com.sep3.data.grpc.QuestEntity>(
+                service, METHODID_GET_QUESTS_BY_ID)))
         .addMethod(
-          getGetAllTasksMethod(),
+          getGetAllQuestsMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
               com.google.protobuf.Empty,
-              com.sep3.data.grpc.TaskList>(
-                service, METHODID_GET_ALL_TASKS)))
+              com.sep3.data.grpc.QuestList>(
+                service, METHODID_GET_ALL_QUESTS)))
         .addMethod(
-          getUpdateTaskMethod(),
+          getUpdateQuestMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
-              com.sep3.data.grpc.UpdateTaskRequest,
-              com.sep3.data.grpc.TaskEntity>(
-                service, METHODID_UPDATE_TASK)))
+              com.sep3.data.grpc.UpdateQuestRequest,
+              com.sep3.data.grpc.QuestEntity>(
+                service, METHODID_UPDATE_QUEST)))
         .addMethod(
-          getDeleteTaskMethod(),
+          getDeleteQuestMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
               com.sep3.data.grpc.IdRequest,
               com.google.protobuf.Empty>(
-                service, METHODID_DELETE_TASK)))
+                service, METHODID_DELETE_QUEST)))
         .build();
   }
 
@@ -963,11 +963,11 @@ public final class DataServiceGrpc {
               .addMethod(getGetAllUsersMethod())
               .addMethod(getUpdateUserMethod())
               .addMethod(getDeleteUserMethod())
-              .addMethod(getCreateTaskMethod())
-              .addMethod(getGetTasksByIdMethod())
-              .addMethod(getGetAllTasksMethod())
-              .addMethod(getUpdateTaskMethod())
-              .addMethod(getDeleteTaskMethod())
+              .addMethod(getCreateQuestMethod())
+              .addMethod(getGetQuestsByIdMethod())
+              .addMethod(getGetAllQuestsMethod())
+              .addMethod(getUpdateQuestMethod())
+              .addMethod(getDeleteQuestMethod())
               .build();
         }
       }
