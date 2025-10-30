@@ -12,6 +12,7 @@ SEP3.iml/
 
 # Maven
 Tier-3-Server-JAVA/target/
+/target/
 
 # .Net
 **/bin/
