@@ -28,10 +28,12 @@ google.protobuf.Timestamp endDate = 8;
 }
 
 // ===== Requests / Responses =====
+
 message IdRequest {
   int64 id = 1;
 }
 
+// ===== Quest  =====
 message CreateQuestRequest {
   QuestEntity quest = 1;
 }
@@ -42,6 +44,24 @@ message UpdateQuestRequest {
 
 message QuestList {
   repeated QuestEntity quests = 1;
+}
+
+
+// ===== User  =====
+message CreateUserRequest{
+  UserEntity user = 1;
+}
+
+message ReadUserRequest{
+  UserEntity user = 1;
+}
+
+message UpdateUserRequest{
+  UserEntity user = 1;
+}
+
+message DeleteUserRequest{
+  UserEntity user = 1;
 }
 
 message UserList{
