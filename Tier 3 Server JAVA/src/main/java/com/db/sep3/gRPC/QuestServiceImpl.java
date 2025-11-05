@@ -1,7 +1,6 @@
 package com.db.sep3.gRPC;
 
 import com.google.protobuf.Empty;
-import com.google.protobuf.Timestamp;
 import com.sep3.data.grpc.*;
 import io.grpc.stub.StreamObserver;
 
@@ -11,10 +10,10 @@ import com.db.sep3.DAO.QuestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import net.devh.boot.grpc.server.service.GrpcService;
 import com.db.sep3.entities.Quest;
+import org.springframework.transaction.annotation.Transactional;
 
 @GrpcService
-public class QuestServiceImpl extends DataServiceGrpc.DataServiceImplBase
-{
+public class QuestServiceImpl extends DataServiceGrpc.DataServiceImplBase {
     @Autowired
     private QuestRepository questRepository;
 
@@ -91,76 +90,154 @@ public class QuestServiceImpl extends DataServiceGrpc.DataServiceImplBase
             Quest quest = new Quest();
             quest.setTitle(request.getQuest().getTitle());
             quest.setDescription(request.getQuest().getDescription());
-            quest.setStatus("TODO");
+            quest.setStatus(request.getQuest().getStatus());
             quest.setCreatedAt(new Date(System.currentTimeMillis()));
+            quest.setStartDate(Date.valueOf(request.getQuest().getStartDate()));
+            quest.setEndDate(Date.valueOf(request.getQuest().getEndDate()));
+            //need to check how to add createdBy idk if it should be linked from userREpo
 
             // Save to database
             Quest saved = questRepository.save(quest);
 
             System.out.println("Quest saved with ID: " + saved.getId());
 
-            // Convert to proto
-            Timestamp createdAtTimestamp = Timestamp.newBuilder()
-                    .setSeconds(saved.getCreatedAt().getTime() / 1000)
-                    .build();
+            //here i did change so instead now converting the saved back to QuestEntity
+            // its just calling the util class to convert it
 
-            QuestEntity response = QuestEntity.newBuilder()
-                    .setId(saved.getId())
-                    .setTitle(saved.getTitle())
-                    .setDescription(saved.getDescription())
-                    .setStatus(0)
-                    .setCreatedAt(createdAtTimestamp)
-                    .build();
-
-            responseObserver.onNext(response);
+            responseObserver.onNext(convertToProto(saved));
             responseObserver.onCompleted();
 
             System.out.println("=== Quest Created Successfully ===");
-        } catch (Exception e) {
-            System.err.println("Error creating quest: " + e.getMessage());
-            e.printStackTrace();
-            responseObserver.onError(e);
+
+
+        } catch (Exception e) { // this is apparently better error handling than just sending 'e' but idk
+            responseObserver.onError(io.grpc.Status.INTERNAL
+                    .withDescription("Failed to create quest")
+                    .withCause(e)
+                    .asRuntimeException());
         }
     }
 
     @Override
     public void getQuestsById(IdRequest request, StreamObserver<QuestEntity> responseObserver) {
-        QuestEntity quest = QuestEntity.newBuilder()
-                .setId(request.getId())
-                .setTitle("Example Quest")
-                .setDescription("Demo description")
-                .setStatus(1)
-                .build();
-        responseObserver.onNext(quest);
-        responseObserver.onCompleted();
+
+
+        try {
+            System.out.println("=== Getting Quest by ID: " + request.getId() + " ===");
+
+            //get quest
+            Quest quest = questRepository.findById(request.getId())
+                    .orElseThrow(() -> new jakarta.persistence.EntityNotFoundException
+                            ("Quest with id: " + request.getId() + " not found"));
+
+            // and send it converted
+            responseObserver.onNext(convertToProto(quest));
+            responseObserver.onCompleted();
+
+        } catch (Exception e) {
+            responseObserver.onError(io.grpc.Status.INTERNAL
+                    .withDescription("Failed to get quest")
+                    .withCause(e)
+                    .asRuntimeException());
+        }
     }
+
+
 
     @Override
     public void getAllQuests(Empty request, StreamObserver<QuestList> responseObserver) {
-        QuestList list = QuestList.newBuilder()
-                .addQuests(QuestEntity.newBuilder()
-                        .setId(1)
-                        .setTitle("Sample")
-                        .setDescription("Sample description")
-                        .setStatus(0)
-                        .build())
-                .build();
-        responseObserver.onNext(list);
-        responseObserver.onCompleted();
+        try {
+            // create a QuestLIst and than go through all quests and add them to the list
+            QuestList.Builder builder = QuestList.newBuilder();
+            questRepository.findAll().forEach(q -> builder.addQuests(convertToProto(q)));
+
+            //Send the list
+            responseObserver.onNext(builder.build());
+            responseObserver.onCompleted();
+
+
+        } catch (Exception e) {
+            responseObserver.onError(io.grpc.Status.INTERNAL
+                    .withDescription("Failed to fetch quests")
+                    .withCause(e)
+                    .asRuntimeException());
+        }
     }
 
+    @Transactional
     @Override
     public void updateQuest(UpdateQuestRequest request, StreamObserver<QuestEntity> responseObserver) {
-        QuestEntity updated = request.getQuest().toBuilder()
-                .setTitle(request.getQuest().getTitle() + " (updated)")
-                .build();
-        responseObserver.onNext(updated);
-        responseObserver.onCompleted();
+        try {
+
+            //find the quest that we want to update
+            Quest quest = questRepository.findById(request.getQuest().getId())
+                    .orElseThrow(() -> new jakarta.persistence.EntityNotFoundException(
+                            "Quest " + request.getQuest().getId() + " not found"));
+
+            //change the variables which we want to change
+            QuestEntity incoming = request.getQuest();
+            if (!incoming.getTitle().isEmpty()) quest.setTitle(incoming.getTitle());
+            if (!incoming.getDescription().isEmpty()) quest.setDescription(incoming.getDescription());
+            if (!incoming.getStatus().isEmpty()) quest.setStatus(incoming.getStatus());
+
+            // and save it back to db
+            Quest saved = questRepository.save(quest);
+
+            //send respond
+            responseObserver.onNext(convertToProto(saved));
+            responseObserver.onCompleted();
+
+
+        } catch (Exception e) {
+            responseObserver.onError(io.grpc.Status.INTERNAL
+                    .withDescription("Failed to update quest")
+                    .withCause(e)
+                    .asRuntimeException());
+        }
     }
 
+    @Transactional
     @Override
     public void deleteQuest(IdRequest request, StreamObserver<Empty> responseObserver) {
-        responseObserver.onNext(Empty.getDefaultInstance());
-        responseObserver.onCompleted();
+        try {
+            // check if quest exesits
+            if (!questRepository.existsById(request.getId())) {
+                responseObserver.onError(io.grpc.Status.NOT_FOUND
+                        .withDescription("Quest " + request.getId() + " not found")
+                        .asRuntimeException());
+                return;
+            }
+
+            //if it exists delete it
+            questRepository.deleteById(request.getId());
+
+            //send respond of success
+            responseObserver.onNext(Empty.newBuilder().build());
+            responseObserver.onCompleted();
+        } catch (Exception e) {
+            responseObserver.onError(io.grpc.Status.INTERNAL
+                    .withDescription("Failed to delete quest")
+                    .withCause(e)
+                    .asRuntimeException());
+        }
+    }
+
+
+    // util class for converting quest to QuestEntity
+    private QuestEntity convertToProto(Quest quest) {
+        QuestEntity.Builder builder = QuestEntity.newBuilder()
+                .setId(quest.getId())
+                .setTitle(quest.getTitle())
+                .setDescription(quest.getDescription())
+                .setStatus(quest.getStatus())
+                .setCreatedAt(quest.getCreatedAt().toString());
+
+        if (quest.getStartDate() != null) builder.setStartDate(quest.getStartDate().toString());
+        if (quest.getEndDate() != null) builder.setEndDate(quest.getEndDate().toString());
+
+
+        return builder.build();
+
+
     }
 }
