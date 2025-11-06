@@ -18,7 +18,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Protobuf Include="C:\Users\wilbe\RiderProjects\SEP3\proto\kanban.proto" GrpcServices="Client" />
+        <Protobuf Include="../../../proto/*.proto" GrpcServices="Client" />
     </ItemGroup>
+
 
 </Project>
