@@ -3,10 +3,7 @@ package com.db.sep3.gRPC;
 import com.db.sep3.DAO.UserRepository;
 import com.db.sep3.entities.User;
 import com.google.protobuf.Empty;
-import com.sep3.data.grpc.DataServiceGrpc;
-import com.sep3.data.grpc.IdRequest;
-import com.sep3.data.grpc.UserEntity;
-import com.sep3.data.grpc.UserList;
+import com.sep3.data.grpc.*;
 import io.grpc.stub.StreamObserver;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -19,7 +16,7 @@ public class UserServiceImpl extends DataServiceGrpc.DataServiceImplBase {
     private UserRepository userRepository;
 
     @Override
-    public void createUSer(CreateUserREquest request, StreamObserver<UserEntity> responseObserver)
+    public void createUSer(CreateUserRequest request, StreamObserver<UserEntity> responseObserver)
     {
         try{
             System.out.println("=== Creating User ===");
@@ -87,7 +84,7 @@ public class UserServiceImpl extends DataServiceGrpc.DataServiceImplBase {
     }
 
     @Override
-    public void getUsersByEmail(EmailRequest request, StreamObserver<UserEntity> responseObserver)
+    public void getUsersByEmail(ReadEmai request, StreamObserver<UserEntity> responseObserver)
     {
         try {
             System.out.println("=== Getting Users by Email: " + request.getEmail() + " ===");

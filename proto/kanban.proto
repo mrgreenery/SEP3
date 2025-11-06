@@ -52,6 +52,10 @@ message CreateUserRequest{
   UserEntity user = 1;
 }
 
+message ReadEmailRequest {
+  UserEntity user = 1;
+}
+
 message ReadUserRequest{
   UserEntity user = 1;
 }
