@@ -5,16 +5,15 @@ using Google.Protobuf.WellKnownTypes;
 
 namespace WebAPI.Services;
 
-public class QuestService : IQuestService
+public class QuestServiceImpl : IQuestService
 {
 
-    // Alex : Update this with another implementation (instead of DataService to be QuestService and then update the Service name)
-    private readonly DataService.DataServiceClient _grpcClient;
+    private readonly QuestService.QuestServiceClient _grpcClient;
 
-    public QuestService()
+    public QuestServiceImpl()
     {
         var channel = GrpcChannel.ForAddress("http://localhost:9090");
-        _grpcClient = new DataService.DataServiceClient(channel);
+        _grpcClient = new QuestService.QuestServiceClient(channel);
     }
 
   public async Task<CreateQuestResponse> CreateQuestAsync(WebAPI.ApiContracts.CreateQuestRequest request)
@@ -26,7 +25,7 @@ public class QuestService : IQuestService
         {
             Title = request.Title,
             Description = request.Description,
-            Status = 0
+            Status = "0"
         };
 
         // Create gRPC request
