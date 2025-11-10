@@ -7,6 +7,8 @@ namespace WebAPI.Services;
 
 public class QuestService : IQuestService
 {
+
+    // Alex : Update this with another implementation (instead of DataService to be QuestService and then update the Service name)
     private readonly DataService.DataServiceClient _grpcClient;
 
     public QuestService()
