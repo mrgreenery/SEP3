@@ -8,12 +8,22 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi(); 
 
 // Configure gRPC client
-builder.Services.AddGrpcClient<DataService.DataServiceClient>(options =>
+
+AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
+
+builder.Services.AddGrpcClient<UserService.UserServiceClient>(options =>
 {
     options.Address = new Uri("http://localhost:9090");
 });
 
-builder.Services.AddScoped<IQuestService, QuestService>();
+builder.Services.AddGrpcClient<QuestService.QuestServiceClient>(options =>
+{
+    options.Address = new Uri("http://localhost:9090");
+
+});
+
+builder.Services.AddScoped<IQuestService, QuestServiceImpl>();
+builder.Services.AddScoped<IUserService, UserServiceImpl>();
 
 var app = builder.Build();
 

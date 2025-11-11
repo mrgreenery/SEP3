@@ -42,14 +42,22 @@ public class UsersController : ControllerBase
     [HttpGet("{id:long}")]
     public ActionResult<CreateUserResponse> GetUser(long id)
     {
-        var response = new CreateUserResponse
+        try
         {
-            Id = id,
-            Email = "dummy@example.com",
-            DisplayName = "Dummy User",
-            Password = "password123"
-        };
+            var response = new CreateUserResponse
+            {
+                Id = id,
+                Email = "dummy@example.com",
+                DisplayName = "Dummy User",
+                Password = "password123"
+            };
 
-        return Ok(response);
+            return Ok(response);
+        }
+        catch (Exception e)
+        {
+            return StatusCode(500, e.Message);
+        }
+      
     }
 }
