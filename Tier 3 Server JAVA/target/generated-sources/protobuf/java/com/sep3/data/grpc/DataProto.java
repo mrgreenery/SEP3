@@ -86,41 +86,41 @@ public final class DataProto {
     java.lang.String[] descriptorData = {
       "\n\014kanban.proto\022\004data\032\033google/protobuf/em" +
       "pty.proto\032\037google/protobuf/timestamp.pro" +
-      "to\"N\n\nUserEntity\022\n\n\002id\030\001 \001(\003\022\r\n\005email\030\002 " +
-      "\001(\t\022\020\n\010password\030\003 \001(\t\022\023\n\013displayName\030\004 \001" +
-      "(\t\"\207\001\n\013QuestEntity\022\n\n\002id\030\001 \001(\003\022\r\n\005title\030" +
-      "\002 \001(\t\022\023\n\013description\030\003 \001(\t\022\016\n\006status\030\004 \001" +
-      "(\t\022\022\n\ncreated_at\030\005 \001(\t\022\022\n\nstart_date\030\006 \001" +
-      "(\t\022\020\n\010end_date\030\007 \001(\t\"\027\n\tIdRequest\022\n\n\002id\030" +
-      "\001 \001(\003\"6\n\022CreateQuestRequest\022 \n\005quest\030\001 \001" +
-      "(\0132\021.data.QuestEntity\"6\n\022UpdateQuestRequ" +
-      "est\022 \n\005quest\030\001 \001(\0132\021.data.QuestEntity\".\n" +
-      "\tQuestList\022!\n\006quests\030\001 \003(\0132\021.data.QuestE" +
-      "ntity\"1\n\017ReadUserRequest\022\036\n\004user\030\001 \001(\0132\020" +
-      ".data.UserEntity\"3\n\021UpdateUserRequest\022\036\n" +
-      "\004user\030\001 \001(\0132\020.data.UserEntity\"\037\n\021DeleteU" +
-      "serRequest\022\n\n\002id\030\001 \001(\003\"+\n\010UserList\022\037\n\005us" +
-      "ers\030\001 \003(\0132\020.data.UserEntity\"3\n\021CreateUse" +
+      "to\"Z\n\nUserEntity\022\017\n\002id\030\001 \001(\003H\000\210\001\001\022\r\n\005ema" +
+      "il\030\002 \001(\t\022\020\n\010password\030\003 \001(\t\022\023\n\013displayNam" +
+      "e\030\004 \001(\tB\005\n\003_id\"\223\001\n\013QuestEntity\022\017\n\002id\030\001 \001" +
+      "(\003H\000\210\001\001\022\r\n\005title\030\002 \001(\t\022\023\n\013description\030\003 " +
+      "\001(\t\022\016\n\006status\030\004 \001(\t\022\022\n\ncreated_at\030\005 \001(\t\022" +
+      "\022\n\nstart_date\030\006 \001(\t\022\020\n\010end_date\030\007 \001(\tB\005\n" +
+      "\003_id\"\027\n\tIdRequest\022\n\n\002id\030\001 \001(\003\"6\n\022CreateQ" +
+      "uestRequest\022 \n\005quest\030\001 \001(\0132\021.data.QuestE" +
+      "ntity\"6\n\022UpdateQuestRequest\022 \n\005quest\030\001 \001" +
+      "(\0132\021.data.QuestEntity\".\n\tQuestList\022!\n\006qu" +
+      "ests\030\001 \003(\0132\021.data.QuestEntity\"1\n\017ReadUse" +
       "rRequest\022\036\n\004user\030\001 \001(\0132\020.data.UserEntity" +
-      "\"\035\n\014EmailRequest\022\r\n\005email\030\001 \001(\t2\337\002\n\013User" +
-      "Service\0227\n\nCreateUser\022\027.data.CreateUserR" +
-      "equest\032\020.data.UserEntity\0220\n\013GetUserById\022" +
-      "\017.data.IdRequest\032\020.data.UserEntity\0226\n\016Ge" +
-      "tUserByEmail\022\022.data.EmailRequest\032\020.data." +
-      "UserEntity\0225\n\013GetAllUsers\022\026.google.proto" +
-      "buf.Empty\032\016.data.UserList\0227\n\nUpdateUser\022" +
-      "\027.data.UpdateUserRequest\032\020.data.UserEnti" +
-      "ty\022=\n\nDeleteUser\022\027.data.DeleteUserReques" +
-      "t\032\026.google.protobuf.Empty2\254\002\n\014QuestServi" +
-      "ce\022:\n\013CreateQuest\022\030.data.CreateQuestRequ" +
-      "est\032\021.data.QuestEntity\0223\n\rGetQuestsById\022" +
-      "\017.data.IdRequest\032\021.data.QuestEntity\0227\n\014G" +
-      "etAllQuests\022\026.google.protobuf.Empty\032\017.da" +
-      "ta.QuestList\022:\n\013UpdateQuest\022\030.data.Updat" +
-      "eQuestRequest\032\021.data.QuestEntity\0226\n\013Dele" +
-      "teQuest\022\017.data.IdRequest\032\026.google.protob" +
-      "uf.EmptyB!\n\022com.sep3.data.grpcB\tDataProt" +
-      "oP\001b\006proto3"
+      "\"3\n\021UpdateUserRequest\022\036\n\004user\030\001 \001(\0132\020.da" +
+      "ta.UserEntity\"\037\n\021DeleteUserRequest\022\n\n\002id" +
+      "\030\001 \001(\003\"+\n\010UserList\022\037\n\005users\030\001 \003(\0132\020.data" +
+      ".UserEntity\"3\n\021CreateUserRequest\022\036\n\004user" +
+      "\030\001 \001(\0132\020.data.UserEntity\"\035\n\014EmailRequest" +
+      "\022\r\n\005email\030\001 \001(\t2\337\002\n\013UserService\0227\n\nCreat" +
+      "eUser\022\027.data.CreateUserRequest\032\020.data.Us" +
+      "erEntity\0220\n\013GetUserById\022\017.data.IdRequest" +
+      "\032\020.data.UserEntity\0226\n\016GetUserByEmail\022\022.d" +
+      "ata.EmailRequest\032\020.data.UserEntity\0225\n\013Ge" +
+      "tAllUsers\022\026.google.protobuf.Empty\032\016.data" +
+      ".UserList\0227\n\nUpdateUser\022\027.data.UpdateUse" +
+      "rRequest\032\020.data.UserEntity\022=\n\nDeleteUser" +
+      "\022\027.data.DeleteUserRequest\032\026.google.proto" +
+      "buf.Empty2\254\002\n\014QuestService\022:\n\013CreateQues" +
+      "t\022\030.data.CreateQuestRequest\032\021.data.Quest" +
+      "Entity\0223\n\rGetQuestsById\022\017.data.IdRequest" +
+      "\032\021.data.QuestEntity\0227\n\014GetAllQuests\022\026.go" +
+      "ogle.protobuf.Empty\032\017.data.QuestList\022:\n\013" +
+      "UpdateQuest\022\030.data.UpdateQuestRequest\032\021." +
+      "data.QuestEntity\0226\n\013DeleteQuest\022\017.data.I" +
+      "dRequest\032\026.google.protobuf.EmptyB!\n\022com." +
+      "sep3.data.grpcB\tDataProtoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

@@ -45,10 +45,19 @@ private static final long serialVersionUID = 0L;
             com.sep3.data.grpc.QuestEntity.class, com.sep3.data.grpc.QuestEntity.Builder.class);
   }
 
+  private int bitField0_;
   public static final int ID_FIELD_NUMBER = 1;
   private long id_ = 0L;
   /**
-   * <code>int64 id = 1;</code>
+   * <code>optional int64 id = 1;</code>
+   * @return Whether the id field is set.
+   */
+  @java.lang.Override
+  public boolean hasId() {
+    return ((bitField0_ & 0x00000001) != 0);
+  }
+  /**
+   * <code>optional int64 id = 1;</code>
    * @return The id.
    */
   @java.lang.Override
@@ -304,7 +313,7 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (id_ != 0L) {
+    if (((bitField0_ & 0x00000001) != 0)) {
       output.writeInt64(1, id_);
     }
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(title_)) {
@@ -334,7 +343,7 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (id_ != 0L) {
+    if (((bitField0_ & 0x00000001) != 0)) {
       size += com.google.protobuf.CodedOutputStream
         .computeInt64Size(1, id_);
     }
@@ -371,8 +380,11 @@ private static final long serialVersionUID = 0L;
     }
     com.sep3.data.grpc.QuestEntity other = (com.sep3.data.grpc.QuestEntity) obj;
 
-    if (getId()
-        != other.getId()) return false;
+    if (hasId() != other.hasId()) return false;
+    if (hasId()) {
+      if (getId()
+          != other.getId()) return false;
+    }
     if (!getTitle()
         .equals(other.getTitle())) return false;
     if (!getDescription()
@@ -396,9 +408,11 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    hash = (37 * hash) + ID_FIELD_NUMBER;
-    hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-        getId());
+    if (hasId()) {
+      hash = (37 * hash) + ID_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getId());
+    }
     hash = (37 * hash) + TITLE_FIELD_NUMBER;
     hash = (53 * hash) + getTitle().hashCode();
     hash = (37 * hash) + DESCRIPTION_FIELD_NUMBER;
@@ -582,8 +596,10 @@ private static final long serialVersionUID = 0L;
 
     private void buildPartial0(com.sep3.data.grpc.QuestEntity result) {
       int from_bitField0_ = bitField0_;
+      int to_bitField0_ = 0;
       if (((from_bitField0_ & 0x00000001) != 0)) {
         result.id_ = id_;
+        to_bitField0_ |= 0x00000001;
       }
       if (((from_bitField0_ & 0x00000002) != 0)) {
         result.title_ = title_;
@@ -603,6 +619,7 @@ private static final long serialVersionUID = 0L;
       if (((from_bitField0_ & 0x00000040) != 0)) {
         result.endDate_ = endDate_;
       }
+      result.bitField0_ |= to_bitField0_;
     }
 
     @java.lang.Override
@@ -649,7 +666,7 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(com.sep3.data.grpc.QuestEntity other) {
       if (other == com.sep3.data.grpc.QuestEntity.getDefaultInstance()) return this;
-      if (other.getId() != 0L) {
+      if (other.hasId()) {
         setId(other.getId());
       }
       if (!other.getTitle().isEmpty()) {
@@ -762,7 +779,15 @@ private static final long serialVersionUID = 0L;
 
     private long id_ ;
     /**
-     * <code>int64 id = 1;</code>
+     * <code>optional int64 id = 1;</code>
+     * @return Whether the id field is set.
+     */
+    @java.lang.Override
+    public boolean hasId() {
+      return ((bitField0_ & 0x00000001) != 0);
+    }
+    /**
+     * <code>optional int64 id = 1;</code>
      * @return The id.
      */
     @java.lang.Override
@@ -770,7 +795,7 @@ private static final long serialVersionUID = 0L;
       return id_;
     }
     /**
-     * <code>int64 id = 1;</code>
+     * <code>optional int64 id = 1;</code>
      * @param value The id to set.
      * @return This builder for chaining.
      */
@@ -782,7 +807,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>int64 id = 1;</code>
+     * <code>optional int64 id = 1;</code>
      * @return This builder for chaining.
      */
     public Builder clearId() {

@@ -9,7 +9,12 @@ public interface QuestEntityOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>int64 id = 1;</code>
+   * <code>optional int64 id = 1;</code>
+   * @return Whether the id field is set.
+   */
+  boolean hasId();
+  /**
+   * <code>optional int64 id = 1;</code>
    * @return The id.
    */
   long getId();
