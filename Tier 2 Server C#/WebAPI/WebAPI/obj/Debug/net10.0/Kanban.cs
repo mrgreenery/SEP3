@@ -25,43 +25,43 @@ namespace Data {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "CgxrYW5iYW4ucHJvdG8SBGRhdGEaG2dvb2dsZS9wcm90b2J1Zi9lbXB0eS5w",
-            "cm90bxofZ29vZ2xlL3Byb3RvYnVmL3RpbWVzdGFtcC5wcm90byJOCgpVc2Vy",
-            "RW50aXR5EgoKAmlkGAEgASgDEg0KBWVtYWlsGAIgASgJEhAKCHBhc3N3b3Jk",
-            "GAMgASgJEhMKC2Rpc3BsYXlOYW1lGAQgASgJIocBCgtRdWVzdEVudGl0eRIK",
-            "CgJpZBgBIAEoAxINCgV0aXRsZRgCIAEoCRITCgtkZXNjcmlwdGlvbhgDIAEo",
-            "CRIOCgZzdGF0dXMYBCABKAkSEgoKY3JlYXRlZF9hdBgFIAEoCRISCgpzdGFy",
-            "dF9kYXRlGAYgASgJEhAKCGVuZF9kYXRlGAcgASgJIhcKCUlkUmVxdWVzdBIK",
-            "CgJpZBgBIAEoAyI2ChJDcmVhdGVRdWVzdFJlcXVlc3QSIAoFcXVlc3QYASAB",
-            "KAsyES5kYXRhLlF1ZXN0RW50aXR5IjYKElVwZGF0ZVF1ZXN0UmVxdWVzdBIg",
-            "CgVxdWVzdBgBIAEoCzIRLmRhdGEuUXVlc3RFbnRpdHkiLgoJUXVlc3RMaXN0",
-            "EiEKBnF1ZXN0cxgBIAMoCzIRLmRhdGEuUXVlc3RFbnRpdHkiMQoPUmVhZFVz",
-            "ZXJSZXF1ZXN0Eh4KBHVzZXIYASABKAsyEC5kYXRhLlVzZXJFbnRpdHkiMwoR",
-            "VXBkYXRlVXNlclJlcXVlc3QSHgoEdXNlchgBIAEoCzIQLmRhdGEuVXNlckVu",
-            "dGl0eSIfChFEZWxldGVVc2VyUmVxdWVzdBIKCgJpZBgBIAEoAyIrCghVc2Vy",
-            "TGlzdBIfCgV1c2VycxgBIAMoCzIQLmRhdGEuVXNlckVudGl0eSIzChFDcmVh",
-            "dGVVc2VyUmVxdWVzdBIeCgR1c2VyGAEgASgLMhAuZGF0YS5Vc2VyRW50aXR5",
-            "Ih0KDEVtYWlsUmVxdWVzdBINCgVlbWFpbBgBIAEoCTLfAgoLVXNlclNlcnZp",
-            "Y2USNwoKQ3JlYXRlVXNlchIXLmRhdGEuQ3JlYXRlVXNlclJlcXVlc3QaEC5k",
-            "YXRhLlVzZXJFbnRpdHkSMAoLR2V0VXNlckJ5SWQSDy5kYXRhLklkUmVxdWVz",
-            "dBoQLmRhdGEuVXNlckVudGl0eRI2Cg5HZXRVc2VyQnlFbWFpbBISLmRhdGEu",
-            "RW1haWxSZXF1ZXN0GhAuZGF0YS5Vc2VyRW50aXR5EjUKC0dldEFsbFVzZXJz",
-            "EhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5Gg4uZGF0YS5Vc2VyTGlzdBI3CgpV",
-            "cGRhdGVVc2VyEhcuZGF0YS5VcGRhdGVVc2VyUmVxdWVzdBoQLmRhdGEuVXNl",
-            "ckVudGl0eRI9CgpEZWxldGVVc2VyEhcuZGF0YS5EZWxldGVVc2VyUmVxdWVz",
-            "dBoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eTKsAgoMUXVlc3RTZXJ2aWNlEjoK",
-            "C0NyZWF0ZVF1ZXN0EhguZGF0YS5DcmVhdGVRdWVzdFJlcXVlc3QaES5kYXRh",
-            "LlF1ZXN0RW50aXR5EjMKDUdldFF1ZXN0c0J5SWQSDy5kYXRhLklkUmVxdWVz",
-            "dBoRLmRhdGEuUXVlc3RFbnRpdHkSNwoMR2V0QWxsUXVlc3RzEhYuZ29vZ2xl",
-            "LnByb3RvYnVmLkVtcHR5Gg8uZGF0YS5RdWVzdExpc3QSOgoLVXBkYXRlUXVl",
-            "c3QSGC5kYXRhLlVwZGF0ZVF1ZXN0UmVxdWVzdBoRLmRhdGEuUXVlc3RFbnRp",
-            "dHkSNgoLRGVsZXRlUXVlc3QSDy5kYXRhLklkUmVxdWVzdBoWLmdvb2dsZS5w",
-            "cm90b2J1Zi5FbXB0eUIhChJjb20uc2VwMy5kYXRhLmdycGNCCURhdGFQcm90",
-            "b1ABYgZwcm90bzM="));
+            "cm90bxofZ29vZ2xlL3Byb3RvYnVmL3RpbWVzdGFtcC5wcm90byJaCgpVc2Vy",
+            "RW50aXR5Eg8KAmlkGAEgASgDSACIAQESDQoFZW1haWwYAiABKAkSEAoIcGFz",
+            "c3dvcmQYAyABKAkSEwoLZGlzcGxheU5hbWUYBCABKAlCBQoDX2lkIpMBCgtR",
+            "dWVzdEVudGl0eRIPCgJpZBgBIAEoA0gAiAEBEg0KBXRpdGxlGAIgASgJEhMK",
+            "C2Rlc2NyaXB0aW9uGAMgASgJEg4KBnN0YXR1cxgEIAEoCRISCgpjcmVhdGVk",
+            "X2F0GAUgASgJEhIKCnN0YXJ0X2RhdGUYBiABKAkSEAoIZW5kX2RhdGUYByAB",
+            "KAlCBQoDX2lkIhcKCUlkUmVxdWVzdBIKCgJpZBgBIAEoAyI2ChJDcmVhdGVR",
+            "dWVzdFJlcXVlc3QSIAoFcXVlc3QYASABKAsyES5kYXRhLlF1ZXN0RW50aXR5",
+            "IjYKElVwZGF0ZVF1ZXN0UmVxdWVzdBIgCgVxdWVzdBgBIAEoCzIRLmRhdGEu",
+            "UXVlc3RFbnRpdHkiLgoJUXVlc3RMaXN0EiEKBnF1ZXN0cxgBIAMoCzIRLmRh",
+            "dGEuUXVlc3RFbnRpdHkiMQoPUmVhZFVzZXJSZXF1ZXN0Eh4KBHVzZXIYASAB",
+            "KAsyEC5kYXRhLlVzZXJFbnRpdHkiMwoRVXBkYXRlVXNlclJlcXVlc3QSHgoE",
+            "dXNlchgBIAEoCzIQLmRhdGEuVXNlckVudGl0eSIfChFEZWxldGVVc2VyUmVx",
+            "dWVzdBIKCgJpZBgBIAEoAyIrCghVc2VyTGlzdBIfCgV1c2VycxgBIAMoCzIQ",
+            "LmRhdGEuVXNlckVudGl0eSIzChFDcmVhdGVVc2VyUmVxdWVzdBIeCgR1c2Vy",
+            "GAEgASgLMhAuZGF0YS5Vc2VyRW50aXR5Ih0KDEVtYWlsUmVxdWVzdBINCgVl",
+            "bWFpbBgBIAEoCTLfAgoLVXNlclNlcnZpY2USNwoKQ3JlYXRlVXNlchIXLmRh",
+            "dGEuQ3JlYXRlVXNlclJlcXVlc3QaEC5kYXRhLlVzZXJFbnRpdHkSMAoLR2V0",
+            "VXNlckJ5SWQSDy5kYXRhLklkUmVxdWVzdBoQLmRhdGEuVXNlckVudGl0eRI2",
+            "Cg5HZXRVc2VyQnlFbWFpbBISLmRhdGEuRW1haWxSZXF1ZXN0GhAuZGF0YS5V",
+            "c2VyRW50aXR5EjUKC0dldEFsbFVzZXJzEhYuZ29vZ2xlLnByb3RvYnVmLkVt",
+            "cHR5Gg4uZGF0YS5Vc2VyTGlzdBI3CgpVcGRhdGVVc2VyEhcuZGF0YS5VcGRh",
+            "dGVVc2VyUmVxdWVzdBoQLmRhdGEuVXNlckVudGl0eRI9CgpEZWxldGVVc2Vy",
+            "EhcuZGF0YS5EZWxldGVVc2VyUmVxdWVzdBoWLmdvb2dsZS5wcm90b2J1Zi5F",
+            "bXB0eTKsAgoMUXVlc3RTZXJ2aWNlEjoKC0NyZWF0ZVF1ZXN0EhguZGF0YS5D",
+            "cmVhdGVRdWVzdFJlcXVlc3QaES5kYXRhLlF1ZXN0RW50aXR5EjMKDUdldFF1",
+            "ZXN0c0J5SWQSDy5kYXRhLklkUmVxdWVzdBoRLmRhdGEuUXVlc3RFbnRpdHkS",
+            "NwoMR2V0QWxsUXVlc3RzEhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5Gg8uZGF0",
+            "YS5RdWVzdExpc3QSOgoLVXBkYXRlUXVlc3QSGC5kYXRhLlVwZGF0ZVF1ZXN0",
+            "UmVxdWVzdBoRLmRhdGEuUXVlc3RFbnRpdHkSNgoLRGVsZXRlUXVlc3QSDy5k",
+            "YXRhLklkUmVxdWVzdBoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eUIhChJjb20u",
+            "c2VwMy5kYXRhLmdycGNCCURhdGFQcm90b1ABYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.EmptyReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Data.UserEntity), global::Data.UserEntity.Parser, new[]{ "Id", "Email", "Password", "DisplayName" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Data.QuestEntity), global::Data.QuestEntity.Parser, new[]{ "Id", "Title", "Description", "Status", "CreatedAt", "StartDate", "EndDate" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Data.UserEntity), global::Data.UserEntity.Parser, new[]{ "Id", "Email", "Password", "DisplayName" }, new[]{ "Id" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Data.QuestEntity), global::Data.QuestEntity.Parser, new[]{ "Id", "Title", "Description", "Status", "CreatedAt", "StartDate", "EndDate" }, new[]{ "Id" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Data.IdRequest), global::Data.IdRequest.Parser, new[]{ "Id" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Data.CreateQuestRequest), global::Data.CreateQuestRequest.Parser, new[]{ "Quest" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Data.UpdateQuestRequest), global::Data.UpdateQuestRequest.Parser, new[]{ "Quest" }, null, null, null, null),
@@ -88,6 +88,7 @@ namespace Data {
   {
     private static readonly pb::MessageParser<UserEntity> _parser = new pb::MessageParser<UserEntity>(() => new UserEntity());
     private pb::UnknownFieldSet _unknownFields;
+    private int _hasBits0;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pb::MessageParser<UserEntity> Parser { get { return _parser; } }
@@ -115,6 +116,7 @@ namespace Data {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public UserEntity(UserEntity other) : this() {
+      _hasBits0 = other._hasBits0;
       id_ = other.id_;
       email_ = other.email_;
       password_ = other.password_;
@@ -130,14 +132,29 @@ namespace Data {
 
     /// <summary>Field number for the "id" field.</summary>
     public const int IdFieldNumber = 1;
+    private readonly static long IdDefaultValue = 0L;
+
     private long id_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public long Id {
-      get { return id_; }
+      get { if ((_hasBits0 & 1) != 0) { return id_; } else { return IdDefaultValue; } }
       set {
+        _hasBits0 |= 1;
         id_ = value;
       }
+    }
+    /// <summary>Gets whether the "id" field is set</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool HasId {
+      get { return (_hasBits0 & 1) != 0; }
+    }
+    /// <summary>Clears the value of the "id" field</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void ClearId() {
+      _hasBits0 &= ~1;
     }
 
     /// <summary>Field number for the "email" field.</summary>
@@ -202,7 +219,7 @@ namespace Data {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override int GetHashCode() {
       int hash = 1;
-      if (Id != 0L) hash ^= Id.GetHashCode();
+      if (HasId) hash ^= Id.GetHashCode();
       if (Email.Length != 0) hash ^= Email.GetHashCode();
       if (Password.Length != 0) hash ^= Password.GetHashCode();
       if (DisplayName.Length != 0) hash ^= DisplayName.GetHashCode();
@@ -224,7 +241,7 @@ namespace Data {
     #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       output.WriteRawMessage(this);
     #else
-      if (Id != 0L) {
+      if (HasId) {
         output.WriteRawTag(8);
         output.WriteInt64(Id);
       }
@@ -250,7 +267,7 @@ namespace Data {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
-      if (Id != 0L) {
+      if (HasId) {
         output.WriteRawTag(8);
         output.WriteInt64(Id);
       }
@@ -276,7 +293,7 @@ namespace Data {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public int CalculateSize() {
       int size = 0;
-      if (Id != 0L) {
+      if (HasId) {
         size += 1 + pb::CodedOutputStream.ComputeInt64Size(Id);
       }
       if (Email.Length != 0) {
@@ -300,7 +317,7 @@ namespace Data {
       if (other == null) {
         return;
       }
-      if (other.Id != 0L) {
+      if (other.HasId) {
         Id = other.Id;
       }
       if (other.Email.Length != 0) {
@@ -388,6 +405,7 @@ namespace Data {
   {
     private static readonly pb::MessageParser<QuestEntity> _parser = new pb::MessageParser<QuestEntity>(() => new QuestEntity());
     private pb::UnknownFieldSet _unknownFields;
+    private int _hasBits0;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pb::MessageParser<QuestEntity> Parser { get { return _parser; } }
@@ -415,6 +433,7 @@ namespace Data {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public QuestEntity(QuestEntity other) : this() {
+      _hasBits0 = other._hasBits0;
       id_ = other.id_;
       title_ = other.title_;
       description_ = other.description_;
@@ -433,14 +452,29 @@ namespace Data {
 
     /// <summary>Field number for the "id" field.</summary>
     public const int IdFieldNumber = 1;
+    private readonly static long IdDefaultValue = 0L;
+
     private long id_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public long Id {
-      get { return id_; }
+      get { if ((_hasBits0 & 1) != 0) { return id_; } else { return IdDefaultValue; } }
       set {
+        _hasBits0 |= 1;
         id_ = value;
       }
+    }
+    /// <summary>Gets whether the "id" field is set</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool HasId {
+      get { return (_hasBits0 & 1) != 0; }
+    }
+    /// <summary>Clears the value of the "id" field</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void ClearId() {
+      _hasBits0 &= ~1;
     }
 
     /// <summary>Field number for the "title" field.</summary>
@@ -544,7 +578,7 @@ namespace Data {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override int GetHashCode() {
       int hash = 1;
-      if (Id != 0L) hash ^= Id.GetHashCode();
+      if (HasId) hash ^= Id.GetHashCode();
       if (Title.Length != 0) hash ^= Title.GetHashCode();
       if (Description.Length != 0) hash ^= Description.GetHashCode();
       if (Status.Length != 0) hash ^= Status.GetHashCode();
@@ -569,7 +603,7 @@ namespace Data {
     #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       output.WriteRawMessage(this);
     #else
-      if (Id != 0L) {
+      if (HasId) {
         output.WriteRawTag(8);
         output.WriteInt64(Id);
       }
@@ -607,7 +641,7 @@ namespace Data {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
-      if (Id != 0L) {
+      if (HasId) {
         output.WriteRawTag(8);
         output.WriteInt64(Id);
       }
@@ -645,7 +679,7 @@ namespace Data {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public int CalculateSize() {
       int size = 0;
-      if (Id != 0L) {
+      if (HasId) {
         size += 1 + pb::CodedOutputStream.ComputeInt64Size(Id);
       }
       if (Title.Length != 0) {
@@ -678,7 +712,7 @@ namespace Data {
       if (other == null) {
         return;
       }
-      if (other.Id != 0L) {
+      if (other.HasId) {
         Id = other.Id;
       }
       if (other.Title.Length != 0) {
