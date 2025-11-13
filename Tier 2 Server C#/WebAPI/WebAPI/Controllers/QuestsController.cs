@@ -1,5 +1,6 @@
 using WebAPI.Services;
 using Microsoft.AspNetCore.Mvc;
+using WebAPI.ApiContracts;
 
 namespace WebAPI.Controllers;
 
@@ -17,7 +18,7 @@ public class QuestsController : ControllerBase
     }
     
     [HttpPost]
-    public async Task<ActionResult<CreateQuestRequest>> CreateQuest([FromBody] CreateQuestRequest request)
+    public async Task<ActionResult<CreateQuestResponse>> CreateQuest([FromBody] CreateQuestRequest request)
     {
         try
         {

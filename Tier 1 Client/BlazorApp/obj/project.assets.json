@@ -11,6 +11,16 @@
         "buildMultiTargeting": {
           "buildMultiTargeting/Microsoft.AspNetCore.App.Internal.Assets.targets": {}
         }
+      },
+      "ApiContracts/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v10.0",
+        "compile": {
+          "bin/placeholder/ApiContracts.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/ApiContracts.dll": {}
+        }
       }
     }
   },
@@ -37,10 +47,16 @@
         "microsoft.aspnetcore.app.internal.assets.10.0.0.nupkg.sha512",
         "microsoft.aspnetcore.app.internal.assets.nuspec"
       ]
+    },
+    "ApiContracts/1.0.0": {
+      "type": "project",
+      "path": "../../shared/ApiContracts/ApiContracts.csproj",
+      "msbuildProject": "../../shared/ApiContracts/ApiContracts.csproj"
     }
   },
   "projectFileDependencyGroups": {
     "net10.0": [
+      "ApiContracts >= 1.0.0",
       "Microsoft.AspNetCore.App.Internal.Assets >= 10.0.0"
     ]
   },
@@ -68,7 +84,11 @@
       "frameworks": {
         "net10.0": {
           "targetAlias": "net10.0",
-          "projectReferences": {}
+          "projectReferences": {
+            "C:\\Users\\agafu\\RiderProjects\\SEP3\\shared\\ApiContracts\\ApiContracts.csproj": {
+              "projectPath": "C:\\Users\\agafu\\RiderProjects\\SEP3\\shared\\ApiContracts\\ApiContracts.csproj"
+            }
+          }
         }
       },
       "warningProperties": {
