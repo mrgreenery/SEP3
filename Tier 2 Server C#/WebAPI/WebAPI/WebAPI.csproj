@@ -18,7 +18,12 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Protobuf Include="C:\Users\wilbe\RiderProjects\SEP3\proto\kanban.proto" GrpcServices="Client" />
+        <Protobuf Include="../../../proto/*.proto" GrpcServices="Client" />
     </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\shared\ApiContracts\ApiContracts.csproj" />
+    </ItemGroup>
+
 
 </Project>

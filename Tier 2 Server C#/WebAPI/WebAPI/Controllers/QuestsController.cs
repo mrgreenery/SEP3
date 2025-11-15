@@ -1,6 +1,6 @@
-using WebAPI.ApiContracts;
 using WebAPI.Services;
 using Microsoft.AspNetCore.Mvc;
+using WebAPI.ApiContracts;
 
 namespace WebAPI.Controllers;
 

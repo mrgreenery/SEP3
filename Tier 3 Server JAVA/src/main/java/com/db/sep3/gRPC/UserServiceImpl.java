@@ -5,18 +5,19 @@ import com.db.sep3.entities.User;
 import com.google.protobuf.Empty;
 import com.sep3.data.grpc.*;
 import io.grpc.stub.StreamObserver;
+import net.devh.boot.grpc.server.service.GrpcService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
-
-public class UserServiceImpl extends DataServiceGrpc.DataServiceImplBase {
+@GrpcService
+public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase {
 
 
     @Autowired
     private UserRepository userRepository;
 
     @Override
-    public void createUSer(CreateUserRequest request, StreamObserver<UserEntity> responseObserver)
+    public void createUser(CreateUserRequest request, StreamObserver<UserEntity> responseObserver)
     {
         try{
             System.out.println("=== Creating User ===");
@@ -55,7 +56,7 @@ public class UserServiceImpl extends DataServiceGrpc.DataServiceImplBase {
     }
 
     @Override
-    public void getUsersById(IdRequest request, StreamObserver<UserEntity> responseObserver)
+    public void getUserById(IdRequest request, StreamObserver<UserEntity> responseObserver)
     {
         try {
             System.out.println("=== Getting Users by ID: " + request.getId() + " ===");
@@ -84,7 +85,7 @@ public class UserServiceImpl extends DataServiceGrpc.DataServiceImplBase {
     }
 
     @Override
-    public void getUsersByEmail(ReadEmai request, StreamObserver<UserEntity> responseObserver)
+    public void getUserByEmail(EmailRequest request, StreamObserver<UserEntity> responseObserver)
     {
         try {
             System.out.println("=== Getting Users by Email: " + request.getEmail() + " ===");
@@ -149,8 +150,8 @@ public class UserServiceImpl extends DataServiceGrpc.DataServiceImplBase {
         try {
 
             //get user from request id
-            User user = userRepository.findById(request.getId())
-                    .orElseThrow(() -> new jakarta.persistence.EntityNotFoundException("User " + request.getId() + " not found"));
+            User user = userRepository.findById(request.getUser().getId())
+                    .orElseThrow(() -> new jakarta.persistence.EntityNotFoundException("User " + request.getUser().getId() + " not found"));
 
 
             //check and update email and displayName
@@ -174,7 +175,7 @@ public class UserServiceImpl extends DataServiceGrpc.DataServiceImplBase {
 
 
     @Override
-    public void deleteUser(UserIdRequest request, StreamObserver<Empty> responseObserver) {
+    public void deleteUser(DeleteUserRequest request, StreamObserver<Empty> responseObserver) {
         try {
             System.out.println("=== Deleting User ===");
 

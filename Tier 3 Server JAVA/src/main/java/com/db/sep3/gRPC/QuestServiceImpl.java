@@ -13,7 +13,7 @@ import com.db.sep3.entities.Quest;
 import org.springframework.transaction.annotation.Transactional;
 
 @GrpcService
-public class QuestServiceImpl extends DataServiceGrpc.DataServiceImplBase {
+public class QuestServiceImpl extends QuestServiceGrpc.QuestServiceImplBase {
     @Autowired
     private QuestRepository questRepository;
 
