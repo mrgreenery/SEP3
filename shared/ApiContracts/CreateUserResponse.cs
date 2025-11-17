@@ -1,8 +1,8 @@
 using System;
 
-namespace WebAPI.ApiContracts;
+namespace ApiContracts;
 
-public class CreateUserResponse
+public record CreateUserResponse
 {
     public required long Id { get; set; }
     public required string Email { get; set; }

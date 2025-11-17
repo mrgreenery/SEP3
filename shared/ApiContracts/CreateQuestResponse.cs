@@ -1,5 +1,5 @@
-namespace WebAPI.ApiContracts;
-public class CreateQuestResponse
+namespace ApiContracts;
+public record CreateQuestResponse
 {
     public int Id { get; set; }
     public required string Title { get; set; }
