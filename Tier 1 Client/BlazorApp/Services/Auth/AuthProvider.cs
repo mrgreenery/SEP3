@@ -31,8 +31,42 @@ public class AuthProvider (HttpClient client) : AuthenticationStateProvider
             throw new Exception(content);
         }
 
-        AuthorisedUserResponse authUser =
-            JsonSerializer.Deserialize<AuthorisedUserResponse>(content,
+        await AddClaims(content);
+    }
+
+    public async Task Register(string displayName, string email,
+        string password)
+    {
+        HttpResponseMessage response = await client.PostAsJsonAsync(
+            "auth/register", new RegisterRequest()
+            {
+                DisplayName = displayName,
+                Email = email,
+                Password = password
+            });
+
+        string content = await response.Content.ReadAsStringAsync();
+
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception(content);
+        }
+
+        await AddClaims(content);
+    }
+
+    public void Logout()
+    {
+        currentClaimsPrincipal = new(); 
+        NotifyAuthenticationStateChanged(Task.FromResult(
+            new AuthenticationState(currentClaimsPrincipal))
+        );
+    }
+
+    private async Task AddClaims(string response)
+    {
+        UserDto authUser =
+            JsonSerializer.Deserialize<UserDto>(response,
                 new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
@@ -49,20 +83,6 @@ public class AuthProvider (HttpClient client) : AuthenticationStateProvider
         currentClaimsPrincipal = new ClaimsPrincipal(identity);
         NotifyAuthenticationStateChanged(
             Task.FromResult(new AuthenticationState(currentClaimsPrincipal))
-            );
-    }
-
-    public async Task Register(string displayName, string email,
-        string password)
-    {
-        // TODO: register
-    }
-
-    public void Logout()
-    {
-        currentClaimsPrincipal = new(); 
-        NotifyAuthenticationStateChanged(Task.FromResult(
-            new AuthenticationState(currentClaimsPrincipal))
         );
     }
 
