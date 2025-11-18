@@ -1,3 +1,4 @@
+using ApiContracts;
 using WebAPI.ApiContracts;
 
 namespace WebAPI.Services;
@@ -5,6 +6,12 @@ namespace WebAPI.Services;
 
 public interface IUserService
 {
-    Task<CreateUserResponse> CreateUserAsync(ApiContracts.CreateUserRequest request);
+    Task<UserDto> CreateUserAsync(string displayName, string email, string password);
+
+    Task<UserDto> GetUserByEmailAsync(string email);
+
+    Task<List<UserDto>> GetAllUsersAsync();
+
+    Task<UserDto> CheckUserCredentialsAsync(string email, string password);
 
 }
