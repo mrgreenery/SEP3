@@ -114,21 +114,27 @@ public class UserServiceImpl : IUserService
 
     public async Task<List<UserDto>> GetAllUsersAsync()
     {
-        var grpcResponse = await _grpcClient.GetAllUsersAsync(new Empty());
-        if (grpcResponse is null)
-            throw new InvalidDataException("No users found.");
 
-        List<UserDto> userDtoList = new();
-        foreach (UserEntity user in grpcResponse.Users)
+        try
         {
-            userDtoList.Add(new UserDto
+            var grpcResponse = await _grpcClient.GetAllUsersAsync(new Empty());
+            if (grpcResponse is null)
+                throw new InvalidDataException("No users found.");
+            List<UserDto> userDtoList = new();
+            foreach (UserEntity user in grpcResponse.Users)
             {
-                Email = user.Email,
-                DisplayName = user.DisplayName
-            });
-        }
+                userDtoList.Add(new UserDto
+                {
+                    Email = user.Email,
+                    DisplayName = user.DisplayName
+                });
+            }
 
-        return userDtoList;
+            return userDtoList;
+        } catch (RpcException ex) when (ex.StatusCode == StatusCode.Internal)
+        {
+            throw new Exception("Error fetching users");
+        } 
     }
 
     public async Task<UserDto> CheckUserCredentialsAsync(string email, string password)
