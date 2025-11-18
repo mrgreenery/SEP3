@@ -3,6 +3,7 @@ using ApiContracts;
 using WebAPI.ApiContracts;
 using Data;
 using Google.Protobuf.WellKnownTypes;
+using Grpc.Core;
 using Grpc.Net.Client;
 using WebAPI.Services.Exceptions.User;
 
@@ -19,52 +20,95 @@ public class UserServiceImpl : IUserService
         _grpcClient = new UserService.UserServiceClient(channel);
     }
 
-    public async Task<UserDto> CreateUserAsync(string displayName, string email, string password)
+    public async Task<UserDto> CreateUserAsync(string displayName, string email,
+        string password)
     {
-        if (displayName.IsWhiteSpace() || email.IsWhiteSpace() || password.IsWhiteSpace())
+        if (displayName.IsWhiteSpace() || email.IsWhiteSpace() ||
+            password.IsWhiteSpace())
             throw new ArgumentNullException();
 
-        var checkEmail = await _grpcClient.GetUserByEmailAsync(new EmailRequest{Email = email});
+
+        var checkEmail =
+            await _grpcClient.GetUserByEmailAsync(new EmailRequest
+                { Email = email });
         if (checkEmail is not null)
             throw new UserWithThisEmailAlreadyExists();
 
+        try
+        {
+            var checkEmailResponse =
+                await _grpcClient.GetUserByEmailAsync(new EmailRequest
+                    { Email = email });
+
+            if (!checkEmailResponse.Email.IsWhiteSpace())
+                throw new UserWithThisEmailAlreadyExists();
+        }
+        catch (RpcException ex) when (ex.StatusCode == StatusCode.NotFound)
+        {
+            // No user is found, so it is safe to proceed with user creation
+        }
+
+
         var userEntity = new UserEntity
         {
-            Email        = email,
-            Password     = password,
-            DisplayName  = displayName
+            Email = email,
+            Password = password,
+            DisplayName = displayName
         };
 
-        var grpcRequest = new CreateUserRequest
+        try
         {
-            User = userEntity
-        };
+            var grpcRequest = new CreateUserRequest
+            {
+                User = userEntity
+            };
 
-        var grpcResponse = await _grpcClient.CreateUserAsync(grpcRequest);
+            var grpcResponse =
+                await _grpcClient.CreateUserAsync(
+                    new CreateUserRequest { User = userEntity });
 
-        var userDto = new UserDto()
+            var userDto = new UserDto()
+            {
+                Email = grpcResponse.Email,
+                DisplayName = grpcResponse.DisplayName,
+            };
+
+            return userDto;
+        }catch (RpcException ex)
         {
-            Email       = grpcResponse.Email,
-            DisplayName = grpcResponse.DisplayName,
-        };
+            if (ex.StatusCode == StatusCode.AlreadyExists)
+                throw new UserWithThisEmailAlreadyExists();
 
-        return userDto;
+            throw new Exception($"gRPC CreateUser failed: {ex.StatusCode} - {ex.Status.Detail}", ex);
+        }
     }
 
     public async Task<UserDto> GetUserByEmailAsync(string email)
     {
-        var grpcResponse = await _grpcClient.GetUserByEmailAsync(new EmailRequest{Email = email});
-        if (grpcResponse.Email.IsWhiteSpace() ||
-            grpcResponse.DisplayName.IsWhiteSpace())
-            throw new UserWithThisEmailDoesNotExist();
-        
-        var userDto = new UserDto
+        try
         {
-            Email = grpcResponse.Email,
-            DisplayName = grpcResponse.DisplayName
-        };
+            var grpcResponse = await _grpcClient.GetUserByEmailAsync(new EmailRequest{Email = email});
+            if (grpcResponse.Email.IsWhiteSpace() ||
+                grpcResponse.DisplayName.IsWhiteSpace())
+                throw new UserWithThisEmailDoesNotExist();
+        
+            var userDto = new UserDto
+            {
+                Email = grpcResponse.Email,
+                DisplayName = grpcResponse.DisplayName
+            };
 
-        return userDto;
+            return userDto;
+        }
+        catch (RpcException ex) when (ex.StatusCode == StatusCode.NotFound)
+        {
+            throw new UserWithThisEmailDoesNotExist();
+        }
+        catch (RpcException ex)
+        {
+            throw new Exception($"gRPC call failed: {ex.StatusCode} - {ex.Status.Detail}", ex);
+        }
+
     }
 
 
@@ -89,20 +133,33 @@ public class UserServiceImpl : IUserService
 
     public async Task<UserDto> CheckUserCredentialsAsync(string email, string password)
     {
-        var grpcResponse = await _grpcClient.GetUserByEmailAsync(new EmailRequest{Email = email});
-        if (grpcResponse.Email.IsWhiteSpace() ||
-            grpcResponse.DisplayName.IsWhiteSpace())
-            throw new UserWithThisEmailDoesNotExist();
-
-        if (!grpcResponse.Password.Equals(password))
-            throw new WrongPasswordException();
-        
-        var userDto = new UserDto
+        try
         {
-            Email = grpcResponse.Email,
-            DisplayName = grpcResponse.DisplayName
-        };
+            var grpcResponse =
+                await _grpcClient.GetUserByEmailAsync(new EmailRequest
+                    { Email = email });
+            if (grpcResponse.Email.IsWhiteSpace() ||
+                grpcResponse.DisplayName.IsWhiteSpace())
+                throw new UserWithThisEmailDoesNotExist();
 
-        return userDto;
+            if (!grpcResponse.Password.Equals(password))
+                throw new WrongPasswordException();
+
+            var userDto = new UserDto
+            {
+                Email = grpcResponse.Email,
+                DisplayName = grpcResponse.DisplayName
+            };
+
+            return userDto;
+        }
+        catch (RpcException ex) when (ex.StatusCode == StatusCode.NotFound)
+        {
+            throw new UserWithThisEmailDoesNotExist();
+        }
+        catch (RpcException ex)
+        {
+            throw new Exception($"gRPC call failed: {ex.StatusCode} - {ex.Status.Detail}", ex);
+        }
     }
 }
