@@ -48,7 +48,15 @@ public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase {
             responseObserver.onCompleted();
 
             System.out.println("=== User Created Successfully ===");
-        }catch (Exception e) {
+        } catch (org.springframework.dao.DataIntegrityViolationException e) {
+            // unique constraint violated -> email already exists
+            responseObserver.onError(
+                    io.grpc.Status.ALREADY_EXISTS
+                            .withDescription("User with this email already exists")
+                            .withCause(e)
+                            .asRuntimeException()
+            );
+        } catch (Exception e) {
             System.out.println("Error creating user" + e.getMessage());
             e.printStackTrace();
             responseObserver.onError(e);
@@ -75,10 +83,20 @@ public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase {
             responseObserver.onCompleted();
 
             System.out.println("=== User Found Successfully ===");
+        } catch (jakarta.persistence.EntityNotFoundException e) {
+            responseObserver.onError(
+                    io.grpc.Status.NOT_FOUND
+                            .withDescription(e.getMessage())
+                            .withCause(e)
+                            .asRuntimeException()
+            );
         } catch (Exception e) {
-            System.out.println("Error getting user" + e.getMessage());
-            e.printStackTrace();
-            responseObserver.onError(e);
+            responseObserver.onError(
+                    io.grpc.Status.INTERNAL
+                            .withDescription("Failed to get user by id")
+                            .withCause(e)
+                            .asRuntimeException()
+            );
         }
 
 
@@ -93,7 +111,7 @@ public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase {
             //Get user
             User user = userRepository.findByEmail(request.getEmail())
                     .orElseThrow(() -> new jakarta.persistence.EntityNotFoundException
-                            ("User with id: " + request.getEmail() + " not found"));
+                            ("User with email: " + request.getEmail() + " not found"));
 
 
             //conver to proto
@@ -104,10 +122,22 @@ public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase {
             responseObserver.onCompleted();
 
             System.out.println("=== User Found Successfully ===");
+        } catch (jakarta.persistence.EntityNotFoundException e) {
+            responseObserver.onError(
+                    io.grpc.Status.NOT_FOUND
+                            .withDescription(e.getMessage())
+                            .withCause(e)
+                            .asRuntimeException()
+            );
         } catch (Exception e) {
             System.out.println("Error getting user" + e.getMessage());
             e.printStackTrace();
-            responseObserver.onError(e);
+            responseObserver.onError(
+                    io.grpc.Status.INTERNAL
+                            .withDescription("Failed to get user by email")
+                            .withCause(e)
+                            .asRuntimeException()
+            );
         }
 
 
@@ -205,12 +235,6 @@ public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase {
             );
         }
     }
-
-
-
-
-
-
 
 
     //util method for converting User to UserEntity
