@@ -244,6 +244,7 @@ public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase {
                 .setId(user.getId())
                 .setEmail(user.getEmail())
                 .setDisplayName(user.getDisplayName())
+                .setPassword(user.getPassword())
                 .build();
         return userEntity;
     }
