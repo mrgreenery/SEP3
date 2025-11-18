@@ -65,8 +65,8 @@ public class AuthProvider (HttpClient client) : AuthenticationStateProvider
 
     private async Task AddClaims(string response)
     {
-        AuthorisedUserResponse authUser =
-            JsonSerializer.Deserialize<AuthorisedUserResponse>(response,
+        UserDto authUser =
+            JsonSerializer.Deserialize<UserDto>(response,
                 new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
