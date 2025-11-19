@@ -3,11 +3,11 @@
     <Router AppAssembly="typeof(Program).Assembly" NotFoundPage="typeof(Pages.NotFound)">
         <Found Context="routeData">
             @* TODO: set default layout -- DefaultLayout = ....*@
-            <AuthorizeRouteView RouteData="@routeData">
-                <NotAuthorized>
-                    @* TODO: set some "not authorised" error state *@
-                </NotAuthorized>
-            </AuthorizeRouteView>
+            @* <AuthorizeRouteView RouteData="@routeData"> *@
+            @*     <NotAuthorized> *@
+            @*         $1$ TODO: set some "not authorised" error state #1# *@
+            @*     </NotAuthorized> *@
+            @* </AuthorizeRouteView> *@
             <RouteView RouteData="routeData" DefaultLayout="typeof(Layout.MainLayout)"/>
             <FocusOnNavigate RouteData="routeData" Selector="h1"/>
         </Found>
