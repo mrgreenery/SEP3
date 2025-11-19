@@ -2,16 +2,15 @@ package com.db.sep3.gRPC;
 
 import com.db.sep3.DAO.UserRepository;
 import com.db.sep3.entities.User;
+import com.google.protobuf.BoolValue;
 import com.google.protobuf.Empty;
 import com.sep3.data.grpc.*;
 import io.grpc.stub.StreamObserver;
 import net.devh.boot.grpc.server.service.GrpcService;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.List;
 @GrpcService
 public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase {
-
 
     @Autowired
     private UserRepository userRepository;
@@ -144,6 +143,44 @@ public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase {
     }
 
     @Override
+    public void checkUserCredentials(UserCredentialsRequest request, StreamObserver<BoolValue> responseObserver){
+        try{
+            String email = request.getUser().getEmail();
+
+            System.out.println("=== Getting User by Email: " + email + " ===");
+
+            //Get user
+            User userFromDb = userRepository.findByEmail(email)
+                    .orElseThrow(() -> new jakarta.persistence.EntityNotFoundException
+                            ("User with email: " + email + " not found"));
+
+            BoolValue response;
+
+            if(userFromDb.getPassword().equals(request.getUser().getPassword())){
+                response = BoolValue.newBuilder().setValue(true).build();
+            }else response = BoolValue.newBuilder().setValue(false).build();;
+
+            //conver to proto
+            //respond
+            responseObserver.onNext(response);
+            responseObserver.onCompleted();
+
+            System.out.println("=== User Credentials Checked Successfully ===");
+
+        }catch (Exception e){
+            System.out.println("Error getting users" + e.getMessage());
+            e.printStackTrace();
+            // if error send proper error
+            responseObserver.onError(
+                    io.grpc.Status.INTERNAL
+                            .withDescription("Failed to fetch users")
+                            .withCause(e)
+                            .asRuntimeException()
+            );
+        }
+    }
+
+    @Override
     public void getAllUsers(Empty request,StreamObserver<UserList>  responseObserver)
     {
         try{
@@ -244,7 +281,6 @@ public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase {
                 .setId(user.getId())
                 .setEmail(user.getEmail())
                 .setDisplayName(user.getDisplayName())
-                .setPassword(user.getPassword())
                 .build();
         return userEntity;
     }
