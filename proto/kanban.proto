@@ -7,6 +7,7 @@ option java_outer_classname = "DataProto";
 
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
 
 // ===== Entities =====
 message UserEntity {
@@ -46,10 +47,6 @@ message QuestList {
 }
 
 
-
-
-
-
 // ===== User  =====
 
 message ReadUserRequest{
@@ -76,13 +73,17 @@ message EmailRequest{
   string email = 1;
 }
 
+message UserCredentialsRequest{
+  UserEntity user = 1;
+}
+
 
 // ===== Database service =====
 service UserService {
-
   rpc CreateUser (CreateUserRequest) returns (UserEntity);
   rpc GetUserById (IdRequest) returns (UserEntity);
   rpc GetUserByEmail(EmailRequest) returns (UserEntity);
+  rpc CheckUserCredentials(UserCredentialsRequest) returns (google.protobuf.BoolValue);
   rpc GetAllUsers (google.protobuf.Empty) returns (UserList);
   rpc UpdateUser (UpdateUserRequest) returns (UserEntity);
   rpc DeleteUser (DeleteUserRequest) returns (google.protobuf.Empty);
