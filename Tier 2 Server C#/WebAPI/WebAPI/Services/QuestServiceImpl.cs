@@ -1,5 +1,7 @@
-using WebAPI.ApiContracts;
+using ApiContracts;
 using Data;
+using ApiCreateQuestRequest = ApiContracts.CreateQuestRequest;
+using GrpcCreateQuestRequest = Data.CreateQuestRequest;
 using Grpc.Net.Client;
 using Google.Protobuf.WellKnownTypes;
 
@@ -16,7 +18,7 @@ public class QuestServiceImpl : IQuestService
         _grpcClient = new QuestService.QuestServiceClient(channel);
     }
 
-  public async Task<CreateQuestResponse> CreateQuestAsync(WebAPI.ApiContracts.CreateQuestRequest request)
+  public async Task<CreateQuestResponse> CreateQuestAsync(ApiCreateQuestRequest request)
     {
         if (request is null) throw new ArgumentNullException(nameof(request));
 

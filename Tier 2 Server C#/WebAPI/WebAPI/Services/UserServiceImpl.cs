@@ -23,8 +23,8 @@ public class UserServiceImpl : IUserService
     public async Task<UserDto> CreateUserAsync(string displayName, string email,
         string password)
     {
-        if (displayName.IsWhiteSpace() || email.IsWhiteSpace() ||
-            password.IsWhiteSpace())
+        if (string.IsNullOrWhiteSpace(displayName) || string.IsNullOrWhiteSpace(email) ||
+            string.IsNullOrWhiteSpace(password))
             throw new ArgumentNullException();
 
 
@@ -40,7 +40,7 @@ public class UserServiceImpl : IUserService
                 await _grpcClient.GetUserByEmailAsync(new EmailRequest
                     { Email = email });
 
-            if (!checkEmailResponse.Email.IsWhiteSpace())
+            if (!string.IsNullOrWhiteSpace(checkEmailResponse.Email))
                 throw new UserWithThisEmailAlreadyExists();
         }
         catch (RpcException ex) when (ex.StatusCode == StatusCode.NotFound)
@@ -87,9 +87,9 @@ public class UserServiceImpl : IUserService
     {
         try
         {
-            var grpcResponse = await _grpcClient.GetUserByEmailAsync(new EmailRequest{Email = email});
-            if (grpcResponse.Email.IsWhiteSpace() ||
-                grpcResponse.DisplayName.IsWhiteSpace())
+            var grpcResponse = await _grpcClient.GetUserByEmailAsync(new EmailRequest{Email = email});	
+				if (string.IsNullOrWhiteSpace(grpcResponse.Email) ||
+    			string.IsNullOrWhiteSpace(grpcResponse.DisplayName))
                 throw new UserWithThisEmailDoesNotExist();
         
             var userDto = new UserDto
@@ -144,8 +144,8 @@ public class UserServiceImpl : IUserService
             var grpcResponse =
                 await _grpcClient.GetUserByEmailAsync(new EmailRequest
                     { Email = email });
-            if (grpcResponse.Email.IsWhiteSpace() ||
-                grpcResponse.DisplayName.IsWhiteSpace())
+           	if (string.IsNullOrWhiteSpace(grpcResponse.Email) ||
+   			 string.IsNullOrWhiteSpace(grpcResponse.DisplayName))
                 throw new UserWithThisEmailDoesNotExist();
 
             if (!grpcResponse.Password.Equals(password))
