@@ -1,20 +1,30 @@
 {
   "version": 2,
-  "dgSpecHash": "l6h6t/T9hCg=",
+  "dgSpecHash": "AsdMIvCiU7U=",
   "success": true,
-  "projectFilePath": "C:\\Users\\agafu\\RiderProjects\\SEP3\\Tier 1 Client\\BlazorApp\\BlazorApp.csproj",
+  "projectFilePath": "/home/ash/Documents/SEP3/Tier 1 Client/BlazorApp/BlazorApp.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\agafu\\.nuget\\packages\\microsoft.aspnetcore.app.internal.assets\\10.0.0\\microsoft.aspnetcore.app.internal.assets.10.0.0.nupkg.sha512",
-    "C:\\Users\\agafu\\.nuget\\packages\\microsoft.aspnetcore.authorization\\10.0.0\\microsoft.aspnetcore.authorization.10.0.0.nupkg.sha512"
+    "/home/ash/.nuget/packages/microsoft.aspnetcore.app.internal.assets/10.0.0-rc.2.25502.107/microsoft.aspnetcore.app.internal.assets.10.0.0-rc.2.25502.107.nupkg.sha512",
+    "/home/ash/.nuget/packages/microsoft.aspnetcore.authorization/10.0.0/microsoft.aspnetcore.authorization.10.0.0.nupkg.sha512",
+    "/home/ash/.nuget/packages/microsoft.extensions.configuration/10.0.0/microsoft.extensions.configuration.10.0.0.nupkg.sha512",
+    "/home/ash/.nuget/packages/microsoft.extensions.configuration.abstractions/10.0.0/microsoft.extensions.configuration.abstractions.10.0.0.nupkg.sha512",
+    "/home/ash/.nuget/packages/microsoft.extensions.configuration.binder/10.0.0/microsoft.extensions.configuration.binder.10.0.0.nupkg.sha512",
+    "/home/ash/.nuget/packages/microsoft.extensions.dependencyinjection.abstractions/10.0.0/microsoft.extensions.dependencyinjection.abstractions.10.0.0.nupkg.sha512",
+    "/home/ash/.nuget/packages/microsoft.extensions.diagnostics/10.0.0/microsoft.extensions.diagnostics.10.0.0.nupkg.sha512",
+    "/home/ash/.nuget/packages/microsoft.extensions.diagnostics.abstractions/10.0.0/microsoft.extensions.diagnostics.abstractions.10.0.0.nupkg.sha512",
+    "/home/ash/.nuget/packages/microsoft.extensions.logging.abstractions/10.0.0/microsoft.extensions.logging.abstractions.10.0.0.nupkg.sha512",
+    "/home/ash/.nuget/packages/microsoft.extensions.options/10.0.0/microsoft.extensions.options.10.0.0.nupkg.sha512",
+    "/home/ash/.nuget/packages/microsoft.extensions.options.configurationextensions/10.0.0/microsoft.extensions.options.configurationextensions.10.0.0.nupkg.sha512",
+    "/home/ash/.nuget/packages/microsoft.extensions.primitives/10.0.0/microsoft.extensions.primitives.10.0.0.nupkg.sha512"
   ],
   "logs": [
     {
       "code": "NU1510",
       "level": "Warning",
       "message": "PackageReference Microsoft.AspNetCore.Authorization will not be pruned. Consider removing this package from your dependencies, as it is likely unnecessary.",
-      "projectPath": "C:\\Users\\agafu\\RiderProjects\\SEP3\\Tier 1 Client\\BlazorApp\\BlazorApp.csproj",
+      "projectPath": "/home/ash/Documents/SEP3/Tier 1 Client/BlazorApp/BlazorApp.csproj",
       "warningLevel": 1,
-      "filePath": "C:\\Users\\agafu\\RiderProjects\\SEP3\\Tier 1 Client\\BlazorApp\\BlazorApp.csproj",
+      "filePath": "/home/ash/Documents/SEP3/Tier 1 Client/BlazorApp/BlazorApp.csproj",
       "libraryId": "Microsoft.AspNetCore.Authorization",
       "targetGraphs": [
         "net10.0"

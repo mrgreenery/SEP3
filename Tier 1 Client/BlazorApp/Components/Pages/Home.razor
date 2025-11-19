@@ -1,7 +1,10 @@
-﻿@page "/"
+@page "/"
+@namespace BlazorApp.Components.Pages
+@inject NavigationManager Nav
 
-<PageTitle>Home</PageTitle>
-
-<h1>Hello, world!</h1>
-
-Welcome to your new app.
+@code {
+    protected override void OnInitialized()
+    {
+        Nav.NavigateTo("/register", replace: true);
+    }
+}

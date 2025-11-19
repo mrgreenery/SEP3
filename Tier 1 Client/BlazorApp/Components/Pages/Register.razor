@@ -1,0 +1,75 @@
+﻿@page "/register"
+@inject HttpClient Http
+@inject NavigationManager Nav
+@using ApiContracts
+@using BlazorApp.Models
+
+<PageTitle>Home/REGISTER</PageTitle>
+
+<div class="register-container">
+    
+    <h1>REGISTER</h1>
+
+    <EditForm Model="@model" OnValidSubmit="@HandleRegister" FormName="registerForm" FormMode="FormMode.Server">
+        <DataAnnotationsValidator />
+
+        <div class="form-group">
+            <label>Full name:</label>
+            <InputText class="input-line" @bind-Value="model.FullName" />
+            <ValidationMessage For="@(() => model.FullName)" />
+        </div>
+
+        <div class="form-group">
+            <label>E-mail:</label>
+            <InputText class="input-line" @bind-Value="model.Email" />
+            <ValidationMessage For="@(() => model.Email)" />
+        </div>
+
+        <div class="form-group">
+            <label>Password:</label>
+            <InputText type="password" class="input-line" @bind-Value="model.Password" />
+            <ValidationMessage For="@(() => model.Password)" />
+        </div>
+
+        <div class="form-group">
+            <label>Repeat Password:</label>
+            <InputText type="password" class="input-line" @bind-Value="model.RepeatPassword" />
+            <ValidationMessage For="@(() => model.RepeatPassword)" />
+        </div>
+
+        <button class="primary-CustomButton" type="submit" form="registerForm">CREATE ACCOUNT</button>
+
+    </EditForm>
+
+    <div class="footer">
+        <p>Already have an account?</p>
+        <a href="/login">LOG IN</a>
+    </div>
+
+</div>
+
+@if (!string.IsNullOrEmpty(error))
+{
+    <p style="color:red">@error</p>
+}
+
+@code {
+    private RegisterModel model = new();
+    private string? error;
+
+    private async Task HandleRegister()
+    {
+        Console.WriteLine("HandleRegister() triggered");
+        var request = new RegisterRequest {
+            Email = model.Email,
+            Password = model.Password,
+            DisplayName = model.FullName
+        };
+        var response = await Http.PostAsJsonAsync("auth/register", request);
+        
+        if (response.IsSuccessStatusCode)
+            Nav.NavigateTo("/login");
+        else
+            error = await response.Content.ReadAsStringAsync();
+    }
+}
