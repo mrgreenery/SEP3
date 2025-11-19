@@ -27,13 +27,14 @@ builder.Services.AddScoped<IUserService, UserServiceImpl>();
 
 var app = builder.Build();
 
+app.MapControllers();
+
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();  
     app.UseDeveloperExceptionPage(); //shows detailed errors
 }
 
-app.MapControllers();
 
 app.MapGet("/", () => Results.Ok("Tier 2 is up"));
 

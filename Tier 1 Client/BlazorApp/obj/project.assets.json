@@ -12,6 +12,19 @@
           "buildMultiTargeting/Microsoft.AspNetCore.App.Internal.Assets.targets": {}
         }
       },
+      "Microsoft.AspNetCore.Authorization/10.0.0": {
+        "type": "package",
+        "compile": {
+          "lib/net10.0/_._": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net10.0/_._": {
+            "related": ".xml"
+          }
+        }
+      },
       "ApiContracts/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v10.0",
@@ -48,6 +61,25 @@
         "microsoft.aspnetcore.app.internal.assets.nuspec"
       ]
     },
+    "Microsoft.AspNetCore.Authorization/10.0.0": {
+      "sha512": "8qUwBAtUj9kX8RwqEPGJu3zGM/GlwF2bR9gsxk/+kiSmCB6aDYlYF7E2gM9VOYS9NDF6zxTSEgJxwD9kFbu8Sw==",
+      "type": "package",
+      "path": "microsoft.aspnetcore.authorization/10.0.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "THIRD-PARTY-NOTICES.TXT",
+        "lib/net10.0/Microsoft.AspNetCore.Authorization.dll",
+        "lib/net10.0/Microsoft.AspNetCore.Authorization.xml",
+        "lib/net462/Microsoft.AspNetCore.Authorization.dll",
+        "lib/net462/Microsoft.AspNetCore.Authorization.xml",
+        "lib/netstandard2.0/Microsoft.AspNetCore.Authorization.dll",
+        "lib/netstandard2.0/Microsoft.AspNetCore.Authorization.xml",
+        "microsoft.aspnetcore.authorization.10.0.0.nupkg.sha512",
+        "microsoft.aspnetcore.authorization.nuspec"
+      ]
+    },
     "ApiContracts/1.0.0": {
       "type": "project",
       "path": "../../shared/ApiContracts/ApiContracts.csproj",
@@ -57,7 +89,8 @@
   "projectFileDependencyGroups": {
     "net10.0": [
       "ApiContracts >= 1.0.0",
-      "Microsoft.AspNetCore.App.Internal.Assets >= 10.0.0"
+      "Microsoft.AspNetCore.App.Internal.Assets >= 10.0.0",
+      "Microsoft.AspNetCore.Authorization >= 10.0.0"
     ]
   },
   "packageFolders": {
@@ -112,6 +145,10 @@
             "target": "Package",
             "version": "[10.0.0, )",
             "autoReferenced": true
+          },
+          "Microsoft.AspNetCore.Authorization": {
+            "target": "Package",
+            "version": "[10.0.0, )"
           }
         },
         "imports": [
@@ -550,5 +587,17 @@
         }
       }
     }
-  }
+  },
+  "logs": [
+    {
+      "code": "NU1510",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "PackageReference Microsoft.AspNetCore.Authorization will not be pruned. Consider removing this package from your dependencies, as it is likely unnecessary.",
+      "libraryId": "Microsoft.AspNetCore.Authorization",
+      "targetGraphs": [
+        "net10.0"
+      ]
+    }
+  ]
 }
