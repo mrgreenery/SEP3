@@ -1,0 +1,76 @@
+.register-container[b-x80dqilalk] {
+    max-width: 380px;
+    margin: 0 auto;
+    margin-top: 60px;
+    text-align: left;
+    font-family: sans-serif;
+}
+
+h1[b-x80dqilalk] {
+    text-align: center;
+    margin-bottom: 40px;
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+
+.form-group[b-x80dqilalk] {
+    margin-bottom: 35px;
+}
+
+label[b-x80dqilalk] {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.input-line[b-x80dqilalk] {
+    width: 100%;
+    padding: 6px 0;
+    border: none;
+    border-bottom: 2px solid #444;
+    background: transparent;
+    font-size: 16px;
+}
+
+.input-line:focus[b-x80dqilalk] {
+    outline: none;
+    border-bottom: 2px solid #000;
+}
+
+.primary-CustomButton[b-x80dqilalk] {
+    width: 100%;
+    padding: 16px 0;
+    margin-top: 10px;
+    font-size: 16px;
+    background-color: #65748A;
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 0px 3px 8px rgba(0,0,0,0.2);
+}
+
+.primary-CustomButton:hover[b-x80dqilalk] {
+    background-color: #5a677a;
+}
+
+.footer[b-x80dqilalk] {
+    margin-top: 25px;
+    text-align: center;
+    font-size: 14px;
+    color: #444;
+}
+
+.footer a[b-x80dqilalk] {
+    display: block;
+    font-weight: 700;
+    color: #000;
+    margin-top: 5px;
+    text-decoration: none;
+}
+
+.footer a:hover[b-x80dqilalk] {
+    text-decoration: underline;
+}
