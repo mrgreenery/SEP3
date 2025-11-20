@@ -58,11 +58,12 @@ message ReadUserRequest{
 }
 
 message UpdateUserRequest{
-  UserEntity user = 1;
+  string email = 1;
+  UserEntity user = 2;
 }
 
 message DeleteUserRequest{
-  int64 id = 1;
+  string email = 1;
 }
 
 message UserList{

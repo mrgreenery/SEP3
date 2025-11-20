@@ -12,6 +12,11 @@ public interface IUserService
 
     Task<List<UserDto>> GetAllUsersAsync();
 
-    Task<UserDto> CheckUserCredentialsAsync(string email, string password);
+    Task<UserDto?> CheckUserCredentialsAsync(string email, string password);
+
+    Task<UserDto> UpdateUserAsync(string oldEmail, string displayName,
+        string newEmail, string password);
+
+    Task DeleteUserAsync(string email);
 
 }
