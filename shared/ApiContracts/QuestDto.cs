@@ -1,5 +1,7 @@
 namespace ApiContracts;
-public record CreateQuestResponse
+
+//todo Change the CreateQuestResponse to QuestDTO
+public record QuestDto
 {
     public int Id { get; set; }
     public required string Title { get; set; }

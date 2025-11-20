@@ -18,7 +18,7 @@ public class QuestsController : ControllerBase
     }
     
     [HttpPost]
-    public async Task<ActionResult<CreateQuestResponse>> CreateQuest([FromBody] CreateQuestRequest request)
+    public async Task<ActionResult<QuestDto>> CreateQuest([FromBody] CreateQuestRequest request)
     {
         try
         {
@@ -35,11 +35,11 @@ public class QuestsController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<CreateQuestResponse>> GetQuest(int id)
+    public async Task<ActionResult<QuestDto>> GetQuest(int id)
     {
         try
         {
-            return Ok(new CreateQuestResponse
+            return Ok(new QuestDto
             {
                 Id = id,
                 Title = "Dummy Quest",

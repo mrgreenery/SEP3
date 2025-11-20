@@ -18,7 +18,7 @@ public class QuestServiceImpl : IQuestService
         _grpcClient = new QuestService.QuestServiceClient(channel);
     }
 
-  public async Task<CreateQuestResponse> CreateQuestAsync(ApiCreateQuestRequest request)
+  public async Task<QuestDto> CreateQuestAsync(ApiCreateQuestRequest request)
     {
         if (request is null) throw new ArgumentNullException(nameof(request));
 
@@ -40,7 +40,7 @@ public class QuestServiceImpl : IQuestService
         var grpcResponse = await _grpcClient.CreateQuestAsync(grpcRequest);
 
         // Map to API response
-        var response = new CreateQuestResponse
+        var response = new QuestDto
         {
             Id = (int)grpcResponse.Id,
             Title = grpcResponse.Title,
