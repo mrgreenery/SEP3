@@ -3,6 +3,10 @@
 @inject NavigationManager Nav
 @using ApiContracts
 @using BlazorApp.Models
+@using BlazorApp.Services.Auth
+@rendermode InteractiveServer
+@inject AuthenticationStateProvider AuthProvider
+
 
 <PageTitle>Home/REGISTER</PageTitle>
 
@@ -10,7 +14,7 @@
     
     <h1>REGISTER</h1>
 
-    <EditForm Model="@model" OnValidSubmit="@HandleRegister" FormName="registerForm" FormMode="FormMode.Server">
+    <EditForm Model="@model" OnValidSubmit="@HandleRegister">
         <DataAnnotationsValidator />
 
         <div class="form-group">
@@ -37,7 +41,7 @@
             <ValidationMessage For="@(() => model.RepeatPassword)" />
         </div>
 
-        <button class="primary-CustomButton" type="submit" form="registerForm">CREATE ACCOUNT</button>
+        <button class="primary-CustomButton" type="submit">CREATE ACCOUNT</button>
 
     </EditForm>
 
@@ -48,11 +52,21 @@
 
 </div>
 
+@* only for lazy testing *@
+
+<button @onclick="FakeLogin">Fake Login (Dev Only)</button>
+<div>**** manually check the locked pages, there's no confirmation here if they work</div>
+<button @onclick="FakeLogout">Fake Logout (Dev Only)</button>
+
+
+
+@*  *@
+
+
 @if (!string.IsNullOrEmpty(error))
 {
     <p style="color:red">@error</p>
 }
-
 @code {
     private RegisterModel model = new();
     private string? error;
@@ -60,16 +74,34 @@
     private async Task HandleRegister()
     {
         Console.WriteLine("HandleRegister() triggered");
-        var request = new RegisterRequest {
-            Email = model.Email,
-            Password = model.Password,
-            DisplayName = model.FullName
-        };
-        var response = await Http.PostAsJsonAsync("auth/register", request);
+        try
+        {
+            var auth = (AuthProvider)AuthProvider;
+
+            await auth.Register(
+                model.FullName,
+                model.Email,
+                model.Password
+            );
+
+            Nav.NavigateTo("/");
+        }
+        catch (Exception ex)
+        {
+            error = ex.Message;
+        }
         
-        if (response.IsSuccessStatusCode)
-            Nav.NavigateTo("/login");
-        else
-            error = await response.Content.ReadAsStringAsync();
     }
+    private void FakeLogin()
+    {
+        var auth = (AuthProvider)AuthProvider;
+        auth.ForceLoginForTesting();
+    }
+    
+    private void FakeLogout()
+    {
+        var auth = (AuthProvider)AuthProvider;
+        auth.ForceLogoutForTesting();
+    }
+    
 }

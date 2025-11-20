@@ -6,9 +6,15 @@
     <Router AppAssembly="@typeof(Program).Assembly" >
         
         <Found Context="routeData">
-            <RouteView RouteData="@routeData"
-                       DefaultLayout="@typeof(Layout.MainLayout)" />
-            <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+                <NotAuthorized>
+                    <div class="locked-message">
+                        <h2>Access denied</h2>
+                        <p>You must be logged in to view this page.</p>
+                        <a href="/">Return to home</a>
+                    </div>
+                </NotAuthorized>
+            </AuthorizeRouteView>
         </Found>
 
         <NotFound>
