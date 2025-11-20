@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@using static Microsoft.AspNetCore.Components.Web.RenderMode
+
+
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -15,9 +18,12 @@
 </head>
 
 <body>
+<InteractiveServer>
     <Routes />
     <ReconnectModal />
-    <script src="@Assets["_framework/blazor.web.js"]"></script>
+</InteractiveServer>
+
+<script src="@Assets["_framework/blazor.web.js"]"></script>
 </body>
 
 </html>

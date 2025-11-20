@@ -2,6 +2,10 @@
 @inject HttpClient Http
 @inject NavigationManager Nav
 @using BlazorApp.Models
+@using BlazorApp.Services.Auth
+@inject AuthenticationStateProvider AuthProvider
+@rendermode InteractiveServer
+
 
 
 <PageTitle>LOG IN</PageTitle>
@@ -10,7 +14,7 @@
 
     <h1>LOG IN</h1>
 
-    <EditForm Model="@model" OnValidSubmit="@HandleLogin" FormName="registerForm" FormMode="FormMode.Server">
+    <EditForm Model="@model" OnValidSubmit="@HandleLogin">
         <DataAnnotationsValidator />
 
         <div class="form-group">
@@ -25,7 +29,7 @@
             <ValidationMessage For="@(() => model.Password)" />
         </div>
 
-        <button class="primary-CustomButton" type="submit" form="registerForm">SIGN IN</button>
+        <button class="primary-CustomButton" type="submit">SIGN IN</button>
     </EditForm>
 
     <div class="footer">
@@ -46,15 +50,16 @@
 
     private async Task HandleLogin()
     {
-        var response = await Http.PostAsJsonAsync("login", model);
+        try
+        {
+            var auth = (AuthProvider)AuthProvider;
+            await auth.Login(model.Email, model.Password);
 
-        if (response.IsSuccessStatusCode)
-        {
-            Nav.NavigateTo("/"); 
+            Nav.NavigateTo("/backlog");
         }
-        else
+        catch (Exception ex)
         {
-            error = await response.Content.ReadAsStringAsync();
+            error = ex.Message;
         }
     }
 }

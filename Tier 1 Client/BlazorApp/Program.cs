@@ -14,6 +14,7 @@ builder.Services.AddRazorComponents()
 
 
 builder.Services.AddScoped<AuthenticationStateProvider, AuthProvider>();
+builder.Services.AddAuthorizationCore();
 
 var app = builder.Build();
 

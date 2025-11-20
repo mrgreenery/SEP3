@@ -26,6 +26,10 @@ build_property.EnableCodeStyleSeverity =
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9BcHAucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
+[/home/ash/Documents/SEP3/Tier 1 Client/BlazorApp/Components/Pages/Backlog.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9QYWdlcy9CYWNrbG9nLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
 [/home/ash/Documents/SEP3/Tier 1 Client/BlazorApp/Components/Pages/Counter.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9QYWdlcy9Db3VudGVyLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
@@ -65,6 +69,10 @@ build_metadata.AdditionalFiles.CssScope = b-zswk0q6kaa
 [/home/ash/Documents/SEP3/Tier 1 Client/BlazorApp/Components/Layout/ReconnectModal.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9MYXlvdXQvUmVjb25uZWN0TW9kYWwucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = b-0ydk0eezj3
+
+[/home/ash/Documents/SEP3/Tier 1 Client/BlazorApp/Components/Pages/KanbanBoard.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9QYWdlcy9LYW5iYW5Cb2FyZC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = b-m6wc4jfky7
 
 [/home/ash/Documents/SEP3/Tier 1 Client/BlazorApp/Components/Pages/LogIn.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9QYWdlcy9Mb2dJbi5yYXpvcg==

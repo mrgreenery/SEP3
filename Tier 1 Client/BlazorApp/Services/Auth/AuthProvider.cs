@@ -86,4 +86,29 @@ public class AuthProvider (HttpClient client) : AuthenticationStateProvider
         );
     }
 
+    
+    public void ForceLoginForTesting()
+    {
+        var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.Name, "TestUser"),
+            new Claim(ClaimTypes.Email, "test@test.dev"),
+            new Claim(ClaimTypes.Role, "User")
+        };
+
+        var identity = new ClaimsIdentity(claims, "FakeAuth");
+        currentClaimsPrincipal = new ClaimsPrincipal(identity);
+
+        NotifyAuthenticationStateChanged(
+            Task.FromResult(new AuthenticationState(currentClaimsPrincipal))
+        );
+    }
+    public void ForceLogoutForTesting()
+    {
+        currentClaimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity());
+
+        NotifyAuthenticationStateChanged(
+            Task.FromResult(new AuthenticationState(currentClaimsPrincipal))
+        );
+    }
 }
