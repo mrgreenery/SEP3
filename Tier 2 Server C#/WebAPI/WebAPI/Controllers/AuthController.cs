@@ -68,6 +68,11 @@ public class AuthController : ControllerBase
                 await _userService.CheckUserCredentialsAsync(request.Email,
                     request.Password);
 
+            if (userDto is null)
+            {
+                throw new WrongPasswordException();
+            }
+
             _logger.LogInformation($"Success in signing user in: email: " +
                                    $"{userDto.Email}, " +
                                    $"display name: {userDto.DisplayName}");

@@ -167,7 +167,14 @@ public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase {
 
             System.out.println("=== User Credentials Checked Successfully ===");
 
-        }catch (Exception e){
+        }catch (jakarta.persistence.EntityNotFoundException e) {
+            responseObserver.onError(
+                    io.grpc.Status.NOT_FOUND
+                            .withDescription(e.getMessage())
+                            .withCause(e)
+                            .asRuntimeException()
+            );
+        } catch (Exception e){
             System.out.println("Error getting users" + e.getMessage());
             e.printStackTrace();
             // if error send proper error
@@ -217,8 +224,10 @@ public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase {
         try {
 
             //get user from request id
-            User user = userRepository.findById(request.getUser().getId())
-                    .orElseThrow(() -> new jakarta.persistence.EntityNotFoundException("User " + request.getUser().getId() + " not found"));
+            User user = userRepository.findByEmail(request.getEmail())
+                    .orElseThrow(() ->
+                            new jakarta.persistence.EntityNotFoundException(
+                                    "User " + request.getEmail() + " not found"));
 
 
             //check and update email and displayName
@@ -235,7 +244,15 @@ public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase {
             responseObserver.onNext(convertToProto(saved));
             responseObserver.onCompleted();
             System.out.println("=== User Updated Successfully ===");
-        } catch (Exception e) {
+        }catch (jakarta.persistence.EntityNotFoundException e) {
+            responseObserver.onError(
+                    io.grpc.Status.NOT_FOUND
+                            .withDescription(e.getMessage())
+                            .withCause(e)
+                            .asRuntimeException()
+            );
+        }
+        catch (Exception e) {
             responseObserver.onError(io.grpc.Status.INTERNAL.withDescription("Failed to update user").withCause(e).asRuntimeException());
         }
     }
@@ -247,22 +264,33 @@ public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase {
             System.out.println("=== Deleting User ===");
 
             //check if the user exists
-            if (!userRepository.existsById(request.getId())) {
+            if (!userRepository.existsByEmail(request.getEmail())) {
                 responseObserver.onError(
                         io.grpc.Status.NOT_FOUND
-                                .withDescription("User " + request.getId() + " not found")
+                                .withDescription("User " + request.getEmail() + " not found")
                                 .asRuntimeException()
                 );
                 return;
             }
 
+            User user = userRepository.findByEmail(request.getEmail()).
+                    orElseThrow(() -> new jakarta.persistence.EntityNotFoundException(
+                            "User " + request.getEmail() + " not found"));
+
             //if he exists delete it
-            userRepository.deleteById(request.getId());
+            userRepository.deleteById(user.getId());
 
             //send respond of success
             responseObserver.onNext(Empty.newBuilder().build());
             responseObserver.onCompleted();
 
+        }catch (jakarta.persistence.EntityNotFoundException e) {
+            responseObserver.onError(
+                    io.grpc.Status.NOT_FOUND
+                            .withDescription(e.getMessage())
+                            .withCause(e)
+                            .asRuntimeException()
+            );
         } catch (Exception e) {
             responseObserver.onError(
                     io.grpc.Status.INTERNAL

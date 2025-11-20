@@ -1,12 +1,9 @@
 @page "/login"
 @inject HttpClient Http
 @inject NavigationManager Nav
+@inject AuthenticationStateProvider AuthProvider
 @using BlazorApp.Models
 @using BlazorApp.Services.Auth
-@inject AuthenticationStateProvider AuthProvider
-@rendermode InteractiveServer
-
-
 
 <PageTitle>LOG IN</PageTitle>
 

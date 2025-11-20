@@ -88,5 +88,6 @@
 /home/ash/Documents/SEP3/Tier 1 Client/BlazorApp/obj/Debug/net10.0/ref/BlazorApp.dll
 /home/ash/Documents/SEP3/Tier 1 Client/BlazorApp/obj/Debug/net10.0/scopedcss/Components/Pages/LogIn.razor.rz.scp.css
 /home/ash/Documents/SEP3/Tier 1 Client/BlazorApp/obj/Debug/net10.0/scopedcss/Components/Pages/Register.razor.rz.scp.css
-/home/ash/Documents/SEP3/Tier 1 Client/BlazorApp/obj/Debug/net10.0/compressed/8v4adbxxmx-{0}-961oaixdau-961oaixdau.gz
-/home/ash/Documents/SEP3/Tier 1 Client/BlazorApp/obj/Debug/net10.0/compressed/rrzzv9ip5o-{0}-961oaixdau-961oaixdau.gz
+/home/ash/Documents/SEP3/Tier 1 Client/BlazorApp/obj/Debug/net10.0/scopedcss/Components/Pages/KanbanBoard.razor.rz.scp.css
+/home/ash/Documents/SEP3/Tier 1 Client/BlazorApp/obj/Debug/net10.0/compressed/8v4adbxxmx-{0}-ls05jh8igx-ls05jh8igx.gz
+/home/ash/Documents/SEP3/Tier 1 Client/BlazorApp/obj/Debug/net10.0/compressed/rrzzv9ip5o-{0}-ls05jh8igx-ls05jh8igx.gz
