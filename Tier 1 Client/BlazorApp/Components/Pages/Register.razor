@@ -1,11 +1,9 @@
 ﻿@page "/register"
 @inject HttpClient Http
 @inject NavigationManager Nav
-@using ApiContracts
+@inject AuthenticationStateProvider AuthProvider
 @using BlazorApp.Models
 @using BlazorApp.Services.Auth
-@rendermode InteractiveServer
-@inject AuthenticationStateProvider AuthProvider
 
 
 <PageTitle>Home/REGISTER</PageTitle>
@@ -47,7 +45,9 @@
 
     <div class="footer">
         <p>Already have an account?</p>
-        <a href="/login">LOG IN</a>
+         <NavLink href="/login">LOGIN</NavLink>
+
+        @* <a href="/login">LOG IN</a> *@
     </div>
 
 </div>
