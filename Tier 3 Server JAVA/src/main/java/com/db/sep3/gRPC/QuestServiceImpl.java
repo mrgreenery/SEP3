@@ -31,25 +31,43 @@ public class QuestServiceImpl extends QuestServiceGrpc.QuestServiceImplBase {
             System.out.println("=== Creating Quest ===");
             System.out.println("Title: " + request.getTitle());
 
+            // load creator (required)
+            User creator = userRepository.findById(request.getCreatedBy())
+                    .orElseThrow(() -> new jakarta.persistence.EntityNotFoundException(
+                            "User " + request.getCreatedBy() + " not found"));
+
+            // optional assignee
+            User assignee = null;
+            if (request.hasAssigneeId()) {
+                assignee = userRepository.findById(request.getAssigneeId())
+                        .orElseThrow(() -> new jakarta.persistence.EntityNotFoundException(
+                                "Assignee " + request.getAssigneeId() + " not found"));
+            }
+
             // Create JPA entity
             Quest quest = new Quest();
             quest.setTitle(request.getTitle());
-            quest.setDescription(request.getDescription());
+            quest.setDescription(request.hasDescription() ? request.getDescription() : null);
             quest.setStatus(QuestStatusMapper.toEntity(request.getStatus()));
             quest.setCreatedDate(Instant.now());
-            quest.setCreatedBy(userRepository.getReferenceById(request.getCreatedBy()));
-            quest.setStartDate(TimeMapper.fromTimestamp(request.getStartDate()));
-            quest.setDeadline(TimeMapper.fromTimestamp(request.getDeadline()));
-            quest.setDeadline(TimeMapper.fromTimestamp(request.getDeadline()));
-            quest.setFinishedDate(TimeMapper.fromTimestamp(request.getFinishedDate()));
+            quest.setCreatedBy(creator);
+            quest.setAssignee(assignee);
+
+            //check if dates are not null
+            if (request.hasStartDate()) {
+                quest.setStartDate(TimeMapper.fromTimestamp(request.getStartDate()));
+            }
+            if (request.hasDeadline()) {
+                quest.setDeadline(TimeMapper.fromTimestamp(request.getDeadline()));
+            }
+            if (request.hasFinishedDate()) {
+                quest.setFinishedDate(TimeMapper.fromTimestamp(request.getFinishedDate()));
+            }
 
             // Save to database
             Quest saved = questRepository.save(quest);
 
             System.out.println("Quest saved with ID: " + saved.getId());
-
-            //here i did change so instead now converting the saved back to QuestEntity
-            // its just calling the util class to convert it
 
             responseObserver.onNext(convertToProto(saved));
             responseObserver.onCompleted();
@@ -57,7 +75,13 @@ public class QuestServiceImpl extends QuestServiceGrpc.QuestServiceImplBase {
             System.out.println("=== Quest Created Successfully ===");
 
 
-        } catch (Exception e) { // this is apparently better error handling than just sending 'e' but idk
+        } catch (jakarta.persistence.EntityNotFoundException e) {
+            //Throw not_found error when creator/assignee with provided id does not exist
+            responseObserver.onError(
+                    io.grpc.Status.NOT_FOUND
+                            .withDescription(e.getMessage())
+                            .asRuntimeException());
+        }catch (Exception e) { // this is apparently better error handling than just sending 'e' but idk
             responseObserver.onError(io.grpc.Status.INTERNAL
                     .withDescription("Failed to create quest")
                     .withCause(e)
@@ -67,7 +91,6 @@ public class QuestServiceImpl extends QuestServiceGrpc.QuestServiceImplBase {
 
     @Override
     public void getQuestsById(IdRequest request, StreamObserver<QuestEntity> responseObserver) {
-
 
         try {
             System.out.println("=== Getting Quest by ID: " + request.getId() + " ===");
@@ -117,18 +140,33 @@ public class QuestServiceImpl extends QuestServiceGrpc.QuestServiceImplBase {
 
             QuestEntity questEntity = request.getQuest();
 
-            // 1. Load existing quest
+
             Quest quest = questRepository.findById(questEntity.getId())
                     .orElseThrow(() -> new jakarta.persistence.EntityNotFoundException(
                             "Quest " + questEntity.getId() + " not found"));
 
-            // 2. Apply changes from request
+
             quest.setTitle(questEntity.getTitle());
-            quest.setDescription(questEntity.getDescription());
+            quest.setDescription(questEntity.hasDescription() ? questEntity.getDescription() : null);
             quest.setStatus(QuestStatusMapper.toEntity(questEntity.getStatus()));
-            quest.setStartDate(TimeMapper.fromTimestamp(questEntity.getStartDate()));
-            quest.setDeadline(TimeMapper.fromTimestamp(questEntity.getDeadline()));
-            quest.setFinishedDate(TimeMapper.fromTimestamp(questEntity.getFinishedDate()));
+
+            if (questEntity.hasStartDate()) {
+                quest.setStartDate(TimeMapper.fromTimestamp(questEntity.getStartDate()));
+            } else {
+                quest.setStartDate(null);
+            }
+
+            if (questEntity.hasDeadline()) {
+                quest.setDeadline(TimeMapper.fromTimestamp(questEntity.getDeadline()));
+            } else {
+                quest.setDeadline(null);
+            }
+
+            if (questEntity.hasFinishedDate()) {
+                quest.setFinishedDate(TimeMapper.fromTimestamp(questEntity.getFinishedDate()));
+            } else {
+                quest.setFinishedDate(null);
+            }
 
             if (questEntity.hasAssignee()) {
                 User assignee = userRepository.findById(questEntity.getAssignee())
@@ -185,18 +223,30 @@ public class QuestServiceImpl extends QuestServiceGrpc.QuestServiceImplBase {
 
     // util class for converting quest to QuestEntity
     private QuestEntity convertToProto(Quest quest) {
-        QuestEntity.Builder builder = QuestEntity.newBuilder()
-                .setId(quest.getId())
-                .setTitle(quest.getTitle())
-                .setDescription(quest.getDescription())
-                .setStatus(QuestStatusMapper.toProto(quest.getStatus()))
-                .setCreatedDate(TimeMapper.toTimestamp(quest.getCreatedDate()))
-                .setCreatedBy(quest.getCreatedBy().getId())
-                .setAssignee(quest.getAssignee().getId())
-                .setStartDate(TimeMapper.toTimestamp(quest.getStartDate()))
-                .setDeadline(TimeMapper.toTimestamp(quest.getDeadline()))
-                .setFinishedDate(TimeMapper.toTimestamp(quest.getFinishedDate()));
+            QuestEntity.Builder builder = QuestEntity.newBuilder()
+                    .setId(quest.getId())
+                    .setTitle(quest.getTitle())
+                    .setStatus(QuestStatusMapper.toProto(quest.getStatus()))
+                    .setCreatedDate(TimeMapper.toTimestamp(quest.getCreatedDate()))
+                    .setCreatedBy(quest.getCreatedBy().getId());
 
-        return builder.build();
+            if (quest.getDescription() != null) {
+                builder.setDescription(quest.getDescription());
+            }
+            if (quest.getAssignee() != null) {
+                builder.setAssignee(quest.getAssignee().getId());
+            }
+            if (quest.getStartDate() != null) {
+                builder.setStartDate(TimeMapper.toTimestamp(quest.getStartDate()));
+            }
+            if (quest.getDeadline() != null) {
+                builder.setDeadline(TimeMapper.toTimestamp(quest.getDeadline()));
+            }
+            if (quest.getFinishedDate() != null) {
+                builder.setFinishedDate(TimeMapper.toTimestamp(quest.getFinishedDate()));
+            }
+
+            return builder.build();
+
     }
 }
