@@ -20,15 +20,15 @@ public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase {
     {
         try{
             System.out.println("=== Creating User ===");
-            System.out.println("Email: " + request.getUser().getEmail());
-            System.out.println("Display name: " + request.getUser().getDisplayName());
+            System.out.println("Email: " + request.getEmail());
+            System.out.println("Display name: " + request.getDisplayName());
             System.out.println("Password: *********** ");
 
             //Create JPA entity
             User user = new User();
-            user.setEmail(request.getUser().getEmail());
-            user.setDisplayName(request.getUser().getDisplayName());
-            user.setPassword(request.getUser().getPassword());
+            user.setEmail(request.getEmail());
+            user.setDisplayName(request.getDisplayName());
+            user.setPassword(request.getPassword());
 
             //save to database
             User saved = userRepository.save(user);
@@ -48,7 +48,7 @@ public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase {
 
             System.out.println("=== User Created Successfully ===");
         } catch (org.springframework.dao.DataIntegrityViolationException e) {
-            // unique constraint violated -> email already exists
+            // error thrown by database - when email already exists (unique constraint)
             responseObserver.onError(
                     io.grpc.Status.ALREADY_EXISTS
                             .withDescription("User with this email already exists")
@@ -102,50 +102,9 @@ public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase {
     }
 
     @Override
-    public void getUserByEmail(EmailRequest request, StreamObserver<UserEntity> responseObserver)
-    {
-        try {
-            System.out.println("=== Getting Users by Email: " + request.getEmail() + " ===");
-
-            //Get user
-            User user = userRepository.findByEmail(request.getEmail())
-                    .orElseThrow(() -> new jakarta.persistence.EntityNotFoundException
-                            ("User with email: " + request.getEmail() + " not found"));
-
-
-            //conver to proto
-            UserEntity response = convertToProto(user);
-
-            //respond
-            responseObserver.onNext(response);
-            responseObserver.onCompleted();
-
-            System.out.println("=== User Found Successfully ===");
-        } catch (jakarta.persistence.EntityNotFoundException e) {
-            responseObserver.onError(
-                    io.grpc.Status.NOT_FOUND
-                            .withDescription(e.getMessage())
-                            .withCause(e)
-                            .asRuntimeException()
-            );
-        } catch (Exception e) {
-            System.out.println("Error getting user" + e.getMessage());
-            e.printStackTrace();
-            responseObserver.onError(
-                    io.grpc.Status.INTERNAL
-                            .withDescription("Failed to get user by email")
-                            .withCause(e)
-                            .asRuntimeException()
-            );
-        }
-
-
-    }
-
-    @Override
-    public void checkUserCredentials(UserCredentialsRequest request, StreamObserver<BoolValue> responseObserver){
+    public void logUser(LoginUserRequest request, StreamObserver<BoolValue> responseObserver){
         try{
-            String email = request.getUser().getEmail();
+            String email = request.getEmail();
 
             System.out.println("=== Getting User by Email: " + email + " ===");
 
@@ -156,7 +115,8 @@ public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase {
 
             BoolValue response;
 
-            if(userFromDb.getPassword().equals(request.getUser().getPassword())){
+            // check if password matches
+            if(userFromDb.getPassword().equals(request.getPassword())){
                 response = BoolValue.newBuilder().setValue(true).build();
             }else response = BoolValue.newBuilder().setValue(false).build();;
 
@@ -220,27 +180,21 @@ public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase {
     //so i want to get the user, than update the email or display name
     //and than save it without touching the password
     @Override
-    public void updateUser(UpdateUserRequest request, StreamObserver<UserEntity> responseObserver) {
+    public void updateUserName(UpdateUserNameRequest request, StreamObserver<UserEntity> responseObserver) {
         try {
 
             //get user from request id
-            User user = userRepository.findByEmail(request.getEmail())
+            User user = userRepository.findById(request.getUserId())
                     .orElseThrow(() ->
                             new jakarta.persistence.EntityNotFoundException(
-                                    "User " + request.getEmail() + " not found"));
+                                    "User with id: " + request.getUserId() + " not found"));
 
 
-            //check and update email and displayName
-            if (request.getUser().getEmail() != null && !request.getUser().getEmail().isEmpty())
-                user.setEmail(request.getUser().getEmail());
-
-            if (request.getUser().getDisplayName() != null && !request.getUser().getDisplayName().isEmpty())
-                user.setDisplayName(request.getUser().getDisplayName());
-
-            //save the user
+            //update displayName and save updated User
+            user.setDisplayName(request.getDisplayName());
             User saved = userRepository.save(user);
 
-            //send respond
+            //send response
             responseObserver.onNext(convertToProto(saved));
             responseObserver.onCompleted();
             System.out.println("=== User Updated Successfully ===");
@@ -264,7 +218,7 @@ public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase {
             System.out.println("=== Deleting User ===");
 
             //check if the user exists
-            if (!userRepository.existsByEmail(request.getEmail())) {
+            if (!userRepository.existsById(request.getUserId())) {
                 responseObserver.onError(
                         io.grpc.Status.NOT_FOUND
                                 .withDescription("User " + request.getEmail() + " not found")

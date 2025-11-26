@@ -9,77 +9,99 @@ import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/wrappers.proto";
 
+// ===== Enum =====
+enum QuestStatus{
+  Backlog = 0;
+  ToDo = 1;
+  InProgress = 2;
+  Review = 3;
+  Finished = 4;
+}
+
 // ===== Entities =====
 message UserEntity {
-  optional int64 id = 1;
+  int64 id = 1;
   string email = 2;
   string password = 3;
   string displayName = 4;
 }
 
 message QuestEntity {
-  optional int64 id = 1;
+  int64 id = 1;
   string title = 2;
-  string description = 3;
-  string status = 4;
-  string created_at = 5;
-  string start_date = 6;
-  string end_date = 7;
+  optional string description = 3;
+  QuestStatus status = 4;
+  google.protobuf.Timestamp created_date = 5;
+  int64 created_by = 6;
+  optional int64 assignee = 7;
+  optional google.protobuf.Timestamp start_date = 8;
+  optional google.protobuf.Timestamp deadline = 9;
+  optional google.protobuf.Timestamp finished_date = 10;
 }
 
 // ===== Requests / Responses =====
-
 message IdRequest {
   int64 id = 1;
 }
 
 // ===== Quest  =====
 message CreateQuestRequest {
-  QuestEntity quest = 1;
+  string title = 1;
+  optional string description = 2;
+  QuestStatus status = 3;
+  int64 created_by = 5;
+  optional int64 assignee_id = 6;
+  optional google.protobuf.Timestamp start_date = 7;
+  optional google.protobuf.Timestamp deadline = 8;
+  optional google.protobuf.Timestamp finished_date = 9;
 }
 
 message UpdateQuestRequest {
   QuestEntity quest = 1;
 }
 
+message DeleteQuestRequest {
+  int64 questId = 1;
+}
+
 message QuestList {
   repeated QuestEntity quests = 1;
 }
 
-
 // ===== User  =====
 
-message ReadEmailRequest {
-  UserEntity user = 1;
+message CreateUserRequest{
+  string email = 2;
+  string password = 3;
+  string displayName = 4;
 }
 
-message ReadUserRequest{
-  UserEntity user = 1;
-}
-
-message UpdateUserRequest{
+message LoginUserRequest{
   string email = 1;
-  UserEntity user = 2;
+  string password = 2;
+}
+
+message UpdateUserNameRequest{
+  int64 userId = 1;
+  string displayName = 2;
+}
+
+message UpdateUserEmailRequest{
+  int64 userId = 1;
+  string email = 2;
+}
+
+message UpdateUserPasswordRequest{
+  int64 userId = 1;
+  string password = 2;
 }
 
 message DeleteUserRequest{
-  string email = 1;
+  string userId = 1;
 }
 
 message UserList{
   repeated UserEntity users = 1;
-}
-
-message CreateUserRequest{
-  UserEntity user = 1;
-}
-
-message EmailRequest{
-  string email = 1;
-}
-
-message UserCredentialsRequest{
-  UserEntity user = 1;
 }
 
 
@@ -87,10 +109,11 @@ message UserCredentialsRequest{
 service UserService {
   rpc CreateUser (CreateUserRequest) returns (UserEntity);
   rpc GetUserById (IdRequest) returns (UserEntity);
-  rpc GetUserByEmail(EmailRequest) returns (UserEntity);
-  rpc CheckUserCredentials(UserCredentialsRequest) returns (google.protobuf.BoolValue);
+  rpc LogUser(LoginUserRequest) returns (google.protobuf.BoolValue);
   rpc GetAllUsers (google.protobuf.Empty) returns (UserList);
-  rpc UpdateUser (UpdateUserRequest) returns (UserEntity);
+  rpc UpdateUserName (UpdateUserNameRequest) returns (UserEntity);
+  rpc UpdateUserEmail (UpdateUserEmailRequest) returns (UserEntity);
+  rpc UpdateUserPassword (UpdateUserPasswordRequest) returns (UserEntity);
   rpc DeleteUser (DeleteUserRequest) returns (google.protobuf.Empty);
 }
 
