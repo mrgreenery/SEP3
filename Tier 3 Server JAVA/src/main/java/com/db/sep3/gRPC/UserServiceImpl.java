@@ -221,15 +221,14 @@ public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase {
             if (!userRepository.existsById(request.getUserId())) {
                 responseObserver.onError(
                         io.grpc.Status.NOT_FOUND
-                                .withDescription("User " + request.getEmail() + " not found")
+                                .withDescription("User " + request.getUserId() + " not found")
                                 .asRuntimeException()
                 );
-                return;
             }
 
-            User user = userRepository.findByEmail(request.getEmail()).
+            User user = userRepository.findById(request.getUserId()).
                     orElseThrow(() -> new jakarta.persistence.EntityNotFoundException(
-                            "User " + request.getEmail() + " not found"));
+                            "User " + request.getUserId() + " not found"));
 
             //if he exists delete it
             userRepository.deleteById(user.getId());
@@ -264,6 +263,7 @@ public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase {
                 .setEmail(user.getEmail())
                 .setDisplayName(user.getDisplayName())
                 .build();
+
         return userEntity;
     }
 
