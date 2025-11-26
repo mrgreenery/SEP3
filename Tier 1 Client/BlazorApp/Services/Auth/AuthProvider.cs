@@ -76,6 +76,7 @@ public class AuthProvider (HttpClient client) : AuthenticationStateProvider
         {
             new Claim(ClaimTypes.Name, authUser.DisplayName),
             new Claim(ClaimTypes.Email, authUser.Email),
+            // new Claim(ClaimTypes.Id, authUser.Id)
         };
         
         ClaimsIdentity identity = new ClaimsIdentity(claims, "apiauth");
