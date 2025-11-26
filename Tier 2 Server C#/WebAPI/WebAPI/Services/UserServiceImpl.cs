@@ -58,10 +58,6 @@ public class UserServiceImpl : IUserService
 
         try
         {
-            var grpcRequest = new CreateUserRequest
-            {
-                User = userEntity
-            };
 
             var grpcResponse =
                 await _grpcClient.CreateUserAsync(
