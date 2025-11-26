@@ -38,7 +38,7 @@ public class AuthProvider (HttpClient client) : AuthenticationStateProvider
         string password)
     {
         HttpResponseMessage response = await client.PostAsJsonAsync(
-            "auth/register", new RegisterRequest()
+            "auth/register", new CreateUserRequest()
             {
                 DisplayName = displayName,
                 Email = email,
@@ -74,9 +74,9 @@ public class AuthProvider (HttpClient client) : AuthenticationStateProvider
 
         List<Claim> claims = new List<Claim>()
         {
+            new Claim("Id", authUser.Id.ToString()),
             new Claim(ClaimTypes.Name, authUser.DisplayName),
             new Claim(ClaimTypes.Email, authUser.Email),
-            // new Claim(ClaimTypes.Id, authUser.Id)
         };
         
         ClaimsIdentity identity = new ClaimsIdentity(claims, "apiauth");

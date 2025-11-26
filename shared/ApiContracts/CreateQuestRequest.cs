@@ -1,8 +1,0 @@
-namespace ApiContracts;
-
-public record CreateQuestRequest
-{
-    public required string Title { get; set; }
-    public required string Description { get; set; }
-    
-}
