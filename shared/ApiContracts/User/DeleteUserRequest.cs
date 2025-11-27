@@ -2,5 +2,5 @@ namespace ApiContracts.User;
 
 public record DeleteUserRequest
 {
-    public int Id { get; set; }
+    public long Id { get; set; }
 };

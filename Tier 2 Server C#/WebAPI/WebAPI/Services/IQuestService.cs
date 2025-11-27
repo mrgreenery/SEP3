@@ -1,4 +1,4 @@
-using ApiContracts;
+using ApiContracts.Quest;
 
 namespace WebAPI.Services;
 

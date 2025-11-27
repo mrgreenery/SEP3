@@ -1,4 +1,4 @@
-namespace WebAPI.ApiContracts;
+namespace ApiContracts.User;
 
 public class LoginRequest
 {

@@ -22,8 +22,7 @@ enum QuestStatus{
 message UserEntity {
   int64 id = 1;
   string email = 2;
-  string password = 3;
-  string displayName = 4;
+  string displayName = 3;
 }
 
 message QuestEntity {
@@ -32,8 +31,8 @@ message QuestEntity {
   optional string description = 3;
   QuestStatus status = 4;
   google.protobuf.Timestamp created_date = 5;
-  int64 created_by = 6;
-  optional int64 assignee = 7;
+  UserEntity created_by = 6;
+  optional UserEntity assignee = 7;
   optional google.protobuf.Timestamp start_date = 8;
   optional google.protobuf.Timestamp deadline = 9;
   optional google.protobuf.Timestamp finished_date = 10;
@@ -49,15 +48,22 @@ message CreateQuestRequest {
   string title = 1;
   optional string description = 2;
   QuestStatus status = 3;
-  int64 created_by = 5;
-  optional int64 assignee_id = 6;
-  optional google.protobuf.Timestamp start_date = 7;
-  optional google.protobuf.Timestamp deadline = 8;
-  optional google.protobuf.Timestamp finished_date = 9;
+  int64 created_by = 4;
+  optional int64 assignee_id = 5;
+  optional google.protobuf.Timestamp start_date = 6;
+  optional google.protobuf.Timestamp deadline = 7;
+  optional google.protobuf.Timestamp finished_date = 8;
 }
 
 message UpdateQuestRequest {
-  QuestEntity quest = 1;
+  int64 questId = 1;
+  string title = 2;
+  optional string description = 3;
+  QuestStatus status = 4;
+  optional int64 assignee_id = 5;
+  optional google.protobuf.Timestamp start_date = 6;
+  optional google.protobuf.Timestamp deadline = 7;
+  optional google.protobuf.Timestamp finished_date = 8;
 }
 
 message DeleteQuestRequest {

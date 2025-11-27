@@ -1,5 +1,7 @@
 using ApiContracts;
-using WebAPI.ApiContracts;
+using ApiContracts.User;
+using Data;
+using WebAPI.Entities;
 
 namespace WebAPI.Services;
 
@@ -8,15 +10,14 @@ public interface IUserService
 {
     Task<UserDto> CreateUserAsync(string displayName, string email, string password);
 
-    Task<UserDto> GetUserByEmailAsync(string email);
+    // Task<UserDto> GetUserByEmailAsync(string email);
 
     Task<List<UserDto>> GetAllUsersAsync();
 
-    Task<UserDto?> CheckUserCredentialsAsync(string email, string password);
+    Task<UserDto?> LoginUser(string email, string password);
 
-    Task<UserDto> UpdateUserAsync(string oldEmail, string displayName,
-        string newEmail, string password);
+    Task<UserDto> UpdateUserNameAsync(long id, string displayName,
+        string email, string password);
 
     Task DeleteUserAsync(string email);
-
 }

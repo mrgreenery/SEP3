@@ -1,8 +1,10 @@
+using ApiContracts.User;
+
 namespace ApiContracts.Quest;
 
 public record QuestDto
 {
-    public int Id { get; set; }
+    public long Id { get; set; }
     public required string Title { get; set; }
     public string? Description { get; set; }
     public required QuestStatus Status { get; set; }

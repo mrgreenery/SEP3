@@ -1,11 +1,11 @@
 
-using ApiContracts;
-using WebAPI.ApiContracts;
+using ApiContracts.User;
 using Data;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using Grpc.Net.Client;
 using WebAPI.Services.Exceptions.User;
+using DeleteUserRequest = Data.DeleteUserRequest;
 
 namespace WebAPI.Services;
 
@@ -199,12 +199,12 @@ public class UserServiceImpl : IUserService
         }
     }
 
-    public async Task DeleteUserAsync(string email)
+    public async Task DeleteUserAsync(long id)
     {
         try
         {
             await _grpcClient.DeleteUserAsync(
-                new DeleteUserRequest { Email = email });
+                new DeleteUserRequest { UserId = id });
         } catch (RpcException ex) when (ex.StatusCode == StatusCode.NotFound)
         {
             throw new UserWithThisEmailDoesNotExist();
@@ -214,4 +214,14 @@ public class UserServiceImpl : IUserService
             throw new Exception($"gRPC call failed: {ex.StatusCode} - {ex.Status.Detail}", ex);
         };
     }
+
+    public static UserDto ToDto(UserEntity user)
+    {
+        return new UserDto
+        {
+            Id = user.Id,
+            DisplayName = user.DisplayName,
+            Email = user.Email,
+        };
+    } 
 }
