@@ -2,7 +2,7 @@ package com.db.sep3.gRPC;
 
 import com.db.sep3.DAO.UserRepository;
 import com.db.sep3.entities.User;
-import com.google.protobuf.BoolValue;
+import com.db.sep3.gRPC.mapper.ToProto;
 import com.google.protobuf.Empty;
 import com.sep3.data.grpc.*;
 import io.grpc.stub.StreamObserver;
@@ -36,12 +36,7 @@ public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase {
             System.out.println("User saved with ID: " + saved.getId());
 
             //Convert to proto
-            UserEntity response = UserEntity.newBuilder()
-                    .setId(saved.getId())
-                    .setEmail(saved.getEmail())
-                    .setDisplayName(saved.getDisplayName())
-                    .setPassword(saved.getPassword())
-                    .build();
+            UserEntity response = ToProto.UserToProto(saved);
 
             responseObserver.onNext(response);
             responseObserver.onCompleted();
@@ -75,7 +70,7 @@ public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase {
 
 
             //conver to proto
-            UserEntity response = convertToProto(user);
+            UserEntity response = ToProto.UserToProto(user);
 
             //respond
             responseObserver.onNext(response);
@@ -102,7 +97,7 @@ public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase {
     }
 
     @Override
-    public void logUser(LoginUserRequest request, StreamObserver<BoolValue> responseObserver){
+    public void logUser(LoginUserRequest request, StreamObserver<UserEntity> responseObserver){
         try{
             String email = request.getEmail();
 
@@ -113,19 +108,18 @@ public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase {
                     .orElseThrow(() -> new jakarta.persistence.EntityNotFoundException
                             ("User with email: " + email + " not found"));
 
-            BoolValue response;
+            UserEntity response = null;
 
             // check if password matches
             if(userFromDb.getPassword().equals(request.getPassword())){
-                response = BoolValue.newBuilder().setValue(true).build();
-            }else response = BoolValue.newBuilder().setValue(false).build();;
+                System.out.println("=== User Credentials Checked Successfully ===");
 
-            //conver to proto
-            //respond
-            responseObserver.onNext(response);
-            responseObserver.onCompleted();
-
-            System.out.println("=== User Credentials Checked Successfully ===");
+                //password matches, so set new UserDto as a response
+                 response = ToProto.UserToProto(userFromDb);
+            }
+                //respond
+                responseObserver.onNext(response);
+                responseObserver.onCompleted();
 
         }catch (jakarta.persistence.EntityNotFoundException e) {
             responseObserver.onError(
@@ -155,7 +149,7 @@ public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase {
 
             //get Users
             UserList.Builder builder = UserList.newBuilder();
-            userRepository.findAll().forEach(u -> builder.addUsers(convertToProto(u)));
+            userRepository.findAll().forEach(u -> builder.addUsers(ToProto.UserToProto(u)));
             UserList users = builder.build();
 
             //send respond
@@ -195,7 +189,7 @@ public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase {
             User saved = userRepository.save(user);
 
             //send response
-            responseObserver.onNext(convertToProto(saved));
+            responseObserver.onNext(ToProto.UserToProto(saved));
             responseObserver.onCompleted();
             System.out.println("=== User Updated Successfully ===");
         }catch (jakarta.persistence.EntityNotFoundException e) {
@@ -255,17 +249,7 @@ public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase {
     }
 
 
-    //util method for converting User to UserEntity
-    private UserEntity convertToProto(User user)
-    {
-        UserEntity userEntity = UserEntity.newBuilder()
-                .setId(user.getId())
-                .setEmail(user.getEmail())
-                .setDisplayName(user.getDisplayName())
-                .build();
 
-        return userEntity;
-    }
 
 
 
