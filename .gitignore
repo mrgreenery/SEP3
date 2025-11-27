@@ -1,1 +1,13 @@
-/Tier 1 Client/BlazorApp/obj/
+# Ignore all .NET build output everywhere
+**/bin/
+**/obj/
+
+# Ignore JetBrains Rider / IDE stuff
+.idea/
+*.sln.iml
+*.user
+*.vs/
+
+# Ignore generated files from JAVA
+Tier 3 Server JAVA/target
+
