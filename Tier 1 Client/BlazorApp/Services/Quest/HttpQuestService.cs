@@ -1,9 +1,8 @@
 using System.Text.Json;
-using ApiContracts;
 using ApiContracts.Quest;
-using ApiContracts.User;
+using BlazorApp.Services.Auth;
 
-namespace BlazorApp.Services.Auth;
+namespace BlazorApp.Services.Quest;
 
 public class HttpQuestService : IQuestService
 {
@@ -44,18 +43,6 @@ public class HttpQuestService : IQuestService
                    new JsonSerializerOptions{PropertyNameCaseInsensitive = true})
                ?? throw new Exception("Could not create quest");
     }
-    
-    // public async Task<QuestDto> GetQuestAsync(int id)
-    // {
-    //     var respond = await client.GetAsync($"quests/{id}");
-    //     
-    //     respond.EnsureSuccessStatusCode();
-    //     
-    //     return await respond.Content.ReadFromJsonAsync<QuestDto>(
-    //                new JsonSerializerOptions{PropertyNameCaseInsensitive = true})
-    //            ?? throw new Exception("Could not get quest");
-    // }
-    //
     
     public async Task UpdateQuestAsync(int id, QuestDto questDto)
     {

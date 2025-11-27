@@ -113,7 +113,7 @@ public class AuthProvider (HttpClient client) : AuthenticationStateProvider
         );
     }
 
-    
+    //TODO: remove later
     public void ForceLoginForTesting()
     {
         var claims = new List<Claim>

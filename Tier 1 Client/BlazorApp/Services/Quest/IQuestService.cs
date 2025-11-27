@@ -13,7 +13,5 @@ public interface IQuestService
         DateTime? finishedDate);
     public Task UpdateQuestAsync(int id, QuestDto questDto);
     public Task DeleteQuestAsync(int id);
-    
-    // public Task<QuestDto> GetQuestAsync(int id);
     public Task<List<QuestDto>> GetAllQuestsAsync();
 }

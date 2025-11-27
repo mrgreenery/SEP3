@@ -2,10 +2,10 @@ using ApiContracts.User;
 using System.Security.Claims;
 using System.Text.Json;
 using ApiContracts.User.Update;
+using BlazorApp.Services.Auth;
 using Microsoft.AspNetCore.Components.Authorization;
 
-
-namespace BlazorApp.Services.Auth;
+namespace BlazorApp.Services.User;
 
 public class HttpUserService : IUserService
 {
@@ -18,18 +18,6 @@ public class HttpUserService : IUserService
         this.client = client;
         authProvider = (AuthProvider)authStateProvider;
     }
-    
-    // public async Task<UserDto> CreateUserAsync(CreateUserRequest request)
-    // {
-    //     var respond = await client.PostAsJsonAsync("users",  request);
-    //     
-    //     respond.EnsureSuccessStatusCode();
-    //     
-    //     return await respond.Content.ReadFromJsonAsync<UserDto>(
-    //         new JsonSerializerOptions{PropertyNameCaseInsensitive = true})
-    //         ?? throw new Exception("Could not create user");
-    //     
-    // }
 
     public async Task UpdateUserNameAsync(int id, string displayName)
     {
@@ -60,23 +48,11 @@ public class HttpUserService : IUserService
         throw new NotImplementedException();
     }
 
-    // public  async Task<UserDto> GetUserAsync(int id)
-    // {
-    //     var respond = await client.GetAsync($"users/{id}");
-    //     
-    //     respond.EnsureSuccessStatusCode();
-    //     
-    //     return await respond.Content.ReadFromJsonAsync<UserDto>(
-    //         new JsonSerializerOptions{PropertyNameCaseInsensitive = true})
-    //         ?? throw new Exception("Could not get user");
-    // }
-
     public Task<List<UserDto>> GetAllUsersAsync()
     {
         throw new NotImplementedException();
     }
-
-
+    
     public Task DeleteUserAsync(int id)
     {
         throw new NotImplementedException();
