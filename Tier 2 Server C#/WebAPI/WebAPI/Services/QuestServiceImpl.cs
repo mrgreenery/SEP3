@@ -24,7 +24,7 @@ public class QuestServiceImpl : IQuestService
     {
         if (request is null) throw new ArgumentNullException(nameof(request));
         if(request.Title is null) throw new ArgumentNullException(nameof(request.Title));
-        if(request.CreatedBy is null) throw new ArgumentNullException(nameof(request.CreatedBy));
+        if(request.CreatedById == 0) throw new ArgumentNullException(nameof(request.CreatedById));
         
 
         // Create gRPC request
@@ -33,8 +33,8 @@ public class QuestServiceImpl : IQuestService
             Title = request.Title,
             Description = request.Description ?? string.Empty ,
             Status =  Enum.Parse<grpcQuestStatus>(request.Status.ToString()),
-            CreatedBy = request.CreatedBy.Id,
-            AssigneeId = request.Assignee?.Id ?? 0,
+            CreatedBy = request.CreatedById,
+            AssigneeId = request.AssigneeId ?? 0,
             StartDate = request.StartDate.HasValue ? Timestamp.FromDateTime(DateTime.SpecifyKind(request.StartDate.Value, DateTimeKind.Utc)) : null,
             Deadline= request.Deadline.HasValue ? Timestamp.FromDateTime(DateTime.SpecifyKind(request.Deadline.Value, DateTimeKind.Utc)) : null, 
             FinishedDate = request.FinishedDate.HasValue ? Timestamp.FromDateTime(DateTime.SpecifyKind(request.FinishedDate.Value, DateTimeKind.Utc)) : null ,
