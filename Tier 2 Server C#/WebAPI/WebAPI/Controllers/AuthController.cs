@@ -1,6 +1,6 @@
 using ApiContracts;
+using ApiContracts.User;
 using Microsoft.AspNetCore.Mvc;
-using WebAPI.ApiContracts;
 using WebAPI.Services;
 using WebAPI.Services.Exceptions.User;
 
@@ -23,12 +23,12 @@ public class AuthController : ControllerBase
     
     [HttpPost("register")]
     public async Task<ActionResult<UserDto>> Register(
-        [FromBody] RegisterRequest request)
+        [FromBody] CreateUserRequest request)
     {
         try
         {
             _logger.LogInformation(
-                $"Register request: email: {request.Email}, " +
+                $"Create user request: email: {request.Email}, " +
                 $"display name: {request.DisplayName}," +
                 $" password: {request.Password}");
 
@@ -65,7 +65,7 @@ public class AuthController : ControllerBase
                                    $" password: {request.Password}");
 
             var userDto =
-                await _userService.CheckUserCredentialsAsync(request.Email,
+                await _userService.LoginUser(request.Email,
                     request.Password);
 
             if (userDto is null)

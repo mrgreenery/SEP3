@@ -1,4 +1,5 @@
 using ApiContracts;
+using ApiContracts.Quest;
 using WebAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -34,22 +35,22 @@ public class QuestsController : ControllerBase
         }
     }
 
-    [HttpGet("{id}")]
-    public async Task<ActionResult<QuestDto>> GetQuest(int id)
-    {
-        try
-        {
-            return Ok(new QuestDto
-            {
-                Id = id,
-                Title = "Dummy Quest",
-                Description = "Dummy Description",
-                CreatedAt = DateTime.UtcNow
-            });
-        }
-        catch (Exception e)
-        {
-            return StatusCode(500, e.Message);
-        }
-    }
+    // [HttpGet("{id}")]
+    // public async Task<ActionResult<QuestDto>> GetQuest(int id)
+    // {
+    //     try
+    //     {
+    //         return Ok(new QuestDto
+    //         {
+    //             Id = id,
+    //             Title = "Dummy Quest",
+    //             Description = "Dummy Description",
+    //             CreatedAt = DateTime.UtcNow
+    //         });
+    //     }
+    //     catch (Exception e)
+    //     {
+    //         return StatusCode(500, e.Message);
+    //     }
+    // }
 }
