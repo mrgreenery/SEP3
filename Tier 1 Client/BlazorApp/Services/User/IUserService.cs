@@ -1,10 +1,11 @@
 using ApiContracts;
+using ApiContracts.User;
 
 namespace BlazorApp.Services.Auth;
 
 public interface IUserService
 {
-    public Task<UserDto> CreateUserAsync(CreateUserRequest request);
+    // public Task<UserDto> CreateUserAsync(CreateUserRequest request);
     public Task UpdateUserNameAsync(int id, string displayName);
     public Task UpdateUserEmailAsync(int id, string email);
     public Task UpdateUserPasswordAsync(int id, string password);

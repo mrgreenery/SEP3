@@ -78,7 +78,7 @@
         {
             var auth = (AuthProvider)AuthProvider;
 
-            await auth.Register(
+            await auth.CreateUser(
                 model.FullName,
                 model.Email,
                 model.Password

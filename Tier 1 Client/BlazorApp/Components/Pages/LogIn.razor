@@ -50,7 +50,7 @@
         try
         {
             var auth = (AuthProvider)AuthProvider;
-            await auth.Login(model.Email, model.Password);
+            await auth.LoginUser(model.Email, model.Password);
 
             Nav.NavigateTo("/backlog");
         }
