@@ -21,7 +21,7 @@ public class HttpUserService : IUserService
 
     public async Task UpdateUserNameAsync(int id, string displayName)
     {
-        var request = new UpdateUserNameRequest
+        var request = new UpdateDisplayNameRequest
         {
             Id = id,
             DisplayName = displayName
@@ -38,23 +38,83 @@ public class HttpUserService : IUserService
         authProvider.UpdateClaims(updatedUser);
     }
 
-    public Task UpdateUserEmailAsync(int id, string email)
+    public async Task UpdateUserEmailAsync(int id, string email)
     {
-        throw new NotImplementedException();
+        //create the request
+        var request = new UpdateUserEmailRequest
+        {
+            Id = id,
+            Email = email
+        };
+
+        //call the web api endpoint to update email
+        var response = await client.PutAsJsonAsync(
+            "api/users/email", request);
+
+        
+        //check if the api call was success or not
+        if (!response.IsSuccessStatusCode)
+            throw new Exception($"Failed to update email. Status: {response.StatusCode}");
+
+        //deserialize the response into UserDto
+        var updatedUser = await response.Content.ReadFromJsonAsync<UserDto>(
+                              new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) 
+                          ?? throw new Exception("Could not parse updated user");
+        
+        //update the claims with new email
+        authProvider.UpdateClaims(updatedUser);
     }
 
-    public Task UpdateUserPasswordAsync(int id, string password)
+    public async Task UpdateUserPasswordAsync(int id, string password)
     {
-        throw new NotImplementedException();
+        // ccreate the request
+        var request = new UpdateUserPasswordRequest
+        {
+            Id = id,
+            Password = password
+        };
+
+        // call the web api to update the password
+        var response = await client.PutAsJsonAsync(
+            "api/users/password", request);
+
+        // check if the api call was success or not
+        if (!response.IsSuccessStatusCode)
+            throw new Exception($"Failed to update password. Status: {response.StatusCode}");
+
+        // deserialize the response to userDto
+        // (even tho nothing changed in dto bc we dont send the password xd)
+        var updatedUser = await response.Content.ReadFromJsonAsync<UserDto>(
+                              new JsonSerializerOptions { PropertyNameCaseInsensitive = true })
+                          ?? throw new Exception("Could not parse updated user");
+
+        // updating the claim buuuuuut in the end nothing changes for the claim.....
+        authProvider.UpdateClaims(updatedUser);
     }
 
-    public Task<List<UserDto>> GetAllUsersAsync()
+    public async Task<List<UserDto>> GetAllUsersAsync()
     {
-        throw new NotImplementedException();
+        // call api endpoint to get all users
+        var response = await client.GetAsync("api/users");
+
+        // check if response is succes or not
+        if (!response.IsSuccessStatusCode)
+            throw new Exception($"Failed to fetch users. Status: {response.StatusCode}");
+
+        // deseralize the respond to List<UserDto>
+        return await response.Content.ReadFromJsonAsync<List<UserDto>>(
+                   new JsonSerializerOptions { PropertyNameCaseInsensitive = true })
+               ?? new List<UserDto>();
     }
     
-    public Task DeleteUserAsync(int id)
+    public async Task DeleteUserAsync(int id)
     {
-        throw new NotImplementedException();
+        // Call api to delete user
+        var response = await client.DeleteAsync($"api/users/{id}");
+
+        // If delete failed, throw an exception
+        if (!response.IsSuccessStatusCode)
+            throw new Exception($"Failed to delete user. Status: {response.StatusCode}");
+        
     }
 }
