@@ -1,6 +1,6 @@
 namespace ApiContracts.User.Update;
 
-public record UpdateUserNameRequest
+public record UpdateDisplayNameRequest
 {
     public long Id { get; set; }
     public required string DisplayName { get; set; }
