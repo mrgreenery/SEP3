@@ -115,7 +115,7 @@ public class UserServiceImpl : IUserService
         }
         catch (RpcException ex) when (ex.StatusCode == StatusCode.NotFound)
         {
-            throw new UserWithThisEmailDoesNotExist();
+            throw new UserWithThisEmailDoesNotExist(); // todo: shouldnt this be id ?
         }
         catch (RpcException ex)
         {
@@ -125,12 +125,52 @@ public class UserServiceImpl : IUserService
 
     public async Task<UserDto> UpdateUserEmailAsync(long id, string email)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var grpcResponse =
+                await _grpcClient.UpdateUserEmailAsync(new UpdateUserEmailRequest 
+                {
+                    UserId = id,
+                    Email = email
+                });
+
+            //TODO: notify auth provider about claim change
+            return ToDto(grpcResponse);
+        }
+        catch (RpcException ex) when (ex.StatusCode == StatusCode.NotFound)
+        {
+            throw new UserWithThisEmailDoesNotExist();// todo same shouldnt this be id ?
+        }
+        catch (RpcException ex)
+        {
+            throw new Exception($"gRPC call failed: {ex.StatusCode} - {ex.Status.Detail}", ex);
+        }
     }
 
     public async Task<UserDto> UpdateUserPasswordAsync(long id, string password)
     {
-        throw new NotImplementedException();
+        {
+            try
+            {
+                var grpcResponse =
+                    await _grpcClient.UpdateUserPasswordAsync(new UpdateUserPasswordRequest
+                    {
+                        UserId = id,
+                        Password = password
+                    });
+
+                //TODO: notify auth provider about claim change
+                return ToDto(grpcResponse);
+            }
+            catch (RpcException ex) when (ex.StatusCode == StatusCode.NotFound)
+            {
+                throw new UserWithThisEmailDoesNotExist(); // todo same shouldnt this be id ?
+            }
+            catch (RpcException ex)
+            {
+                throw new Exception($"gRPC call failed: {ex.StatusCode} - {ex.Status.Detail}", ex);
+            }
+        }
     }
 
     public async Task DeleteUserAsync(long id)
