@@ -170,9 +170,7 @@ public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase {
         }
     }
 
-    //this is more complicated bc of password, bc request dont have password (null)
-    //so i want to get the user, than update the email or display name
-    //and than save it without touching the password
+
     @Override
     public void updateUserName(UpdateUserNameRequest request, StreamObserver<UserEntity> responseObserver) {
         try {
@@ -186,6 +184,72 @@ public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase {
 
             //update displayName and save updated User
             user.setDisplayName(request.getDisplayName());
+            User saved = userRepository.save(user);
+
+            //send response
+            responseObserver.onNext(ToProto.UserToProto(saved));
+            responseObserver.onCompleted();
+            System.out.println("=== User Updated Successfully ===");
+        }catch (jakarta.persistence.EntityNotFoundException e) {
+            responseObserver.onError(
+                    io.grpc.Status.NOT_FOUND
+                            .withDescription(e.getMessage())
+                            .withCause(e)
+                            .asRuntimeException()
+            );
+        }
+        catch (Exception e) {
+            responseObserver.onError(io.grpc.Status.INTERNAL.withDescription("Failed to update user").withCause(e).asRuntimeException());
+        }
+    }
+
+
+    @Override
+    public void updateUserEmail(UpdateUserEmailRequest request, StreamObserver<UserEntity> responseObserver) {
+        try {
+
+            //get user from request id
+            User user = userRepository.findById(request.getUserId())
+                    .orElseThrow(() ->
+                            new jakarta.persistence.EntityNotFoundException(
+                                    "User with id: " + request.getUserId() + " not found"));
+
+
+            //update displayName and save updated User
+            user.setDisplayName(request.getEmail());
+            User saved = userRepository.save(user);
+
+            //send response
+            responseObserver.onNext(ToProto.UserToProto(saved));
+            responseObserver.onCompleted();
+            System.out.println("=== User Updated Successfully ===");
+        }catch (jakarta.persistence.EntityNotFoundException e) {
+            responseObserver.onError(
+                    io.grpc.Status.NOT_FOUND
+                            .withDescription(e.getMessage())
+                            .withCause(e)
+                            .asRuntimeException()
+            );
+        }
+        catch (Exception e) {
+            responseObserver.onError(io.grpc.Status.INTERNAL.withDescription("Failed to update user").withCause(e).asRuntimeException());
+        }
+    }
+
+
+    @Override
+    public void updateUserPassword(UpdateUserPasswordRequest request, StreamObserver<UserEntity> responseObserver) {
+        try {
+
+            //get user from request id
+            User user = userRepository.findById(request.getUserId())
+                    .orElseThrow(() ->
+                            new jakarta.persistence.EntityNotFoundException(
+                                    "User with id: " + request.getUserId() + " not found"));
+
+
+            //update displayName and save updated User
+            user.setDisplayName(request.getPassword());
             User saved = userRepository.save(user);
 
             //send response
