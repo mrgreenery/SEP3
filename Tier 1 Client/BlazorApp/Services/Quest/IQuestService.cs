@@ -5,8 +5,6 @@ namespace BlazorApp.Services.Auth;
 
 public interface IQuestService
 {
-    //todo Change the CreateQuestResponse to QuestDTO
-    
     public Task<QuestDto> CreateQuestAsync(string title, 
         string? description, QuestStatus status, long createdById, 
         long? assigneeId, DateTime? startDate, DateTime? deadline, 

@@ -28,7 +28,7 @@ public class HttpUserService : IUserService
         };
 
         var response = await client.PutAsJsonAsync(
-            $"users/{id}/email", request); ///Doesn't this need displayname instead of email? 
+            "api/users/display-name", request);  
         
         var updatedUser = await response.Content.ReadFromJsonAsync<UserDto>(
                               new JsonSerializerOptions{ PropertyNameCaseInsensitive = true })
@@ -88,7 +88,7 @@ public class HttpUserService : IUserService
                               new JsonSerializerOptions { PropertyNameCaseInsensitive = true })
                           ?? throw new Exception("Could not parse updated user");
 
-        // updating the claim buuuuuut in the end nothing changes for the claim.....
+        // updating the claim buuuuuut in the end nothing changes for the claim..... so why do we keep this? 
         authProvider.UpdateClaims(updatedUser);
     }
 

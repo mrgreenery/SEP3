@@ -34,7 +34,7 @@ public class HttpQuestService : IQuestService
         
         // Send a request and receive a response message
         var respond = await client.PostAsJsonAsync(
-            "quests",  request);
+            "api/quests",  request);
         
         respond.EnsureSuccessStatusCode();
         
