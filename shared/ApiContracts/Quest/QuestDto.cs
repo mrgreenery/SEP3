@@ -15,3 +15,4 @@ public record QuestDto
     public DateTime? Deadline { get; set; }
     public DateTime? FinishedDate { get; set; }
 }
+

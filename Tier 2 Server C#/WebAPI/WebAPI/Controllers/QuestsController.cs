@@ -1,7 +1,6 @@
-using ApiContracts;
 using ApiContracts.Quest;
-using WebAPI.Services;
 using Microsoft.AspNetCore.Mvc;
+using WebAPI.Services;
 
 namespace WebAPI.Controllers;
 
@@ -17,40 +16,79 @@ public class QuestsController : ControllerBase
         _questService = questService;
         _logger = logger;
     }
-    
+
+    //  CREATE QUEST 
+    // POST /api/quests
     [HttpPost]
     public async Task<ActionResult<QuestDto>> CreateQuest([FromBody] CreateQuestRequest request)
     {
         try
         {
             _logger.LogInformation("Creating quest: {Title}", request.Title);
-            var response = await _questService.CreateQuestAsync(request);
-            _logger.LogInformation("Quest created successfully with ID: {Id}", response.Id);
-            return Created($"/api/quests/{response.Id}", response);
+
+            var created = await _questService.CreateQuestAsync(request);
+
+            return CreatedAtAction(nameof(GetQuestById), new { id = created.Id }, created);
         }
         catch (Exception e)
         {
             _logger.LogError(e, "Error creating quest");
-            return StatusCode(500, new { error = e.Message, details = e.ToString() });
+            return StatusCode(500, new { error = e.Message });
         }
     }
 
-    // [HttpGet("{id}")]
-    // public async Task<ActionResult<QuestDto>> GetQuest(int id)
-    // {
-    //     try
-    //     {
-    //         return Ok(new QuestDto
-    //         {
-    //             Id = id,
-    //             Title = "Dummy Quest",
-    //             Description = "Dummy Description",
-    //             CreatedAt = DateTime.UtcNow
-    //         });
-    //     }
-    //     catch (Exception e)
-    //     {
-    //         return StatusCode(500, e.Message);
-    //     }
-    // }
+    //  GET ALL QUESTS 
+    // GET /api/quests
+    [HttpGet]
+    public async Task<ActionResult<List<QuestDto>>> GetAllQuests()
+    {
+        try
+        {
+            var quests = await _questService.GetAllQuestsAsync();
+            return Ok(quests);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error getting all quests");
+            return StatusCode(500, new { error = e.Message });
+        }
+    }
+
+
+    //  UPDATE QUEST 
+    // PUT /api/quests/{id}
+    // Request: QuestDto (overwrite)
+    // Response: 202 Accepted
+    [HttpPut("{id:long}")]
+    public async Task<IActionResult> UpdateQuest(long id, [FromBody] QuestDto quest)
+    {
+        try
+        {
+            await _questService.UpdateQuestAsync(id, quest);
+            return Accepted(); // 202
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error updating quest {Id}", id);
+            return StatusCode(500, new { error = e.Message });
+        }
+    }
+
+    //  DELETE QUEST 
+    // DELETE /api/quests/{id}
+    // Response: 204 No Content
+    [HttpDelete("{id:long}")]
+    public async Task<IActionResult> DeleteQuest(long id)
+    {
+        try
+        {
+            await _questService.DeleteQuestAsync(id);
+            return NoContent(); // 204
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error deleting quest {Id}", id);
+            return StatusCode(500, new { error = e.Message });
+        }
+    }
 }
