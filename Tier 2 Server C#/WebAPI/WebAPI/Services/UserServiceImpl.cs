@@ -24,7 +24,7 @@ public class UserServiceImpl : IUserService
     {
         if (string.IsNullOrWhiteSpace(displayName) || string.IsNullOrWhiteSpace(email) ||
             string.IsNullOrWhiteSpace(password))
-            throw new ArgumentNullException();
+            throw new ArgumentNullException(nameof(displayName));
         
         try
         {
@@ -60,6 +60,7 @@ public class UserServiceImpl : IUserService
             if (grpcResponse is null)
                 throw new InvalidDataException("No users found.");
             
+            //could be a select with: return grpcResponse.Users.Select(ToDto).ToList();
             List<UserDto> userDtoList = new();
             foreach (UserEntity user in grpcResponse.Users)
             {
@@ -113,7 +114,7 @@ public class UserServiceImpl : IUserService
         }
         catch (RpcException ex) when (ex.StatusCode == StatusCode.NotFound)
         {
-            throw new UserWithThisEmailDoesNotExist(); ///TODO: shouldnt this be id ?
+            throw new UserWithThisEmailDoesNotExist();
         }
         catch (RpcException ex)
         {

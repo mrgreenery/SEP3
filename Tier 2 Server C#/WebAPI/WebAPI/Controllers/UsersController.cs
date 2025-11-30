@@ -2,6 +2,7 @@
 using ApiContracts.User.Update;
 using WebAPI.Services;
 using Microsoft.AspNetCore.Mvc;
+using WebAPI.Services.Exceptions.User;
 
 namespace WebAPI.Controllers;
 
@@ -61,7 +62,7 @@ public class UsersController : ControllerBase
             _logger.LogInformation("Update display name succeeded. UserId={UserId}", dto.Id);
             return Results.Ok(dto); //200 OK
         }
-        catch (KeyNotFoundException)
+        catch (UserWithThisEmailDoesNotExist)
         {
             return Results.NotFound($"User with id {request.Id} not found."); // 404 not found
         }
@@ -97,7 +98,7 @@ public class UsersController : ControllerBase
             _logger.LogInformation("Update email succeeded. UserId={UserId}", dto.Id);
             return Results.Ok(dto); // 200 OK
         }
-        catch (KeyNotFoundException)
+        catch (UserWithThisEmailDoesNotExist)
         {
             _logger.LogWarning("Update email failed, user not found. UserId={UserId}", request.Id);
             return Results.NotFound($"User with id {request.Id} not found."); // 404 not found
