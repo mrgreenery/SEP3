@@ -1,17 +1,18 @@
 using System;
+using ApiContracts.Quest;
 
 namespace WebAPI.Entities;
 
 public class Quest
 {
-    private long Id{ get; set; }
-    private string? Title{ get; set; }
-    private string? Description{ get; set; }
-    private string? Status { get; set; }
-    private DateTime CreatedAt { get; set; }
-    private User? CreatedBy { get; set; }
-    private ICollection<User>? Assignees { get; set; }
-    private DateTime? StartDate { get; set; }
-    private DateTime? EndDate { get; set; }
+    public long Id{ get; set; }
+    public string? Title{ get; set; }
+    public string? Description{ get; set; }
+    public QuestStatus Status { get; set; }
+    public DateTime CreatedDate { get; set; }
+    public User CreatedBy { get; set; }
+    public User? Assignee { get; set; }
+    public DateTime? StartDate { get; set; }
+    public DateTime? Deadline { get; set; }
 
 }
