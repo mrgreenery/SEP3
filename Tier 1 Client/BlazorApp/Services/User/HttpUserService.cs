@@ -28,7 +28,7 @@ public class HttpUserService : IUserService
         };
 
         var response = await client.PutAsJsonAsync(
-            $"users/{id}/email", request);
+            $"users/{id}/email", request); ///Doesn't this need displayname instead of email? 
         
         var updatedUser = await response.Content.ReadFromJsonAsync<UserDto>(
                               new JsonSerializerOptions{ PropertyNameCaseInsensitive = true })

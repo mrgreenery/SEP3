@@ -29,8 +29,8 @@ public class AuthController : ControllerBase
         {
             _logger.LogInformation(
                 $"Create user request: email: {request.Email}, " +
-                $"display name: {request.DisplayName}," +
-                $" password: {request.Password}");
+                $"display name: {request.DisplayName},"); 
+            // +$" password: {request.Password}"); 
 
             var newUserDto =
                 await _userService.CreateUserAsync(request.DisplayName,
@@ -46,12 +46,12 @@ public class AuthController : ControllerBase
         {
             _logger.LogError(
                 $"Username with email {request.Email} already exists. Unable to create new user.");
-            return StatusCode(401, "This email is already in use");
+            return StatusCode(400, "This email is already in use");
         }
         catch (Exception e)
         {
             _logger.LogError(e, "Error while registering user");
-            return StatusCode(401, "Unable to register. Try again later.");
+            return StatusCode(500, "Unable to register. Try again later.");
         }
     }
 
@@ -61,8 +61,10 @@ public class AuthController : ControllerBase
     {
         try
         {
-            _logger.LogInformation($"Login request: email: {request.Email}," +
-                                   $" password: {request.Password}");
+            _logger.LogInformation($"Login request: email: {request.Email},"); 
+                                   // + $" password: {request.Password}")
+                
+            
 
             var userDto =
                 await _userService.LoginUser(request.Email,
@@ -90,12 +92,12 @@ public class AuthController : ControllerBase
         {
             _logger.LogError(
                 $"Login request with email: {request.Email} did not match password.");
-            return StatusCode(401, "Wrong email or password");
+            return StatusCode(400, "Wrong email or password");
         }
         catch (Exception e)
         {
             _logger.LogError(e, "Error while registering user");
-            return StatusCode(401, "Unable to login. Try again later.");
+            return StatusCode(500, "Unable to login. Try again later.");
         }
     }
 }

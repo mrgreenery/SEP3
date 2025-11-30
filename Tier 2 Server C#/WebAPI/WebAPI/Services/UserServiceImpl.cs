@@ -110,12 +110,12 @@ public class UserServiceImpl : IUserService
                     DisplayName = displayName,
                 });
 
-            //TODO: notify auth provider about claim change
+            ///TODO: notify auth provider about claim change
             return ToDto(grpcResponse);
         }
         catch (RpcException ex) when (ex.StatusCode == StatusCode.NotFound)
         {
-            throw new UserWithThisEmailDoesNotExist(); // todo: shouldnt this be id ?
+            throw new UserWithThisEmailDoesNotExist(); ///TODO: shouldnt this be id ?
         }
         catch (RpcException ex)
         {
