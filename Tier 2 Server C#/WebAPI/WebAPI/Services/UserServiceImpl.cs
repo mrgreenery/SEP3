@@ -14,11 +14,9 @@ public class UserServiceImpl : IUserService
 {
     private readonly UserService.UserServiceClient _grpcClient;
 
-    public UserServiceImpl()
+    public UserServiceImpl(UserService.UserServiceClient grpcClient)
     {
-        var channel = GrpcChannel.ForAddress("http://localhost:9090");
-
-        _grpcClient = new UserService.UserServiceClient(channel);
+        _grpcClient = grpcClient;
     }
 
     public async Task<UserDto> CreateUserAsync(string displayName, string email,

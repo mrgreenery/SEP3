@@ -14,10 +14,9 @@ public class QuestServiceImpl : IQuestService
 
     private readonly QuestService.QuestServiceClient _grpcClient;
 
-    public QuestServiceImpl()
+    public QuestServiceImpl(QuestService.QuestServiceClient grpcClient)
     {
-        var channel = GrpcChannel.ForAddress("http://localhost:9090");
-        _grpcClient = new QuestService.QuestServiceClient(channel);
+        _grpcClient = grpcClient;
     }
 
   public async Task<QuestDto> CreateQuestAsync(CreateQuestRequest request)
