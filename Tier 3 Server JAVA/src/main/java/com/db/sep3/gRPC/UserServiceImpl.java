@@ -215,8 +215,8 @@ public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase {
                                     "User with id: " + request.getUserId() + " not found"));
 
 
-            //update displayName and save updated User
-            user.setDisplayName(request.getEmail());
+            //update email and save updated User
+            user.setEmail(request.getEmail());
             User saved = userRepository.save(user);
 
             //send response
@@ -248,8 +248,8 @@ public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase {
                                     "User with id: " + request.getUserId() + " not found"));
 
 
-            //update displayName and save updated User
-            user.setDisplayName(request.getPassword());
+            //update password and save updated User
+            user.setPassword(request.getPassword());
             User saved = userRepository.save(user);
 
             //send response
