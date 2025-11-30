@@ -1,5 +1,7 @@
 using BlazorApp.Components;
 using BlazorApp.Services.Auth;
+using BlazorApp.Services.Quest;
+using BlazorApp.Services.User;
 using Microsoft.AspNetCore.Components.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +17,8 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddScoped<AuthenticationStateProvider, AuthProvider>();
 builder.Services.AddAuthorizationCore();
+builder.Services.AddScoped<IUserService, HttpUserService>();
+builder.Services.AddScoped<IQuestService, HttpQuestService>();
 
 var app = builder.Build();
 
