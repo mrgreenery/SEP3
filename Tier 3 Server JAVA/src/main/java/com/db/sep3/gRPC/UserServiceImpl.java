@@ -3,6 +3,7 @@ package com.db.sep3.gRPC;
 import com.db.sep3.DAO.UserRepository;
 import com.db.sep3.entities.User;
 import com.db.sep3.gRPC.mapper.ToProto;
+import com.db.sep3.util.PasswordUtil;
 import com.google.protobuf.Empty;
 import com.sep3.data.grpc.*;
 import io.grpc.stub.StreamObserver;
@@ -28,7 +29,7 @@ public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase {
             User user = new User();
             user.setEmail(request.getEmail());
             user.setDisplayName(request.getDisplayName());
-            user.setPassword(request.getPassword());
+            user.setPassword(PasswordUtil.hashPassword(request.getPassword()));
 
             //save to database
             User saved = userRepository.save(user);
@@ -111,11 +112,11 @@ public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase {
             UserEntity response = null;
 
             // check if password matches
-            if(userFromDb.getPassword().equals(request.getPassword())){
+            if(PasswordUtil.verifyPassword(request.getPassword(), userFromDb.getPassword())){
                 System.out.println("=== User Credentials Checked Successfully ===");
 
                 //password matches, so set new UserDto as a response
-                 response = ToProto.UserToProto(userFromDb);
+                response = ToProto.UserToProto(userFromDb);
             }
                 //respond
                 responseObserver.onNext(response);
@@ -249,7 +250,7 @@ public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase {
 
 
             //update password and save updated User
-            user.setPassword(request.getPassword());
+            user.setPassword(PasswordUtil.hashPassword(request.getPassword()));
             User saved = userRepository.save(user);
 
             //send response
