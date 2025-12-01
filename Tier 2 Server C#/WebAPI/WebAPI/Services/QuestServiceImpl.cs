@@ -2,6 +2,7 @@ using ApiContracts.Quest;
 using Data;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
+using WebAPI.Services.Util;
 using CreateQuestRequest = ApiContracts.Quest.CreateQuestRequest;
 using Enum = System.Enum;
 using grpcQuestStatus = Data.QuestStatus;
@@ -59,7 +60,7 @@ public class QuestServiceImpl : IQuestService
         try
         {
             var grpcResponse = await _grpcClient.CreateQuestAsync(grpcRequest);
-            return ToDto(grpcResponse);
+            return DtoMapper.QuestToDto(grpcResponse);
         }
         catch (RpcException ex)
         {
@@ -79,7 +80,7 @@ public class QuestServiceImpl : IQuestService
 
             foreach (var quest in grpcResponse.Quests)
             {
-                result.Add(ToDto(quest));
+                result.Add(DtoMapper.QuestToDto(quest));
             }
 
             return result;
@@ -150,24 +151,5 @@ public class QuestServiceImpl : IQuestService
         {
             throw new Exception($"gRPC DeleteQuest failed: {ex.StatusCode} - {ex.Status.Detail}", ex);
         }
-    }
-
-    //  MAPPING 
-
-    private static QuestDto ToDto(QuestEntity quest)
-    {
-        return new QuestDto
-        {
-            Id = quest.Id,
-            Title = quest.Title,
-            Description = quest.Description,
-            Status = Enum.Parse<apiQuestStatus>(quest.Status.ToString()),
-            CreatedBy = UserServiceImpl.ToDto(quest.CreatedBy),
-            CreatedDate = quest.CreatedDate.ToDateTime(),
-            Assignee = quest.Assignee is not null ? UserServiceImpl.ToDto(quest.Assignee) : null,
-            StartDate = quest.StartDate?.ToDateTime(),
-            Deadline = quest.Deadline?.ToDateTime(),
-            FinishedDate = quest.FinishedDate?.ToDateTime(),
-        };
     }
 }

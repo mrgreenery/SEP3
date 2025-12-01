@@ -5,6 +5,7 @@ using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using Grpc.Net.Client;
 using WebAPI.Services.Exceptions.User;
+using WebAPI.Services.Util;
 using CreateUserRequest = Data.CreateUserRequest;
 using DeleteUserRequest = Data.DeleteUserRequest;
 
@@ -39,7 +40,7 @@ public class UserServiceImpl : IUserService
 
             if (grpcResponse is not null)
             {
-                return ToDto(grpcResponse);
+                return DtoMapper.UserToDto(grpcResponse);
             }
             throw new Exception("Error creating the user");
                 
@@ -64,7 +65,7 @@ public class UserServiceImpl : IUserService
             List<UserDto> userDtoList = new();
             foreach (UserEntity user in grpcResponse.Users)
             {
-                userDtoList.Add(ToDto(user));
+                userDtoList.Add(DtoMapper.UserToDto(user));
             }
             return userDtoList;
             
@@ -86,7 +87,7 @@ public class UserServiceImpl : IUserService
                             Password = password
                     });
             
-            return grpcResponse is not null ? ToDto(grpcResponse) : null;
+            return grpcResponse is not null ? DtoMapper.UserToDto(grpcResponse) : null;
         }
         catch (RpcException ex) when (ex.StatusCode == StatusCode.NotFound)
         {
@@ -110,7 +111,7 @@ public class UserServiceImpl : IUserService
                 });
 
             ///TODO: notify auth provider about claim change
-            return ToDto(grpcResponse);
+            return DtoMapper.UserToDto(grpcResponse);
         }
         catch (RpcException ex) when (ex.StatusCode == StatusCode.NotFound)
         {
@@ -134,7 +135,7 @@ public class UserServiceImpl : IUserService
                 });
 
             //TODO: notify auth provider about claim change
-            return ToDto(grpcResponse);
+            return DtoMapper.UserToDto(grpcResponse);
         }
         catch (RpcException ex) when (ex.StatusCode == StatusCode.NotFound)
         {
@@ -159,7 +160,7 @@ public class UserServiceImpl : IUserService
                     });
 
                 //TODO: notify auth provider about claim change
-                return ToDto(grpcResponse);
+                return DtoMapper.UserToDto(grpcResponse);
             }
             catch (RpcException ex) when (ex.StatusCode == StatusCode.NotFound)
             {
@@ -187,14 +188,4 @@ public class UserServiceImpl : IUserService
             throw new Exception($"gRPC call failed: {ex.StatusCode} - {ex.Status.Detail}", ex);
         };
     }
-
-    public static UserDto ToDto(UserEntity user)
-    {
-        return new UserDto
-        {
-            Id = user.Id,
-            DisplayName = user.DisplayName,
-            Email = user.Email,
-        };
-    } 
 }
