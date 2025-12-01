@@ -9,7 +9,7 @@ public interface IQuestService
         string? description, QuestStatus status, long createdById, 
         long? assigneeId, DateTime? startDate, DateTime? deadline, 
         DateTime? finishedDate);
-    public Task UpdateQuestAsync(int id, QuestDto questDto);
-    public Task DeleteQuestAsync(int id);
+    public Task UpdateQuestAsync(long id, QuestDto questDto);
+    public Task DeleteQuestAsync(long id);
     public Task<List<QuestDto>> GetAllQuestsAsync();
 }

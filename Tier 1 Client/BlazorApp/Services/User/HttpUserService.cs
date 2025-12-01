@@ -19,7 +19,7 @@ public class HttpUserService : IUserService
         authProvider = (AuthProvider)authStateProvider;
     }
 
-    public async Task UpdateUserNameAsync(int id, string displayName)
+    public async Task UpdateUserNameAsync(long id, string displayName)
     {
         var request = new UpdateDisplayNameRequest
         {
@@ -38,7 +38,7 @@ public class HttpUserService : IUserService
         authProvider.UpdateClaims(updatedUser);
     }
 
-    public async Task UpdateUserEmailAsync(int id, string email)
+    public async Task UpdateUserEmailAsync(long id, string email)
     {
         //create the request
         var request = new UpdateUserEmailRequest
@@ -65,7 +65,7 @@ public class HttpUserService : IUserService
         authProvider.UpdateClaims(updatedUser);
     }
 
-    public async Task UpdateUserPasswordAsync(int id, string password)
+    public async Task UpdateUserPasswordAsync(long id, string password)
     {
         // ccreate the request
         var request = new UpdateUserPasswordRequest
@@ -107,7 +107,7 @@ public class HttpUserService : IUserService
                ?? new List<UserDto>();
     }
     
-    public async Task DeleteUserAsync(int id)
+    public async Task DeleteUserAsync(long id)
     {
         // Call api to delete user
         var response = await client.DeleteAsync($"api/users/{id}");

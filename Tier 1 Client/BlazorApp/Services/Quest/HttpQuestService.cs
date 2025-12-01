@@ -44,12 +44,12 @@ public class HttpQuestService : IQuestService
                ?? throw new Exception("Could not create quest");
     }
     
-    public async Task UpdateQuestAsync(int id, QuestDto questDto)
+    public async Task UpdateQuestAsync(long id, QuestDto questDto)
     {
         throw new NotImplementedException();
     }
 
-    public async Task DeleteQuestAsync(int id)
+    public async Task DeleteQuestAsync(long id)
     {
         throw new NotImplementedException();
     }

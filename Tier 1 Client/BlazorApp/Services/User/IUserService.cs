@@ -5,9 +5,9 @@ namespace BlazorApp.Services.Auth;
 
 public interface IUserService
 {
-    public Task UpdateUserNameAsync(int id, string displayName);
-    public Task UpdateUserEmailAsync(int id, string email);
-    public Task UpdateUserPasswordAsync(int id, string password);
-    public Task DeleteUserAsync(int id);
+    public Task UpdateUserNameAsync(long id, string displayName);
+    public Task UpdateUserEmailAsync(long id, string email);
+    public Task UpdateUserPasswordAsync(long id, string password);
+    public Task DeleteUserAsync(long id);
     public Task<List<UserDto>> GetAllUsersAsync();
 }
