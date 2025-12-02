@@ -22,20 +22,32 @@ public class QuestsController : ControllerBase
     [HttpPost]
     public async Task<IResult> CreateQuest([FromBody] CreateQuestRequest request)
     {
-        try
-        {
             _logger.LogInformation("Creating quest: {Title}", request.Title);
 
-            var created = await _questService.CreateQuestAsync(request);
+         if (string.IsNullOrWhiteSpace(request.Title))
+        {
+            _logger.LogWarning("Create quest validation failed: title is empty");
+            return Results.BadRequest("Title is required."); // 400
+        }
 
-            return Results.Created($"/user/{created.Id}", created);
+        try
+        {
+            var created = await _questService.CreateQuestAsync(request);
+            // 201 Created with Location header
+            return Results.Created($"/api/quests/{created.Id}", created);
+        }
+        catch (ArgumentException ex)
+        {
+            _logger.LogWarning(ex, "Create quest validation error");
+            return Results.BadRequest(ex.Message); // 400
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Error creating quest");
+            _logger.LogError(e, "Create quest failed unexpectedly");
             return Results.Problem(
-                title: "Failed to create a Quest",
-                statusCode: StatusCodes.Status500InternalServerError); // 500 internal server error
+                title: "Failed to create quest",
+                statusCode: StatusCodes.Status500InternalServerError
+            ); // 500 only for unexpected stuff
         }
     }
 
@@ -44,17 +56,21 @@ public class QuestsController : ControllerBase
     [HttpGet]
     public async Task<IResult> GetAllQuests()
     {
+        
+       _logger.LogInformation("Get all quests requested");
+
         try
         {
             var quests = await _questService.GetAllQuestsAsync();
-            return Results.Ok(quests);
+            return Results.Ok(quests); // 200
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Error getting all quests");
+            _logger.LogError(e, "Get all quests failed unexpectedly");
             return Results.Problem(
-                title: "Failed to get quests",
-                statusCode: StatusCodes.Status500InternalServerError); // 500 internal server error
+                title: "Failed to fetch quests",
+                statusCode: StatusCodes.Status500InternalServerError
+            ); // 500 only for unexpected stuff
         }
     }
 
@@ -66,19 +82,38 @@ public class QuestsController : ControllerBase
     [HttpPut("{id:long}")]
     public async Task<IResult> UpdateQuest(long id, [FromBody] QuestDto quest)
     {
+         _logger.LogInformation("Update quest requested. Id={Id}", id);
+
+        if (id <= 0)
+        {
+            _logger.LogWarning("Update quest validation failed: invalid id {Id}", id);
+            return Results.BadRequest("Id must be greater than zero."); // 400
+        }
+
+        if (quest is null)
+        {
+            _logger.LogWarning("Update quest validation failed: body is null. Id={Id}", id);
+            return Results.BadRequest("Quest payload is required."); // 400
+        }
+
         try
         {
             await _questService.UpdateQuestAsync(id, quest);
-            return Results.Accepted(); // 202
+            return Results.StatusCode(StatusCodes.Status202Accepted); // 202
+        }
+        catch (ArgumentException ex)
+        {
+            _logger.LogWarning(ex, "Update quest validation error. Id={Id}", id);
+            return Results.BadRequest(ex.Message); // 400
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Error updating quest {Id}", id);
+            _logger.LogError(e, "Update quest failed unexpectedly. Id={Id}", id);
             return Results.Problem(
-                title: "Internal Server Error",
-                detail: e.Message,
+                title: "Failed to update quest",
                 statusCode: StatusCodes.Status500InternalServerError
             );
+
         }
     }
 
@@ -88,17 +123,29 @@ public class QuestsController : ControllerBase
     [HttpDelete("{id:long}")]
     public async Task<IResult> DeleteQuest(long id)
     {
+         _logger.LogInformation("Delete quest requested. Id={Id}", id);
+
+        if (id <= 0)
+        {
+            _logger.LogWarning("Delete quest validation failed: invalid id {Id}", id);
+            return Results.BadRequest("Id must be greater than zero."); // 400
+        }
+
         try
         {
             await _questService.DeleteQuestAsync(id);
             return Results.NoContent(); // 204
         }
+        catch (ArgumentException ex)
+        {
+            _logger.LogWarning(ex, "Delete quest validation error. Id={Id}", id);
+            return Results.BadRequest(ex.Message); // 400
+        }
         catch (Exception e)
         {
-            _logger.LogError(e, "Error deleting quest {Id}", id);
+            _logger.LogError(e, "Delete quest failed unexpectedly. Id={Id}", id);
             return Results.Problem(
-                title: "Internal Server Error",
-                detail: e.Message,
+                title: "Failed to delete quest",
                 statusCode: StatusCodes.Status500InternalServerError
             );
         }

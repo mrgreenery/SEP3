@@ -46,12 +46,23 @@ public class HttpQuestService : IQuestService
     
     public async Task UpdateQuestAsync(long id, QuestDto questDto)
     {
-        throw new NotImplementedException();
+        // Calling the Tier 2: PUT /api/quests/{id}
+        var response = await client.PutAsJsonAsync($"api/quests/{id}", questDto);
+
+        // Tier 2 returns 202 on success,  anything else by the logic should be an error
+        if (!response.IsSuccessStatusCode)
+            throw new Exception($"Failed to update quest. Status: {response.StatusCode}");
+
     }
 
     public async Task DeleteQuestAsync(long id)
     {
-        throw new NotImplementedException();
+        // call Web API endpoint to delete quest
+        var response = await client.DeleteAsync($"api/quests/{id}");
+
+        // Tier 2 returns 204 on success
+        if (!response.IsSuccessStatusCode)
+            throw new Exception($"Failed to delete quest. Status: {response.StatusCode}");
     }
 
     public async Task<List<QuestDto>> GetAllQuestsAsync()
