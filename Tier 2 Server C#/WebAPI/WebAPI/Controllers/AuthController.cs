@@ -22,7 +22,7 @@ public class AuthController : ControllerBase
     }
     
     [HttpPost("register")]
-    public async Task<ActionResult<UserDto>> Register(
+    public async Task<IResult> Register(
         [FromBody] CreateUserRequest request)
     {
         try
@@ -40,23 +40,30 @@ public class AuthController : ControllerBase
                                    $"{newUserDto.Email}, " +
                                    $"display name: {newUserDto.DisplayName}");
 
-            return newUserDto;
+            return Results.Ok(newUserDto);
         }
         catch (UserWithThisEmailAlreadyExists)
         {
             _logger.LogError(
                 $"Username with email {request.Email} already exists. Unable to create new user.");
-            return StatusCode(400, "This email is already in use");
+            return Results.BadRequest(new
+            {
+                error = "Invalid input",
+                field = "Email"
+            });
         }
         catch (Exception e)
         {
             _logger.LogError(e, "Error while registering user");
-            return StatusCode(500, "Unable to register. Try again later.");
+            return Results.Problem(
+        detail: "Unexpected error occurred while processing your request.",
+        statusCode: StatusCodes.Status500InternalServerError,
+        title: "Internal Server Error");
         }
     }
 
     [HttpPost("login")]
-    public async Task<ActionResult<UserDto>> Login(
+    public async Task<IResult> Login(
         [FromBody] LoginRequest request)
     {
         try
@@ -79,25 +86,29 @@ public class AuthController : ControllerBase
                                    $"{userDto.Email}, " +
                                    $"display name: {userDto.DisplayName}");
 
-            return userDto;
+            return Results.Ok(userDto);
         }
         catch (UserWithThisEmailDoesNotExist)
         {
             _logger.LogError(
                 $"No user with email: {request.Email} was found.");
-            return StatusCode(401, "This email is not registered. Sign up first.");
+            return Results.NotFound($"User with id {request.Email} not found.");
 
         }
         catch (WrongPasswordException e)
         {
             _logger.LogError(
                 $"Login request with email: {request.Email} did not match password.");
-            return StatusCode(400, "Wrong email or password");
+            return Results.Unauthorized();
+
         }
         catch (Exception e)
         {
             _logger.LogError(e, "Error while registering user");
-            return StatusCode(500, "Unable to login. Try again later.");
+             return Results.Problem(
+                    detail: "Unexpected error occurred while processing your request.",
+                    statusCode: StatusCodes.Status500InternalServerError,
+                    title: "Internal Server Error");
         }
     }
 }

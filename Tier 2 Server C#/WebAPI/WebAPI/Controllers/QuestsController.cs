@@ -20,7 +20,7 @@ public class QuestsController : ControllerBase
     //  CREATE QUEST 
     // POST /api/quests
     [HttpPost]
-    public async Task<ActionResult<QuestDto>> CreateQuest([FromBody] CreateQuestRequest request)
+    public async Task<IResult> CreateQuest([FromBody] CreateQuestRequest request)
     {
         try
         {
@@ -28,29 +28,33 @@ public class QuestsController : ControllerBase
 
             var created = await _questService.CreateQuestAsync(request);
 
-            return CreatedAtAction(nameof(GetQuestById), new { id = created.Id }, created);
+            return Results.Created($"/user/{created.Id}", created);
         }
         catch (Exception e)
         {
             _logger.LogError(e, "Error creating quest");
-            return StatusCode(500, new { error = e.Message });
+            return Results.Problem(
+                title: "Failed to create a Quest",
+                statusCode: StatusCodes.Status500InternalServerError); // 500 internal server error
         }
     }
 
     //  GET ALL QUESTS 
     // GET /api/quests
     [HttpGet]
-    public async Task<ActionResult<List<QuestDto>>> GetAllQuests()
+    public async Task<IResult> GetAllQuests()
     {
         try
         {
             var quests = await _questService.GetAllQuestsAsync();
-            return Ok(quests);
+            return Results.Ok(quests);
         }
         catch (Exception e)
         {
             _logger.LogError(e, "Error getting all quests");
-            return StatusCode(500, new { error = e.Message });
+            return Results.Problem(
+                title: "Failed to get quests",
+                statusCode: StatusCodes.Status500InternalServerError); // 500 internal server error
         }
     }
 
@@ -60,17 +64,21 @@ public class QuestsController : ControllerBase
     // Request: QuestDto (overwrite)
     // Response: 202 Accepted
     [HttpPut("{id:long}")]
-    public async Task<IActionResult> UpdateQuest(long id, [FromBody] QuestDto quest)
+    public async Task<IResult> UpdateQuest(long id, [FromBody] QuestDto quest)
     {
         try
         {
             await _questService.UpdateQuestAsync(id, quest);
-            return Accepted(); // 202
+            return Results.Accepted(); // 202
         }
         catch (Exception e)
         {
             _logger.LogError(e, "Error updating quest {Id}", id);
-            return StatusCode(500, new { error = e.Message });
+            return Results.Problem(
+                title: "Internal Server Error",
+                detail: e.Message,
+                statusCode: StatusCodes.Status500InternalServerError
+            );
         }
     }
 
@@ -78,17 +86,21 @@ public class QuestsController : ControllerBase
     // DELETE /api/quests/{id}
     // Response: 204 No Content
     [HttpDelete("{id:long}")]
-    public async Task<IActionResult> DeleteQuest(long id)
+    public async Task<IResult> DeleteQuest(long id)
     {
         try
         {
             await _questService.DeleteQuestAsync(id);
-            return NoContent(); // 204
+            return Results.NoContent(); // 204
         }
         catch (Exception e)
         {
             _logger.LogError(e, "Error deleting quest {Id}", id);
-            return StatusCode(500, new { error = e.Message });
+            return Results.Problem(
+                title: "Internal Server Error",
+                detail: e.Message,
+                statusCode: StatusCodes.Status500InternalServerError
+            );
         }
     }
 }
