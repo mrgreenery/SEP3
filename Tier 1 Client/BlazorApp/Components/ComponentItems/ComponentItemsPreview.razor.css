@@ -1,0 +1,8 @@
+.component-group{
+  border: 1px solid gray;
+  border-radius: 10px;
+  flex-direction: column;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
+}

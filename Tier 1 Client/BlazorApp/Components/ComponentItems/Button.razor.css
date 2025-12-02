@@ -1,0 +1,38 @@
+.custom-button{
+  font-size: 16px;
+  font-weight: bold;
+  
+  border: none;
+  border-radius: 10px;
+  min-height: 48px;
+  min-width: fit-content;
+  
+  cursor: pointer;
+  
+  padding: 16px 4px;
+  margin-top: 10px;
+  
+  box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+}
+
+.custom-button:hover {
+  background-color: #5a677a;
+}
+
+.primary{
+  background-color: #65748A;
+  color: white;
+}
+
+.small{
+  width: 33%;
+}
+
+.medium{
+  width: 66%;
+}
+
+.big{
+  width: 100%;
+}
+

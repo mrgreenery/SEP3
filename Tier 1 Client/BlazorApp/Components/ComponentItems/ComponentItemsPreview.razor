@@ -1,0 +1,36 @@
+@page "/ComponentItemsPreview"
+@using BlazorApp.Components.ComponentItems.ParameterEnums
+<h3>ComponentItemsPreview</h3>
+
+<div class="component-group">
+    <h1>BUTTONS</h1>
+    <table>
+        <tr><td>
+                
+            </td>
+            <th>SMALL</th>
+            <th>MEDIUM</th>
+            <th>BIG</th>
+        </tr>
+        <tr>
+            <th>PRIMARY</th>
+            <td><Button Size="Size.Small">Button</Button></td>
+            <td><Button Size="Size.Medium">Button</Button></td>
+            <td><Button Size="Size.Big">Button</Button></td>
+        </tr>
+        <tr>
+            <th>SECONDARY</th>
+        </tr>
+        <tr> <th>DANGER</th></tr>
+    </table>
+    
+    <div class="py-2">
+        <p>Disabled:</p>
+        @* <Button Disabled="1"></Button> *@
+    </div>
+</div>
+
+
+@code {
+    
+}

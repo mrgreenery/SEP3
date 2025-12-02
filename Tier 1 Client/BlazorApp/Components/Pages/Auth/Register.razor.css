@@ -24,20 +24,6 @@ label {
     margin-bottom: 8px;
 }
 
-.input-line {
-    width: 100%;
-    padding: 6px 0;
-    border: none;
-    border-bottom: 2px solid #444;
-    background: transparent;
-    font-size: 16px;
-}
-
-.input-line:focus {
-    outline: none;
-    border-bottom: 2px solid #000;
-}
-
 .primary-CustomButton {
     width: 100%;
     padding: 16px 0;

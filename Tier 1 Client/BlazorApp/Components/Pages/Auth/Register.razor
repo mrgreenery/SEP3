@@ -2,6 +2,8 @@
 @inject HttpClient Http
 @inject NavigationManager Nav
 @inject AuthenticationStateProvider AuthProvider
+@using BlazorApp.Components.ComponentItems
+@using BlazorApp.Components.ComponentItems.ParameterEnums
 @using BlazorApp.Models
 @using BlazorApp.Services.Auth
 
@@ -12,7 +14,7 @@
     
     <h1>REGISTER</h1>
 
-    <EditForm Model="@model" OnValidSubmit="@HandleRegister">
+    <EditForm Model="@model" OnValidSubmit="@HandleRegister" class="form-body">
         <DataAnnotationsValidator />
 
         <div class="form-group">
@@ -38,8 +40,8 @@
             <InputText type="password" class="input-line" @bind-Value="model.RepeatPassword" />
             <ValidationMessage For="@(() => model.RepeatPassword)" />
         </div>
-
-        <button class="primary-CustomButton" type="submit">CREATE ACCOUNT</button>
+        
+            <Button Look="ButtonLook.Primary" Size="Size.Big" Type="submit">SIGN IN</Button>
 
     </EditForm>
 
@@ -57,9 +59,6 @@
 <button @onclick="FakeLogin">Fake Login (Dev Only)</button>
 <div>**** manually check the locked pages, there's no confirmation here if they work</div>
 <button @onclick="FakeLogout">Fake Logout (Dev Only)</button>
-
-
-
 @*  *@
 
 

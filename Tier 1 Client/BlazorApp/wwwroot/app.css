@@ -58,3 +58,19 @@ h1:focus {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
     text-align: start;
 }
+
+/*INPUT STYLE USED FOR REGISTER AND LOGIN PAGE*/
+.input-line {
+  width: 100%;
+  padding: 6px 0;
+  border: none;
+  border-bottom: 1px solid #444;
+  background: transparent;
+  font-size: 16px;
+}
+
+.input-line:focus {
+  outline: none;
+  border-bottom: 2px solid #000;
+}
+/**/

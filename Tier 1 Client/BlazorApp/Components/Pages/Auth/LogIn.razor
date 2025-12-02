@@ -2,6 +2,8 @@
 @inject HttpClient Http
 @inject NavigationManager Nav
 @inject AuthenticationStateProvider AuthProvider
+@using BlazorApp.Components.ComponentItems
+@using BlazorApp.Components.ComponentItems.ParameterEnums
 @using BlazorApp.Models
 @using BlazorApp.Services.Auth
 
@@ -26,7 +28,7 @@
             <ValidationMessage For="@(() => model.Password)" />
         </div>
 
-        <button class="primary-CustomButton" type="submit">SIGN IN</button>
+        <Button Look="ButtonLook.Primary" Size="Size.Big" Type="submit">SIGN IN</Button>
     </EditForm>
 
     <div class="footer">
