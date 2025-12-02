@@ -1,14 +1,17 @@
 @page "/backlog"
 @using ApiContracts.Quest
+@using ApiContracts.User
 @using BlazorApp.Services.Auth
 @using Microsoft.AspNetCore.Authorization
 @attribute [Authorize]
 @inject IQuestService questService
+@inject IUserService userService
+
 <h3>Backlog - All Quests</h3>
 
 @if (isLoading)
 {
-    <p>Loading quests...</p>
+    <p>Loading...</p>
 }
 else if (errorMessage != null)
 {
@@ -16,7 +19,47 @@ else if (errorMessage != null)
 }
 else
 {
-    <p>Total quests: @allQuests.Count</p>
+    <div class="filters">
+        <div class="filter-group">
+            <label>Title:</label>
+            <input type="text" @bind="titleFilter" @bind:event="oninput" placeholder="Search title..." />
+        </div>
+        
+        <div class="filter-group">
+            <label>Status:</label>
+            <select @bind="statusFilter">
+                <option value="">All</option>
+                @foreach (var status in Enum.GetValues<QuestStatus>())
+                {
+                    <option value="@status">@status</option>
+                }
+            </select>
+        </div>
+        
+        <div class="filter-group">
+            <label>Created By:</label>
+            <select @bind="userIdFilter">
+                <option value="">All</option>
+                @foreach (var user in allUsers)
+                {
+                    <option value="@user.Id">@user.DisplayName</option>
+                }
+            </select>
+        </div>
+        
+        <div class="filter-group">
+            <label>Assignee:</label>
+            <select @bind="assigneeFilter">
+                <option value="">All</option>
+                @foreach (var user in allUsers)
+                {
+                    <option value="@user.Id">@user.DisplayName</option>
+                }
+            </select>
+        </div>
+    </div>
+    
+    <p>Showing @GetFilteredQuests().Count of @allQuests.Count quests</p>
     
     <table class="quest-table">
         <thead>
@@ -32,7 +75,7 @@ else
             </tr>
         </thead>
         <tbody>
-            @foreach (var quest in allQuests)
+            @foreach (var quest in GetFilteredQuests())
             {
                 <tr>
                     <td>@quest.Title</td>
@@ -51,14 +94,28 @@ else
 
 @code {
     private List<QuestDto> allQuests = new();
+    private List<UserDto> allUsers = new();
     private bool isLoading = true;
     private string? errorMessage;
+    
+    // Filter state
+    private string titleFilter = "";
+    private string statusFilter = "";
+    private string userIdFilter = "";
+    private string assigneeFilter = "";
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            allQuests = await questService.GetAllQuestsAsync();
+            // Load both quests and users
+            var questTask = questService.GetAllQuestsAsync();
+            var userTask = userService.GetAllUsersAsync();
+            
+            await Task.WhenAll(questTask, userTask);
+            
+            allQuests = questTask.Result;
+            allUsers = userTask.Result;
         }
         catch (Exception ex)
         {
@@ -69,9 +126,72 @@ else
             isLoading = false;
         }
     }
+
+    private List<QuestDto> GetFilteredQuests()
+    {
+        var filtered = allQuests.AsEnumerable();
+        
+        // Filter by title
+        if (!string.IsNullOrWhiteSpace(titleFilter))
+        {
+            filtered = filtered.Where(q => 
+                q.Title.Contains(titleFilter, StringComparison.OrdinalIgnoreCase));
+        }
+        
+        // Filter by status
+        if (!string.IsNullOrWhiteSpace(statusFilter))
+        {
+            var status = Enum.Parse<QuestStatus>(statusFilter);
+            filtered = filtered.Where(q => q.Status == status);
+        }
+        
+        // Filter by user
+        if (!string.IsNullOrWhiteSpace(userIdFilter))
+        {
+            var userId = long.Parse(userIdFilter);
+            filtered = filtered.Where(q => q.CreatedBy.Id == userId);
+        }
+        
+        // Filter by assignee
+        if (!string.IsNullOrWhiteSpace(assigneeFilter))
+        {
+            var assigneeId = long.Parse(assigneeFilter);
+            filtered = filtered.Where(q => q.Assignee != null && q.Assignee.Id == assigneeId);
+        }
+
+        return filtered.ToList();
+    }
 }
 
 <style>
+    .filters {
+        display: flex;
+        gap: 20px;
+        margin-bottom: 20px;
+        padding: 15px;
+        background-color: #f5f5f5;
+        border-radius: 5px;
+    }
+    
+    .filter-group {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+    
+    .filter-group label {
+        font-weight: bold;
+        font-size: 14px;
+    }
+    
+    .filter-group input,
+    .filter-group select {
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        min-width: 150px;
+    }
+
     .quest-table {
         width: 100%;
         border-collapse: collapse;
@@ -86,7 +206,7 @@ else
     }
 
     .quest-table th {
-        background-color: #814caf;
+        background-color: #ba61e6;
         color: white;
         font-weight: bold;
     }
