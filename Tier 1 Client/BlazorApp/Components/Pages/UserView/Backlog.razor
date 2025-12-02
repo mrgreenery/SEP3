@@ -1,10 +1,100 @@
 @page "/backlog"
-@attribute [Authorize]
+@using ApiContracts.Quest
+@using BlazorApp.Services.Auth
+@inject IQuestService questService
 
-<AuthorizeView>
-    <Authorized>
-        <h1>Backlog</h1>
-        <div>Authorised content</div>
-    </Authorized>
+<h3>Backlog - All Quests</h3>
+
+@if (isLoading)
+{
+    <p>Loading quests...</p>
+}
+else if (errorMessage != null)
+{
+    <p style="color: red;">Error: @errorMessage</p>
+}
+else
+{
+    <p>Total quests: @allQuests.Count</p>
     
-</AuthorizeView>
+    <table class="quest-table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Status</th>
+                <th>Created By</th>
+                <th>Assignee</th>
+                <th>Start Date</th>
+                <th>Deadline</th>
+                <th>Finished Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var quest in allQuests)
+            {
+                <tr>
+                    <td>@quest.Title</td>
+                    <td>@quest.Description</td>
+                    <td>@quest.Status</td>
+                    <td>@quest.CreatedBy.DisplayName</td>
+                    <td>@(quest.Assignee?.DisplayName ?? "-")</td>
+                    <td>@(quest.StartDate?.ToShortDateString() ?? "-")</td>
+                    <td>@(quest.Deadline?.ToShortDateString() ?? "-")</td>
+                    <td>@(quest.FinishedDate?.ToShortDateString() ?? "-")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<QuestDto> allQuests = new();
+    private bool isLoading = true;
+    private string? errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            allQuests = await questService.GetAllQuestsAsync();
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+}
+
+<style>
+    .quest-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    .quest-table th,
+    .quest-table td {
+        border: 1px solid #ddd;
+        padding: 12px;
+        text-align: left;
+    }
+
+    .quest-table th {
+        background-color: #814caf;
+        color: white;
+        font-weight: bold;
+    }
+
+    .quest-table tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    .quest-table tr:hover {
+        background-color: #ddd;
+    }
+</style>

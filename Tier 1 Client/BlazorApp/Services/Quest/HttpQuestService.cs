@@ -56,6 +56,15 @@ public class HttpQuestService : IQuestService
 
     public async Task<List<QuestDto>> GetAllQuestsAsync()
     {
-        throw new NotImplementedException();
+        //call API endpoint
+        var response = await client.GetAsync("api/quests");
+        
+        response.EnsureSuccessStatusCode();
+        
+        //deserialize repsonse to list
+        return await response.Content.ReadFromJsonAsync<List<QuestDto>>(
+            new JsonSerializerOptions{PropertyNameCaseInsensitive = true})
+            ?? throw new Exception("Could not get quests");
+
     }
 }
