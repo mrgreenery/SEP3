@@ -8,6 +8,15 @@
     <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="10.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <AdditionalFiles Include="Components\Pages\Auth\LogIn.razor" />
+    <AdditionalFiles Include="Components\Pages\Auth\Register.razor" />
+    <AdditionalFiles Include="Components\Pages\ErrorPages\Error.razor" />
+    <AdditionalFiles Include="Components\Pages\ErrorPages\NotFound.razor" />
+    <AdditionalFiles Include="Components\Pages\UserView\Backlog.razor" />
+    <AdditionalFiles Include="Components\Pages\UserView\KanbanBoard.razor" />
+  </ItemGroup>
+
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
