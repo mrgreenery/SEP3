@@ -55,25 +55,19 @@ public class UserServiceImpl : IUserService
     
     public async Task<List<UserDto>> GetAllUsersAsync()
     {
-        try
-        {
-            var grpcResponse = await _grpcClient.GetAllUsersAsync(new Empty());
-            if (grpcResponse is null)
-                throw new InvalidDataException("No users found.");
-            
-            //could be a select with: return grpcResponse.Users.Select(ToDto).ToList();
-            List<UserDto> userDtoList = new();
-            foreach (UserEntity user in grpcResponse.Users)
-            {
-                userDtoList.Add(DtoMapper.UserToDto(user));
-            }
-            return userDtoList;
-            
-        } catch (RpcException ex) when (ex.StatusCode == StatusCode.Internal)
-        {
-            throw new Exception("Error fetching users");
-        } 
+        //sends the request
+        var grpcResponse = await _grpcClient.GetAllUsersAsync(new Empty());
+
+        //look for exceptions
+        if (grpcResponse.Users is null || grpcResponse.Users.Count == 0)
+            throw new InvalidDataException("No users found.");
+        
+        // if good than return the list in Dto
+        return grpcResponse.Users
+            .Select(DtoMapper.UserToDto)
+            .ToList();
     }
+
 
     public async Task<UserDto?> LoginUser(string email, string password)
     {
@@ -115,7 +109,7 @@ public class UserServiceImpl : IUserService
         }
         catch (RpcException ex) when (ex.StatusCode == StatusCode.NotFound)
         {
-            throw new UserWithThisEmailDoesNotExist();
+            throw new UserWithThisIdDoesNotExist();
         }
         catch (RpcException ex)
         {
@@ -139,7 +133,7 @@ public class UserServiceImpl : IUserService
         }
         catch (RpcException ex) when (ex.StatusCode == StatusCode.NotFound)
         {
-            throw new UserWithThisEmailDoesNotExist();// todo same shouldnt this be id ?
+            throw new UserWithThisIdDoesNotExist();//
         }
         catch (RpcException ex)
         {
@@ -164,7 +158,7 @@ public class UserServiceImpl : IUserService
             }
             catch (RpcException ex) when (ex.StatusCode == StatusCode.NotFound)
             {
-                throw new UserWithThisEmailDoesNotExist(); // todo same shouldnt this be id ?
+                throw new UserWithThisIdDoesNotExist();
             }
             catch (RpcException ex)
             {
@@ -181,7 +175,7 @@ public class UserServiceImpl : IUserService
                 new DeleteUserRequest { UserId = id });
         } catch (RpcException ex) when (ex.StatusCode == StatusCode.NotFound)
         {
-            throw new UserWithThisEmailDoesNotExist();
+            throw new UserWithThisIdDoesNotExist();
         }
         catch (RpcException ex)
         {

@@ -1,5 +1,6 @@
 
 using ApiContracts.User.Update;
+using Grpc.Core;
 using WebAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 using WebAPI.Services.Exceptions.User;
@@ -33,11 +34,30 @@ public class UsersController : ControllerBase
             _logger.LogInformation("GET all users succeeded. Count={Count}", users.Count);
             return Results.Ok(users); // status code 200
         }
-        catch (Exception e)
+        catch (InvalidDataException ex)
         {
-            _logger.LogError(e, "GET all users failed");
-            return Results.Problem(title: "Failed to retrieve users",
-                statusCode: StatusCodes.Status500InternalServerError); // status code 500
+            // service says "no users"
+            _logger.LogWarning(ex, "No users found");
+            return Results.NotFound("No users found."); // 404
+            
+        }
+        catch (RpcException ex)
+        {
+            // gRPC failure from Tier 3
+            _logger.LogError(ex, "gRPC failure in GetAllUsers");
+            return Results.Problem(
+                title: "Database communication failed",
+                statusCode: StatusCodes.Status500InternalServerError
+            );
+        }
+        catch (Exception ex)
+        {
+            // unexpected
+            _logger.LogError(ex, "GET all users failed");
+            return Results.Problem(
+                title: "Failed to retrieve users",
+                statusCode: StatusCodes.Status500InternalServerError
+            );
         }
     }
     
@@ -62,7 +82,7 @@ public class UsersController : ControllerBase
             _logger.LogInformation("Update display name succeeded. UserId={UserId}", dto.Id);
             return Results.Ok(dto); //200 OK
         }
-        catch (UserWithThisEmailDoesNotExist)
+        catch (UserWithThisIdDoesNotExist)
         {
             return Results.NotFound($"User with id {request.Id} not found."); // 404 not found
         }
@@ -98,7 +118,7 @@ public class UsersController : ControllerBase
             _logger.LogInformation("Update email succeeded. UserId={UserId}", dto.Id);
             return Results.Ok(dto); // 200 OK
         }
-        catch (UserWithThisEmailDoesNotExist)
+        catch (UserWithThisIdDoesNotExist)
         {
             _logger.LogWarning("Update email failed, user not found. UserId={UserId}", request.Id);
             return Results.NotFound($"User with id {request.Id} not found."); // 404 not found
@@ -139,7 +159,7 @@ public class UsersController : ControllerBase
             _logger.LogInformation("Update password succeeded. UserId={UserId}", dto.Id);
             return Results.Ok(dto); // 200 OK
         }
-        catch (KeyNotFoundException)
+        catch (UserWithThisIdDoesNotExist)
         {
             _logger.LogWarning("Update password failed, user not found. UserId={UserId}", request.Id);
             return Results.NotFound($"User with id {request.Id} not found."); // 404 not found
@@ -168,7 +188,7 @@ public class UsersController : ControllerBase
             _logger.LogInformation("Delete user succeeded. UserId={UserId}", id);
             return Results.NoContent(); // 204 No Content
         }
-        catch (KeyNotFoundException)
+        catch (UserWithThisIdDoesNotExist)
         {
             _logger.LogWarning("Delete user failed, user not found. UserId={UserId}", id);
             return Results.NotFound($"User with id {id} not found."); // 404 not found
