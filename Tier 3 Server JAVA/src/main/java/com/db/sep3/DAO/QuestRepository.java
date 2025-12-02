@@ -12,7 +12,6 @@ import java.sql.Date;
 import java.time.Instant;
 
 public interface QuestRepository extends JpaRepository<Quest, Long> {
-//TODO: do we need this repository at all?
 
   // quests assigned to a given user (ManyToOne)
   Page<Quest> findByAssignee_Id(Long userId, Pageable pageable);

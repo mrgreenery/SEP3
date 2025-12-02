@@ -34,18 +34,18 @@ public class Quest {
 
     @Getter
     @Setter
-    @Column(nullable = false)
+    @Column(name = "created_date", nullable = false)
     private Instant createdDate;
 
     @Getter
     @Setter
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
     @JoinColumn(name = "created_by", nullable = false)
     private User createdBy;
 
     @Getter
     @Setter
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "assignee_id")
     private User assignee;
 
