@@ -1,8 +1,9 @@
 @page "/backlog"
 @using ApiContracts.Quest
 @using BlazorApp.Services.Auth
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
 @inject IQuestService questService
-
 <h3>Backlog - All Quests</h3>
 
 @if (isLoading)
