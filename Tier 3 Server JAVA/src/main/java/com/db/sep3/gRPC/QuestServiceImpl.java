@@ -105,6 +105,12 @@ public class QuestServiceImpl extends QuestServiceGrpc.QuestServiceImplBase {
             responseObserver.onNext(ToProto.QuestToProto(quest));
             responseObserver.onCompleted();
 
+
+        }catch (jakarta.persistence.EntityNotFoundException e) {
+                // Tier 2 will see this as NOT_FOUND and can map it to 404
+                responseObserver.onError(io.grpc.Status.NOT_FOUND
+                        .withDescription(e.getMessage())
+                        .asRuntimeException());
         } catch (Exception e) {
             responseObserver.onError(io.grpc.Status.INTERNAL
                     .withDescription("Failed to get quest")
@@ -182,6 +188,11 @@ public class QuestServiceImpl extends QuestServiceGrpc.QuestServiceImplBase {
             //send respond
             responseObserver.onNext(ToProto.QuestToProto(saved));
             responseObserver.onCompleted();
+
+        }catch (jakarta.persistence.EntityNotFoundException e) {
+                responseObserver.onError(io.grpc.Status.NOT_FOUND
+                        .withDescription(e.getMessage())
+                        .asRuntimeException());
 
         } catch (Exception e) {
             responseObserver.onError(io.grpc.Status.INTERNAL
