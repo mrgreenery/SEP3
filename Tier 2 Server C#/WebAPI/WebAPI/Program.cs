@@ -1,6 +1,7 @@
 using WebAPI.Services;
 using Data;
 using Grpc.Net.Client;
+using WebAPI.Hubs;
 
 var builder = WebApplication.CreateBuilder(args); 
 
@@ -24,6 +25,7 @@ builder.Services.AddGrpcClient<QuestService.QuestServiceClient>(options =>
 
 builder.Services.AddScoped<IQuestService, QuestServiceImpl>();
 builder.Services.AddScoped<IUserService, UserServiceImpl>();
+builder.Services.AddSignalR();
 
 var app = builder.Build();
 
@@ -38,5 +40,7 @@ if (app.Environment.IsDevelopment())
 
 app.MapGet("/", () => Results.Ok("Tier 2 is up"));
 
+//map hub endpoint
+app.MapHub<QuestHub>("/questhub"); 
 
 app.Run();

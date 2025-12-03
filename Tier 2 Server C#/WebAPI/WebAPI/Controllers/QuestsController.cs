@@ -1,5 +1,7 @@
 using ApiContracts.Quest;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
+using WebAPI.Hubs;
 using WebAPI.Services;
 
 namespace WebAPI.Controllers;
@@ -10,11 +12,16 @@ public class QuestsController : ControllerBase
 {
     private readonly IQuestService _questService;
     private readonly ILogger<QuestsController> _logger;
+ 	private readonly IHubContext<QuestHub> _hubContext;
 
-    public QuestsController(IQuestService questService, ILogger<QuestsController> logger)
+    public QuestsController(
+        IQuestService questService, 
+        ILogger<QuestsController> logger, 
+        IHubContext<QuestHub> hubContext)
     {
         _questService = questService;
         _logger = logger;
+		_hubContext = hubContext;
     }
 
     //  CREATE QUEST 
@@ -33,6 +40,11 @@ public class QuestsController : ControllerBase
         try
         {
             var created = await _questService.CreateQuestAsync(request);
+            
+            // SIGNALR broadcast
+            await _hubContext.Clients.All.SendAsync("QuestCreated", created);
+            _logger.LogInformation("SignalR broadcast: QuestCreated {Id}", created.Id);
+            
             // 201 Created with Location header
             return Results.Created($"/api/quests/{created.Id}", created);
         }
@@ -99,6 +111,11 @@ public class QuestsController : ControllerBase
         try
         {
             await _questService.UpdateQuestAsync(id, quest);
+            
+            //signalR broadcast
+            await _hubContext.Clients.All.SendAsync("QuestUpdated", quest);
+            _logger.LogInformation("SignalR broadcast: QuestUpdated {Id}", id);
+            
             return Results.StatusCode(StatusCodes.Status202Accepted); // 202
         }
         catch (ArgumentException ex)
@@ -134,6 +151,11 @@ public class QuestsController : ControllerBase
         try
         {
             await _questService.DeleteQuestAsync(id);
+            
+            //singR broadcast
+            await _hubContext.Clients.All.SendAsync("QuestDeleted", id);
+            _logger.LogInformation("SignalR broadcast: QuestDeleted {Id}", id);
+            
             return Results.NoContent(); // 204
         }
         catch (ArgumentException ex)
