@@ -1,6 +1,7 @@
 using ApiContracts.Quest;
 using Microsoft.AspNetCore.Mvc;
 using WebAPI.Services;
+using WebAPI.Services.Exceptions.User;
 
 namespace WebAPI.Controllers;
 
@@ -41,6 +42,7 @@ public class QuestsController : ControllerBase
             _logger.LogWarning(ex, "Create quest validation error");
             return Results.BadRequest(ex.Message); // 400
         }
+        
         catch (Exception e)
         {
             _logger.LogError(e, "Create quest failed unexpectedly");
@@ -63,6 +65,13 @@ public class QuestsController : ControllerBase
         {
             var quests = await _questService.GetAllQuestsAsync();
             return Results.Ok(quests); // 200
+        }
+        catch (InvalidDataException ex)
+        {
+            // service says "no users"
+            _logger.LogWarning(ex, "No Quests found");
+            return Results.NotFound("No quest found."); // 404
+            
         }
         catch (Exception e)
         {
@@ -101,10 +110,10 @@ public class QuestsController : ControllerBase
             await _questService.UpdateQuestAsync(id, quest);
             return Results.StatusCode(StatusCodes.Status202Accepted); // 202
         }
-        catch (ArgumentException ex)
+        catch(QuestWithThisIdDoesNotExist)
         {
-            _logger.LogWarning(ex, "Update quest validation error. Id={Id}", id);
-            return Results.BadRequest(ex.Message); // 400
+            _logger.LogWarning("Update quest failed, quest not found", id);
+            return Results.NotFound($"Quest with id {id} not found."); // 404 not found
         }
         catch (Exception e)
         {
@@ -134,12 +143,12 @@ public class QuestsController : ControllerBase
         try
         {
             await _questService.DeleteQuestAsync(id);
-            return Results.NoContent(); // 204
+            return Results.NoContent(); // 204\
         }
-        catch (ArgumentException ex)
+        catch(QuestWithThisIdDoesNotExist)
         {
-            _logger.LogWarning(ex, "Delete quest validation error. Id={Id}", id);
-            return Results.BadRequest(ex.Message); // 400
+            _logger.LogWarning("Delete quest failed, quest not found", id);
+            return Results.NotFound($"Quest with id {id} not found."); // 404 not found
         }
         catch (Exception e)
         {

@@ -75,6 +75,12 @@ public class UsersController : ControllerBase
         if (string.IsNullOrWhiteSpace(request.DisplayName))
             return Results.BadRequest("DisplayName cannot be empty."); //400 bad request
 
+        if (request.Id <= 0)
+        {
+            _logger.LogWarning("Update User validation failed: invalid id {Id}", request.Id);
+            return Results.BadRequest("Id must be greater than zero."); // 400
+        }
+        
         try
         {
             //send request to service to update DisplayName
@@ -109,6 +115,12 @@ public class UsersController : ControllerBase
         {
             _logger.LogWarning("Update email failed validation. UserId={UserId}", request.Id);
             return Results.BadRequest("Email cannot be empty."); // 400 Bad Request
+        }
+        
+        if (request.Id <= 0)
+        {
+            _logger.LogWarning("Update User validation failed: invalid id {Id}", request.Id);
+            return Results.BadRequest("Id must be greater than zero."); // 400
         }
 
         //send request to service to update email
@@ -151,6 +163,12 @@ public class UsersController : ControllerBase
             _logger.LogWarning("Update password failed validation. UserId={UserId}", request.Id);
             return Results.BadRequest("Password cannot be empty."); // 400 Bad Request
         }
+        
+        if (request.Id <= 0)
+        {
+            _logger.LogWarning("Update User validation failed: invalid id {Id}", request.Id);
+            return Results.BadRequest("Id must be greater than zero."); // 400
+        }
 
         try
         {
@@ -181,6 +199,12 @@ public class UsersController : ControllerBase
     {
         _logger.LogInformation("Delete user requested. UserId={UserId}", id);
 
+        if (id <= 0)
+        {
+            _logger.LogWarning("Delete User validation failed: invalid id {Id}", id);
+            return Results.BadRequest("Id must be greater than zero."); // 400
+        }
+        
         try
         {
             //send request to service to delete user
