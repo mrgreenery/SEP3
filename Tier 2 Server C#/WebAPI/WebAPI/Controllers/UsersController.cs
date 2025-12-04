@@ -25,7 +25,6 @@ public class UsersController : ControllerBase
     public async Task<IResult> GetAll()
     {
         _logger.LogInformation("GET all users requested");
-
         
         try
         {
@@ -84,7 +83,7 @@ public class UsersController : ControllerBase
         try
         {
             //send request to service to update DisplayName
-            var dto = await _userService.UpdateUserNameAsync(request.Id, request.DisplayName);
+            var dto = await _userService.UpdateDisplayNameAsync(request.Id, request.DisplayName);
             _logger.LogInformation("Update display name succeeded. UserId={UserId}", dto.Id);
             return Results.Ok(dto); //200 OK
         }
@@ -155,9 +154,8 @@ public class UsersController : ControllerBase
         _logger.LogInformation("Update password requested. UserId={UserId}", request.Id);
 
         
-        
-        //check if its empty (maybe the request didnt came from tier1)
-        // //if we need to impllement tokens than delete this
+        //check if its empty (maybe the request didn't come from tier1)
+        // //if we need to implement tokens than delete this
         if (string.IsNullOrWhiteSpace(request.Password))
         {
             _logger.LogWarning("Update password failed validation. UserId={UserId}", request.Id);
@@ -173,9 +171,9 @@ public class UsersController : ControllerBase
         try
         {
             //send request to service to update password
-            var dto = await _userService.UpdateUserPasswordAsync(request.Id, request.Password);
-            _logger.LogInformation("Update password succeeded. UserId={UserId}", dto.Id);
-            return Results.Ok(dto); // 200 OK
+            await _userService.UpdateUserPasswordAsync(request.Id, request.Password);
+            _logger.LogInformation($"Update password succeeded. UserId={request.Id}");
+            return Results.Ok(); // 200 OK
         }
         catch (UserWithThisIdDoesNotExist)
         {

@@ -25,7 +25,7 @@ public class UserServiceImpl : IUserService
     {
         if (string.IsNullOrWhiteSpace(displayName) || string.IsNullOrWhiteSpace(email) ||
             string.IsNullOrWhiteSpace(password))
-            throw new ArgumentNullException(nameof(displayName));
+            throw new ArgumentNullException();
         
         try
         {
@@ -58,11 +58,11 @@ public class UserServiceImpl : IUserService
         //sends the request
         var grpcResponse = await _grpcClient.GetAllUsersAsync(new Empty());
 
-        //look for exceptions
+        // if response is empty, return an empty list
         if (grpcResponse.Users is null || grpcResponse.Users.Count == 0)
             return new List<UserDto>();
         
-        // if good than return the list in Dto
+        // if good then return the list in Dto
         return grpcResponse.Users
             .Select(DtoMapper.UserToDto)
             .ToList();
@@ -93,7 +93,7 @@ public class UserServiceImpl : IUserService
         }
     }
 
-    public async Task<UserDto> UpdateUserNameAsync(long id, string displayName)
+    public async Task<UserDto> UpdateDisplayNameAsync(long id, string displayName)
     {
         try
         {
@@ -104,7 +104,6 @@ public class UserServiceImpl : IUserService
                     DisplayName = displayName,
                 });
 
-            ///TODO: notify auth provider about claim change
             return DtoMapper.UserToDto(grpcResponse);
         }
         catch (RpcException ex) when (ex.StatusCode == StatusCode.NotFound)
@@ -128,7 +127,6 @@ public class UserServiceImpl : IUserService
                     Email = email
                 });
 
-            //TODO: notify auth provider about claim change
             return DtoMapper.UserToDto(grpcResponse);
         }
         catch (RpcException ex) when (ex.StatusCode == StatusCode.NotFound)
@@ -141,20 +139,16 @@ public class UserServiceImpl : IUserService
         }
     }
 
-    public async Task<UserDto> UpdateUserPasswordAsync(long id, string password)
+    public async Task UpdateUserPasswordAsync(long id, string password)
     {
         {
             try
             {
-                var grpcResponse =
-                    await _grpcClient.UpdateUserPasswordAsync(new UpdateUserPasswordRequest
+                await _grpcClient.UpdateUserPasswordAsync(new UpdateUserPasswordRequest
                     {
                         UserId = id,
                         Password = password
                     });
-
-                //TODO: notify auth provider about claim change
-                return DtoMapper.UserToDto(grpcResponse);
             }
             catch (RpcException ex) when (ex.StatusCode == StatusCode.NotFound)
             {

@@ -6,16 +6,16 @@ public class QuestHubService : IAsyncDisposable
 {
     private HubConnection? _hubConnection;
     
-    public event Action? OnQuestChanged;  // Event voor UI refresh
+    public event Action? OnQuestChanged;  // Event for UI refreshes
 
     public async Task ConnectAsync(string hubUrl)
     {
         _hubConnection = new HubConnectionBuilder()
             .WithUrl(hubUrl)
-            .WithAutomaticReconnect()  // Auto-reconnect bij disconnect
+            .WithAutomaticReconnect()  // Auto-reconnect when disconnect
             .Build();
 
-        // Listeners voor alle quest events
+        // Listeners for all quest events
         _hubConnection.On<object>("QuestCreated", _ => OnQuestChanged?.Invoke());
         _hubConnection.On<object>("QuestUpdated", _ => OnQuestChanged?.Invoke());
         _hubConnection.On<long>("QuestDeleted", _ => OnQuestChanged?.Invoke());

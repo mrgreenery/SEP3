@@ -29,8 +29,7 @@ public class AuthController : ControllerBase
         {
             _logger.LogInformation(
                 $"Create user request: email: {request.Email}, " +
-                $"display name: {request.DisplayName},"); 
-            // +$" password: {request.Password}"); 
+                $"display name: {request.DisplayName},");
 
             var newUserDto =
                 await _userService.CreateUserAsync(request.DisplayName,
@@ -48,8 +47,17 @@ public class AuthController : ControllerBase
                 $"Username with email {request.Email} already exists. Unable to create new user.");
             return Results.BadRequest(new
             {
-                error = "Invalid input",
+                error = "Email is already taken",
                 field = "Email"
+            });
+        }
+        catch (ArgumentNullException e)
+        {
+            _logger.LogError(
+                $"Required fields in request were empty,");
+            return Results.BadRequest(new
+            {
+                error = "Required fields are empty",
             });
         }
         catch (Exception e)
@@ -69,10 +77,7 @@ public class AuthController : ControllerBase
         try
         {
             _logger.LogInformation($"Login request: email: {request.Email},"); 
-                                   // + $" password: {request.Password}")
-                
             
-
             var userDto =
                 await _userService.LoginUser(request.Email,
                     request.Password);

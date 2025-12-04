@@ -14,11 +14,11 @@ public interface IUserService
 
     Task<UserDto?> LoginUser(string email, string password);
 
-    Task<UserDto> UpdateUserNameAsync(long id, string displayName);
+    Task<UserDto> UpdateDisplayNameAsync(long id, string displayName);
 
     Task<UserDto> UpdateUserEmailAsync(long id, string email);
 
-    Task<UserDto> UpdateUserPasswordAsync(long id, string password);
+    Task UpdateUserPasswordAsync(long id, string password);
 
     Task DeleteUserAsync(long id);
 }

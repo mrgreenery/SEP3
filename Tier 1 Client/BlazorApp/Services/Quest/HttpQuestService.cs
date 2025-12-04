@@ -52,7 +52,7 @@ public class HttpQuestService : IQuestService
         
         response.EnsureSuccessStatusCode();
         
-        //deserialize repsonse to list
+        //deserialize response to list
         return await response.Content.ReadFromJsonAsync<List<QuestDto>>(
             new JsonSerializerOptions{PropertyNameCaseInsensitive = true})
             ?? throw new Exception("Could not get quests");

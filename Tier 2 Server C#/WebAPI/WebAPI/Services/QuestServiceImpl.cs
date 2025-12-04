@@ -21,12 +21,11 @@ public class QuestServiceImpl : IQuestService
     }
 
     //  CREATE 
-
     public async Task<QuestDto> CreateQuestAsync(CreateQuestRequest request)
     {
         if (string.IsNullOrWhiteSpace(request.Title))
             throw new ArgumentException("Title is required", nameof(request.Title));
-
+        
         var status = request.Status == default
             ? apiQuestStatus.Backlog
             : request.Status;
@@ -37,8 +36,6 @@ public class QuestServiceImpl : IQuestService
             Status = Enum.Parse<grpcQuestStatus>(status.ToString()),
             CreatedBy = request.CreatedById
         };
-
-        // I added the conditions so when we have null fields, they are not sent to gRPC
 
         if (!string.IsNullOrWhiteSpace(request.Description))
             grpcRequest.Description = request.Description;
@@ -71,7 +68,6 @@ public class QuestServiceImpl : IQuestService
 
 
     //  GET ALL 
-
     public async Task<List<QuestDto>> GetAllQuestsAsync()
     {
         try
@@ -93,7 +89,6 @@ public class QuestServiceImpl : IQuestService
     }
 
     //  UPDATE 
-
     public async Task UpdateQuestAsync(long id, QuestDto quest)
     {
 
@@ -103,10 +98,7 @@ public class QuestServiceImpl : IQuestService
             Title = quest.Title,
             Status = Enum.Parse<grpcQuestStatus>(quest.Status.ToString())
         };
-                
-        // I added the conditions so when we have null fields, they are not sent to gRPC
-    
-
+        
         if (!string.IsNullOrWhiteSpace(quest.Description))
             grpcRequest.Description = quest.Description;
 
@@ -127,7 +119,6 @@ public class QuestServiceImpl : IQuestService
 
         try
         {
-            // We don't use the response body, We agreed on 202 Accepted
             await _grpcClient.UpdateQuestAsync(grpcRequest);
         }
         catch (RpcException ex) when (ex.StatusCode == StatusCode.NotFound)
@@ -141,7 +132,6 @@ public class QuestServiceImpl : IQuestService
     }
 
     //  DELETE 
-
     public async Task DeleteQuestAsync(long id)
     {
         try

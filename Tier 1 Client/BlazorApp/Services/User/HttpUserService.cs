@@ -1,5 +1,4 @@
 using ApiContracts.User;
-using System.Security.Claims;
 using System.Text.Json;
 using ApiContracts.User.Update;
 using BlazorApp.Services.Auth;
@@ -50,7 +49,6 @@ public class HttpUserService : IUserService
         //call the web api endpoint to update email
         var response = await client.PutAsJsonAsync(
             "api/users/email", request);
-
         
         //check if the api call was success or not
         if (!response.IsSuccessStatusCode)
@@ -67,7 +65,7 @@ public class HttpUserService : IUserService
 
     public async Task UpdateUserPasswordAsync(long id, string password)
     {
-        // ccreate the request
+        // create the request
         var request = new UpdateUserPasswordRequest
         {
             Id = id,
@@ -81,15 +79,6 @@ public class HttpUserService : IUserService
         // check if the api call was success or not
         if (!response.IsSuccessStatusCode)
             throw new Exception($"Failed to update password. Status: {response.StatusCode}");
-
-        // deserialize the response to userDto
-        // (even tho nothing changed in dto bc we dont send the password xd)
-        var updatedUser = await response.Content.ReadFromJsonAsync<UserDto>(
-                              new JsonSerializerOptions { PropertyNameCaseInsensitive = true })
-                          ?? throw new Exception("Could not parse updated user");
-
-        // updating the claim buuuuuut in the end nothing changes for the claim..... so why do we keep this? 
-        authProvider.UpdateClaims(updatedUser);
     }
 
     public async Task<List<UserDto>> GetAllUsersAsync()
