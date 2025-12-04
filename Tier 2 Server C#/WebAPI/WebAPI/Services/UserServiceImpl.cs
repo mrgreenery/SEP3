@@ -60,7 +60,7 @@ public class UserServiceImpl : IUserService
 
         //look for exceptions
         if (grpcResponse.Users is null || grpcResponse.Users.Count == 0)
-            throw new InvalidDataException("No users found.");
+            return new List<UserDto>();
         
         // if good than return the list in Dto
         return grpcResponse.Users

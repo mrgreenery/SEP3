@@ -78,9 +78,6 @@ public class QuestServiceImpl : IQuestService
         {
             var grpcResponse = await _grpcClient.GetAllQuestsAsync(new Empty());
             var result = new List<QuestDto>();
-
-            if (grpcResponse.Quests is null || grpcResponse.Quests.Count == 0)
-                throw new InvalidDataException("No Users Found");
             
             foreach (var quest in grpcResponse.Quests)
             {
