@@ -2,10 +2,14 @@
 @using ApiContracts.Quest
 @using ApiContracts.User
 @using BlazorApp.Services.Auth
+@using BlazorApp.Services.Quest
 @using Microsoft.AspNetCore.Authorization
 @attribute [Authorize]
 @inject IQuestService questService
 @inject IUserService userService
+@inject QuestHubService HubService
+
+@implements IDisposable
 
 <h3>Backlog - All Quests</h3>
 
@@ -106,6 +110,9 @@ else
 
     protected override async Task OnInitializedAsync()
     {
+        // Subscribe to SignalR events
+        HubService.OnQuestChanged += RefreshQuests;
+        
         try
         {
             // Load both quests and users
@@ -124,6 +131,24 @@ else
         finally
         {
             isLoading = false;
+        }
+    }
+
+    //Called by SignalR when any quest changes
+    private async void RefreshQuests()
+    {
+        try
+        {
+            // Reload only quests (users don't change)
+            allQuests = await questService.GetAllQuestsAsync();
+            
+            // Trigger UI refresh on Blazor thread
+            await InvokeAsync(StateHasChanged);
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+            await InvokeAsync(StateHasChanged);
         }
     }
 
@@ -160,6 +185,12 @@ else
         }
 
         return filtered.ToList();
+    }
+
+    // NEW METHOD: Cleanup on component dispose
+    public void Dispose()
+    {
+        HubService.OnQuestChanged -= RefreshQuests;
     }
 }
 

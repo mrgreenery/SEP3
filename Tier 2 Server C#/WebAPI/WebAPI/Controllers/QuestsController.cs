@@ -1,6 +1,9 @@
 using ApiContracts.Quest;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
+using WebAPI.Hubs;
 using WebAPI.Services;
+using WebAPI.Services.Exceptions.User;
 
 namespace WebAPI.Controllers;
 
@@ -10,11 +13,16 @@ public class QuestsController : ControllerBase
 {
     private readonly IQuestService _questService;
     private readonly ILogger<QuestsController> _logger;
+ 	private readonly IHubContext<QuestHub> _hubContext;
 
-    public QuestsController(IQuestService questService, ILogger<QuestsController> logger)
+    public QuestsController(
+        IQuestService questService, 
+        ILogger<QuestsController> logger, 
+        IHubContext<QuestHub> hubContext)
     {
         _questService = questService;
         _logger = logger;
+		_hubContext = hubContext;
     }
 
     //  CREATE QUEST 
@@ -33,6 +41,11 @@ public class QuestsController : ControllerBase
         try
         {
             var created = await _questService.CreateQuestAsync(request);
+            
+            // SIGNALR broadcast
+            await _hubContext.Clients.All.SendAsync("QuestCreated", created);
+            _logger.LogInformation("SignalR broadcast: QuestCreated {Id}", created.Id);
+            
             // 201 Created with Location header
             return Results.Created($"/api/quests/{created.Id}", created);
         }
@@ -63,6 +76,13 @@ public class QuestsController : ControllerBase
         {
             var quests = await _questService.GetAllQuestsAsync();
             return Results.Ok(quests); // 200
+        }
+        catch (InvalidDataException ex)
+        {
+            // service says "no users"
+            _logger.LogWarning(ex, "No Quests found");
+            return Results.NotFound("No quest found."); // 404
+            
         }
         catch (Exception e)
         {
@@ -99,12 +119,17 @@ public class QuestsController : ControllerBase
         try
         {
             await _questService.UpdateQuestAsync(id, quest);
+            
+            //signalR broadcast
+            await _hubContext.Clients.All.SendAsync("QuestUpdated", quest);
+            _logger.LogInformation("SignalR broadcast: QuestUpdated {Id}", id);
+            
             return Results.StatusCode(StatusCodes.Status202Accepted); // 202
         }
-        catch (ArgumentException ex)
+        catch(QuestWithThisIdDoesNotExist)
         {
-            _logger.LogWarning(ex, "Update quest validation error. Id={Id}", id);
-            return Results.BadRequest(ex.Message); // 400
+            _logger.LogWarning("Update quest failed, quest not found", id);
+            return Results.NotFound($"Quest with id {id} not found."); // 404 not found
         }
         catch (Exception e)
         {
@@ -134,12 +159,17 @@ public class QuestsController : ControllerBase
         try
         {
             await _questService.DeleteQuestAsync(id);
+            
+            //singR broadcast
+            await _hubContext.Clients.All.SendAsync("QuestDeleted", id);
+            _logger.LogInformation("SignalR broadcast: QuestDeleted {Id}", id);
+            
             return Results.NoContent(); // 204
         }
-        catch (ArgumentException ex)
+        catch(QuestWithThisIdDoesNotExist)
         {
-            _logger.LogWarning(ex, "Delete quest validation error. Id={Id}", id);
-            return Results.BadRequest(ex.Message); // 400
+            _logger.LogWarning("Delete quest failed, quest not found", id);
+            return Results.NotFound($"Quest with id {id} not found."); // 404 not found
         }
         catch (Exception e)
         {

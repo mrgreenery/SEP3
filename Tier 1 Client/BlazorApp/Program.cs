@@ -21,14 +21,17 @@ builder.Services.AddAuthorizationCore();
 builder.Services.AddAuthentication();
 builder.Services.AddScoped<IUserService, HttpUserService>();
 builder.Services.AddScoped<IQuestService, HttpQuestService>();
+builder.Services.AddSingleton<QuestHubService>(); //adding signalR service
 
 var app = builder.Build();
+
+var hubService = app.Services.GetRequiredService<QuestHubService>(); //connect to hub on start-up
+await hubService.ConnectAsync("https://localhost:7009/questhub");
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error", createScopeForErrors: true);
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 app.UseStatusCodePagesWithReExecute("/not-found", createScopeForStatusCodePages: true);

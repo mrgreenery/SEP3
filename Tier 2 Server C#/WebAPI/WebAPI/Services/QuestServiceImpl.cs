@@ -2,6 +2,7 @@ using ApiContracts.Quest;
 using Data;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
+using WebAPI.Services.Exceptions.User;
 using WebAPI.Services.Util;
 using CreateQuestRequest = ApiContracts.Quest.CreateQuestRequest;
 using Enum = System.Enum;
@@ -78,6 +79,9 @@ public class QuestServiceImpl : IQuestService
             var grpcResponse = await _grpcClient.GetAllQuestsAsync(new Empty());
             var result = new List<QuestDto>();
 
+            if (grpcResponse.Quests is null || grpcResponse.Quests.Count == 0)
+                throw new InvalidDataException("No Users Found");
+            
             foreach (var quest in grpcResponse.Quests)
             {
                 result.Add(DtoMapper.QuestToDto(quest));
@@ -95,8 +99,6 @@ public class QuestServiceImpl : IQuestService
 
     public async Task UpdateQuestAsync(long id, QuestDto quest)
     {
-        if (id <= 0) throw new ArgumentOutOfRangeException(nameof(id));
-        if (quest is null) throw new ArgumentNullException(nameof(quest));
 
         var grpcRequest = new Data.UpdateQuestRequest
         {
@@ -131,6 +133,10 @@ public class QuestServiceImpl : IQuestService
             // We don't use the response body, We agreed on 202 Accepted
             await _grpcClient.UpdateQuestAsync(grpcRequest);
         }
+        catch (RpcException ex) when (ex.StatusCode == StatusCode.NotFound)
+        {
+            throw new QuestWithThisIdDoesNotExist("Quest with this id does not exist ",ex);
+        }
         catch (RpcException ex)
         {
             throw new Exception($"gRPC UpdateQuest failed: {ex.StatusCode} - {ex.Status.Detail}", ex);
@@ -141,11 +147,13 @@ public class QuestServiceImpl : IQuestService
 
     public async Task DeleteQuestAsync(long id)
     {
-        if (id <= 0) throw new ArgumentOutOfRangeException(nameof(id));
-
         try
         {
             await _grpcClient.DeleteQuestAsync(new IdRequest { Id = id });
+        }
+        catch (RpcException ex) when (ex.StatusCode == StatusCode.NotFound)
+        {
+            throw new QuestWithThisIdDoesNotExist("Quest with this id does not exist ",ex);
         }
         catch (RpcException ex)
         {
