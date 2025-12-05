@@ -5,16 +5,16 @@ namespace BlazorApp.Models;
 public class RegisterModel : IValidatableObject
 {
     [Required, EmailAddress]
-    public string Email { get; set; }
+    public string Email { get; set; } = "";
 
     [Required, MinLength(8)]
-    public string Password { get; set; }
+    public string Password { get; set; } = "";
 
     [Required]
-    public string FullName { get; set; }
+    public string FullName { get; set; } = "";
     
     [Required]
-    public string RepeatPassword { get; set; }
+    public string RepeatPassword { get; set; } = "";
     
     public IEnumerable<ValidationResult> Validate(ValidationContext context)
     {
