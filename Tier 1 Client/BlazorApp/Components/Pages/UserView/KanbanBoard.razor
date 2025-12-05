@@ -1,16 +1,25 @@
 @page "/kanbanboard"
-@attribute [Authorize]
+@page "/"
+
 @inject IQuestService QuestService
 @inject IUserService UserService
 @inject QuestHubService HubService
+@inject NavigationManager NavManager
 
 @using ApiContracts.Quest
 @using ApiContracts.User
 @using BlazorApp.Components.ComponentItems.KanbanBoard
+@using BlazorApp.Components.Pages.Auth
 @using BlazorApp.Services.Auth
 @using BlazorApp.Services.Quest
 @implements IDisposable
 
+<AuthorizeView>
+    <NotAuthorized>
+        <RedirectToLogin/>
+    </NotAuthorized>
+    
+    <Authorized>
         <h3>Board - Quests to Work On</h3>
 
         @if (_isLoading)
@@ -59,10 +68,14 @@
                 @foreach (var status in Enum.GetValues<QuestStatus>().Where(s => s != QuestStatus.Backlog))
                 {
                     <Column Status="@status"
-                                 QuestDtos="@GetFilteredQuests().Where(q => q.Status == status).ToList()" />
+                            QuestDtos="@GetFilteredQuests().Where(q => q.Status == status).ToList()" />
                 }
             </div>
         }
+    </Authorized>
+</AuthorizeView>
+
+
 
 @code{
     private List<QuestDto> _allQuests = new();
@@ -100,6 +113,11 @@
         {
             _isLoading = false;
         }
+    }
+    
+    private void NavigateToLoginPage()
+    {
+        NavManager.NavigateTo("/login");
     }
 
     //Called by SignalR when any quest changes

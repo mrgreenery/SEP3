@@ -1,0 +1,16 @@
+@page "/account"
+@using BlazorApp.Components.Pages.Auth
+
+<AuthorizeView>
+    <NotAuthorized>
+        <RedirectToLogin/>
+    </NotAuthorized>
+    
+    <Authorized>
+        <h2>some content</h2>
+    </Authorized>
+</AuthorizeView>
+
+@code {
+    
+}

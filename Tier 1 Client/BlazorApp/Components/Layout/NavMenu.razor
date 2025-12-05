@@ -1,35 +1,78 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
+﻿@using BlazorApp.Components.ComponentItems
+@using BlazorApp.Components.ComponentItems.ParameterEnums
+@using BlazorApp.Services.Auth
+@inject AuthenticationStateProvider AuthProvider
+@inject NavigationManager NavManager
+
+<div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="">BlazorApp</a>
+        <a class="navbar-brand" href="">Quest Board</a>
     </div>
 </div>
 
 <input type="checkbox" title="Navigation menu" class="navbar-toggler" />
 
 <div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
-    <nav class="nav flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
+    <nav class="nav flex-column h-100">
+        
+        <AuthorizeView>
+            <NotAuthorized>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="register" Match="NavLinkMatch.All">
+                        <span class="bi bi-person-fill-add" aria-hidden="true"></span> Register
+                    </NavLink>
+                </div>
+                
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="login" Match="NavLinkMatch.All">
+                        <span class="bi bi bi-person-fill-lock" aria-hidden="true"></span> Login
+                    </NavLink>
+                </div>
+            </NotAuthorized>
+            
+            <Authorized>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="/account" Match="NavLinkMatch.All">
+                        <span class="bi bi-person-circle" aria-hidden="true"></span> Account
+                    </NavLink>
+                </div>
 
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="kanbanboard">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> KanbanBoard
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="backlog">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Backlog
-            </NavLink>
-        </div>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="kanbanboard">
+                        <span class="rotate-90 bi bi-view-stacked" aria-hidden="true"></span> KanbanBoard
+                    </NavLink>
+                </div>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="backlog">
+                        <span class="bi bi-list-task" aria-hidden="true"></span> Backlog
+                    </NavLink>
+                </div>
+                
+                
+                <div class="px-3 mt-auto mb-2">
+                    <Button CustomCss="btn btn-outline-danger" Size="Size.Big" OnClick="@HandleLogOut"><span class="bi-box-arrow-right"></span> Log out </Button>
+                </div>
+            </Authorized>
+        </AuthorizeView>
     </nav>
 </div>
 
+@code {
+    private void HandleLogOut()
+    {
+        Console.WriteLine("LogOut() triggered");
+        try
+        {
+            var auth = (AuthProvider)AuthProvider;
+
+            auth.Logout();
+
+            NavManager.NavigateTo("/");
+        }
+        catch (Exception _)
+        {
+            
+            // TODO: handle error
+        }
+    }
+}

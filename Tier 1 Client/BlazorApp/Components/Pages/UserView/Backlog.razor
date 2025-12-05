@@ -1,100 +1,111 @@
 @page "/backlog"
+
 @using ApiContracts.Quest
 @using ApiContracts.User
+@using BlazorApp.Components.Pages.Auth
 @using BlazorApp.Services.Auth
 @using BlazorApp.Services.Quest
-@using Microsoft.AspNetCore.Authorization
-@attribute [Authorize]
+
 @inject IQuestService questService
 @inject IUserService userService
 @inject QuestHubService HubService
 
 @implements IDisposable
 
-<h3>Backlog - All Quests</h3>
+<AuthorizeView>
+    <NotAuthorized>
+        <RedirectToLogin/>
+    </NotAuthorized>
 
-@if (isLoading)
-{
-    <p>Loading...</p>
-}
-else if (errorMessage != null)
-{
-    <p style="color: red;">Error: @errorMessage</p>
-}
-else
-{
-    <div class="filters">
-        <div class="filter-group">
-            <label>Title:</label>
-            <input type="text" @bind="titleFilter" @bind:event="oninput" placeholder="Search title..." />
-        </div>
-        
-        <div class="filter-group">
-            <label>Status:</label>
-            <select @bind="statusFilter">
-                <option value="">All</option>
-                @foreach (var status in Enum.GetValues<QuestStatus>())
-                {
-                    <option value="@status">@status</option>
-                }
-            </select>
-        </div>
-        
-        <div class="filter-group">
-            <label>Created By:</label>
-            <select @bind="userIdFilter">
-                <option value="">All</option>
-                @foreach (var user in allUsers)
-                {
-                    <option value="@user.Id">@user.DisplayName</option>
-                }
-            </select>
-        </div>
-        
-        <div class="filter-group">
-            <label>Assignee:</label>
-            <select @bind="assigneeFilter">
-                <option value="">All</option>
-                @foreach (var user in allUsers)
-                {
-                    <option value="@user.Id">@user.DisplayName</option>
-                }
-            </select>
-        </div>
-    </div>
-    
-    <p>Showing @GetFilteredQuests().Count of @allQuests.Count quests</p>
-    
-    <table class="quest-table">
-        <thead>
-            <tr>
-                <th>Title</th>
-                <th>Description</th>
-                <th>Status</th>
-                <th>Created By</th>
-                <th>Assignee</th>
-                <th>Start Date</th>
-                <th>Deadline</th>
-                <th>Finished Date</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var quest in GetFilteredQuests())
-            {
-                <tr>
-                    <td>@quest.Title</td>
-                    <td>@quest.Description</td>
-                    <td>@quest.Status</td>
-                    <td>@quest.CreatedBy.DisplayName</td>
-                    <td>@(quest.Assignee?.DisplayName ?? "-")</td>
-                    <td>@(quest.StartDate?.ToShortDateString() ?? "-")</td>
-                    <td>@(quest.Deadline?.ToShortDateString() ?? "-")</td>
-                    <td>@(quest.FinishedDate?.ToShortDateString() ?? "-")</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
+    <Authorized>
+        <h3>Backlog - All Quests</h3>
+
+        @if (isLoading)
+        {
+            <p>Loading...</p>
+        }
+        else if (errorMessage != null)
+        {
+            <p style="color: red;">Error: @errorMessage</p>
+        }
+        else
+        {
+            <div class="filters">
+                <div class="filter-group">
+                    <label>Title:</label>
+                    <input type="text" @bind="titleFilter" @bind:event="oninput" placeholder="Search title..." />
+                </div>
+                
+                <div class="filter-group">
+                    <label>Status:</label>
+                    <select @bind="statusFilter">
+                        <option value="">All</option>
+                        @foreach (var status in Enum.GetValues<QuestStatus>())
+                        {
+                            <option value="@status">@status</option>
+                        }
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label>Created By:</label>
+                    <select @bind="userIdFilter">
+                        <option value="">All</option>
+                        @foreach (var user in allUsers)
+                        {
+                            <option value="@user.Id">@user.DisplayName</option>
+                        }
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label>Assignee:</label>
+                    <select @bind="assigneeFilter">
+                        <option value="">All</option>
+                        @foreach (var user in allUsers)
+                        {
+                            <option value="@user.Id">@user.DisplayName</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            
+            <p>Showing @GetFilteredQuests().Count of @allQuests.Count quests</p>
+            
+            <table class="quest-table">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Status</th>
+                        <th>Created By</th>
+                        <th>Assignee</th>
+                        <th>Start Date</th>
+                        <th>Deadline</th>
+                        <th>Finished Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var quest in GetFilteredQuests())
+                    {
+                        <tr>
+                            <td>@quest.Title</td>
+                            <td>@quest.Description</td>
+                            <td>@quest.Status</td>
+                            <td>@quest.CreatedBy.DisplayName</td>
+                            <td>@(quest.Assignee?.DisplayName ?? "-")</td>
+                            <td>@(quest.StartDate?.ToShortDateString() ?? "-")</td>
+                            <td>@(quest.Deadline?.ToShortDateString() ?? "-")</td>
+                            <td>@(quest.FinishedDate?.ToShortDateString() ?? "-")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </Authorized>
+</AuthorizeView>
+
+
 
 @code {
     private List<QuestDto> allQuests = new();

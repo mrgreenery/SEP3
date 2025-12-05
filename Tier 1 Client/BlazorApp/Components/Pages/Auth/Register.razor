@@ -41,7 +41,7 @@
             <ValidationMessage For="@(() => model.RepeatPassword)" />
         </div>
         
-            <Button Look="ButtonLook.Primary" Size="Size.Big" Type="submit">SIGN IN</Button>
+            <Button Look="ButtonLook.Primary" Size="Size.Big" Type="submit">CREATE ACCOUNT</Button>
 
     </EditForm>
 
@@ -53,13 +53,6 @@
     </div>
 
 </div>
-
-@* only for lazy testing *@
-
-<button @onclick="FakeLogin">Fake Login (Dev Only)</button>
-<div>**** manually check the locked pages, there's no confirmation here if they work</div>
-<button @onclick="FakeLogout">Fake Logout (Dev Only)</button>
-@*  *@
 
 
 @if (!string.IsNullOrEmpty(error))
@@ -89,18 +82,6 @@
         {
             error = ex.Message;
         }
-        
     }
-    private void FakeLogin()
-    {
-        var auth = (AuthProvider)AuthProvider;
-        auth.ForceLoginForTesting();
-    }
-    
-    private void FakeLogout()
-    {
-        var auth = (AuthProvider)AuthProvider;
-        auth.ForceLogoutForTesting();
-    }
-    
+
 }

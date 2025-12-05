@@ -1,5 +1,5 @@
 @using BlazorApp.Components.ComponentItems.ParameterEnums
-<button class="custom-button @ButtonColor @CustomCss @Size.ToString().ToLower()"
+<button class="custom-button @(CustomCss ?? ButtonColor) @Size.ToString().ToLower()"
         type="@Type"
         @onclick="OnClick"
         disabled="@Disabled">
@@ -13,7 +13,7 @@
 
     [Parameter] public ButtonLook? Look { get; set; } = ButtonLook.Primary;
 
-    [Parameter] public string? CustomCss { get; set; } = ""; 
+    [Parameter] public string? CustomCss { get; set; }
 
     [Parameter] public Size Size { get; set; } = Size.Medium;
 
@@ -24,13 +24,14 @@
     
     //Can be used to use lambda expressions, to use certain methods when clicked
     [Parameter]
-    public EventCallback OnClick { get; set; }
+    public EventCallback<MouseEventArgs> OnClick { get; set; }
     
     private string ButtonColor => Look switch
     {
         ButtonLook.Primary   => "primary",
         ButtonLook.Secondary => "secondary",
-        ButtonLook.Danger    => "danger",
+        ButtonLook.Success   => "btn btn-secondary",
+        ButtonLook.Danger    => "btn btn-danger",
         _                    => "primary"
     };
     

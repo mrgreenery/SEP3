@@ -1,0 +1,13 @@
+@inject NavigationManager Nav
+
+@code {
+    protected override void OnInitialized()
+    {
+        // avoid redirect loops if you want
+        var uri = Nav.Uri;
+        if (!uri.EndsWith("/login") && !uri.EndsWith("/register"))
+        {
+            Nav.NavigateTo("/login");
+        }
+    }
+}

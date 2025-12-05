@@ -4,5 +4,6 @@ public enum ButtonLook
 {
     Primary,
     Secondary,
+    Success,
     Danger
 }

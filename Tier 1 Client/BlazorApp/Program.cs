@@ -14,11 +14,8 @@ builder.Services.AddScoped(sp => new HttpClient
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
-
-
-builder.Services.AddScoped<AuthenticationStateProvider, AuthProvider>();
 builder.Services.AddAuthorizationCore();
-builder.Services.AddAuthentication();
+builder.Services.AddScoped<AuthenticationStateProvider, AuthProvider>();
 builder.Services.AddScoped<IUserService, HttpUserService>();
 builder.Services.AddScoped<IQuestService, HttpQuestService>();
 builder.Services.AddSingleton<QuestHubService>(); //adding signalR service

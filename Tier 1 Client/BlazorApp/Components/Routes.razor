@@ -1,19 +1,11 @@
 ﻿@rendermode InteractiveServer
-@using Microsoft.AspNetCore.Components.Authorization
-@using BlazorApp.Components.Pages
 
 <CascadingAuthenticationState>
     <Router AppAssembly="@typeof(Program).Assembly" >
         
         <Found Context="routeData">
             <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
-                <NotAuthorized>
-                    <div class="locked-message">
-                        <h2>Access denied</h2>
-                        <p>You must be logged in to view this page.</p>
-                        <a href="/">Return to home</a>
-                    </div>
-                </NotAuthorized>
+
             </AuthorizeRouteView>
         </Found>
 
@@ -30,3 +22,5 @@
 @*         $1$ TODO: set some "not authorised" error state #1# *@
 @*     </NotAuthorized> *@
 @* </AuthorizeRouteView> *@
+
+

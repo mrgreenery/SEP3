@@ -59,6 +59,10 @@ h1:focus {
     text-align: start;
 }
 
+.rotate-90{
+  transform: rotate(90deg);
+}
+
 /*INPUT STYLE USED FOR REGISTER AND LOGIN PAGE*/
 .input-line {
   width: 100%;
