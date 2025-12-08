@@ -1,0 +1,57 @@
+@using BlazorApp.Models
+@using SuperSimpleBlazorModal
+
+<SimpleModal @ref="modalRef" Id="CreateQuestModal">
+
+    <h3>Create New Quest</h3>
+
+    <div class="quest-modal-content">
+        <label>Title</label>
+        <input class="form-control" @bind="Model.Title" />
+
+        <label>Description</label>
+        <textarea class="form-control" @bind="Model.Description"></textarea>
+
+        <label>Deadline (optional)</label>
+        <input type="date" class="form-control" @bind="Model.Deadline" />
+
+        <div class="quest-modal-buttons">
+            <button class="btn btn-primary" @onclick="Confirm">Confirm</button>
+            <button class="btn btn-secondary" @onclick="Cancel">Cancel</button>
+        </div>
+    </div>
+
+</SimpleModal>
+
+@code {
+    private SimpleModal? modalRef;
+
+    [Parameter] public EventCallback<QuestModel> OnConfirm { get; set; }
+    [Parameter] public EventCallback OnCancel { get; set; }
+
+    public QuestModel Model { get; set; } = new();
+    
+
+    public async Task Show()
+    {
+        Model = new QuestModel(); // reset on open
+        if (modalRef != null)
+            await modalRef.ShowModal();
+    }
+
+    private async Task Confirm()
+    {
+        await OnConfirm.InvokeAsync(Model);
+
+        if (modalRef != null)
+            await modalRef.CloseModal();
+    }
+
+    private async Task Cancel()
+    {
+        await OnCancel.InvokeAsync();
+
+        if (modalRef != null)
+            await modalRef.CloseModal();
+    }
+}

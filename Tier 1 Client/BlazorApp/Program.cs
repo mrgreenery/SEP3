@@ -4,6 +4,7 @@ using BlazorApp.Services.Quest;
 using BlazorApp.Services.User;
 using Microsoft.AspNetCore.Components.Authorization;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddScoped(sp => new HttpClient
@@ -19,6 +20,7 @@ builder.Services.AddScoped<AuthenticationStateProvider, AuthProvider>();
 builder.Services.AddScoped<IUserService, HttpUserService>();
 builder.Services.AddScoped<IQuestService, HttpQuestService>();
 builder.Services.AddSingleton<QuestHubService>(); //adding signalR service
+
 
 var app = builder.Build();
 

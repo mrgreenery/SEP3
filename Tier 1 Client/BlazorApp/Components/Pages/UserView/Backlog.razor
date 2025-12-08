@@ -5,10 +5,15 @@
 @using BlazorApp.Components.Pages.Auth
 @using BlazorApp.Services.Auth
 @using BlazorApp.Services.Quest
+@using BlazorApp.Models
+@using BlazorApp.Components.ComponentItems.Quest
 
 @inject IQuestService questService
 @inject IUserService userService
 @inject QuestHubService HubService
+@inject AuthenticationStateProvider AuthProvider
+@inject IQuestService QuestService
+
 
 @implements IDisposable
 
@@ -19,6 +24,13 @@
 
     <Authorized>
         <h3>Backlog - All Quests</h3>
+        <button class="btn btn-primary" @onclick="OpenModal">
+            Create New Quest
+        </button>
+        
+        <CreateQuestModal @ref="createQuestModal"
+                          OnConfirm="HandleQuestCreate"
+                          OnCancel="HandleCancel" />
 
         @if (isLoading)
         {
@@ -113,6 +125,8 @@
     private bool isLoading = true;
     private string? errorMessage;
     
+    private CreateQuestModal? createQuestModal;
+    
     // Filter state
     private string titleFilter = "";
     private string statusFilter = "";
@@ -202,6 +216,46 @@
     public void Dispose()
     {
         HubService.OnQuestChanged -= RefreshQuests;
+    }
+    
+    
+    //Method to open the Create task popup
+    
+    private async Task OpenModal()
+    {
+        if (createQuestModal != null)
+            await createQuestModal.Show();
+    }
+    
+    private async Task HandleQuestCreate(QuestModel input)
+    {
+        // Get currently logged user
+        var authState = await AuthProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        
+        long userId = long.Parse(user.FindFirst("id")!.Value);
+
+        var request = new CreateQuestRequest
+        {
+            Title = input.Title,
+            Description = input.Description,
+            Deadline = input.Deadline,
+
+            // Required fields not in modal:
+            Status = QuestStatus.Backlog,
+            CreatedById = userId,
+            StartDate = DateTime.UtcNow,
+            AssigneeId = null,
+            FinishedDate = null
+        };
+
+        QuestDto created = await QuestService.CreateQuestAsync(request);
+
+    }
+    private Task HandleCancel()
+    {
+        Console.WriteLine("User cancelled quest creation");
+        return Task.CompletedTask;
     }
 }
 
