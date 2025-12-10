@@ -1,5 +1,5 @@
 @page "/kanbanboard"
-@page "/"
+
 
 @inject IQuestService QuestService
 @inject IUserService UserService
@@ -13,11 +13,13 @@
 @using BlazorApp.Components.Pages.Auth
 @using BlazorApp.Services.Auth
 @using BlazorApp.Services.Quest
+
+
 @implements IDisposable
 @* desired render mode define here *@
 @rendermode InteractiveAuto
 
-<AuthorizeView>
+<AuthorizeView Context="auth">
     <NotAuthorized>
         <RedirectToLogin/>
     </NotAuthorized>
@@ -65,29 +67,56 @@
             </div>
 
             <p>Showing @GetFilteredQuests().Count of @_allQuests.Count quests</p>
-            
-            <div class="d-flex flex-row gap-4 justify-content-start 
-                        align-items-stretch w-100 h-100 p-4">
-                @foreach (var status in Enum.GetValues<QuestStatus>().Where(s => s != QuestStatus.Backlog))
-                {
-                    <Column Status="@status"
-                            QuestDtos="@GetFilteredQuests().Where(q => q.Status == status).ToList()" />
-                }
-            </div>
-            
-        }
-        <SfKanban TValue="QuestKanbanModel" KeyField="Status" DataSource="@KanbanTasks">
-            <KanbanColumns>
-                <KanbanColumn HeaderText="To Do"       KeyField="@(new List<string>{"ToDo"})" />
-                <KanbanColumn HeaderText="In Progress" KeyField="@(new List<string>{"InProgress"})" />
-                <KanbanColumn HeaderText="Review"      KeyField="@(new List<string>{"Review"})" />
-                <KanbanColumn HeaderText="Done"        KeyField="@(new List<string>{"Finished"})" />
-            </KanbanColumns>
-            <KanbanCardSettings HeaderField="Id" ContentField="Summary" />
-            <KanbanEvents TValue="QuestKanbanModel" DragStop="@DragStopHandler" />
-        </SfKanban>
 
-        
+
+
+            <SfKanban TValue="QuestKanbanModel"
+                      KeyField="Status"
+                      DataSource="@KanbanTasks"
+                      AllowDragAndDrop="true">
+
+                <KanbanColumns>
+                    <KanbanColumn HeaderText="To Do" KeyField="@(new List<string>{ "ToDo" })" />
+                    <KanbanColumn HeaderText="In Progress" KeyField="@(new List<string>{ "InProgress" })" />
+                    <KanbanColumn HeaderText="Review" KeyField="@(new List<string>{ "Review" })" />
+                    <KanbanColumn HeaderText="Done" KeyField="@(new List<string>{ "Finished" })" />
+                </KanbanColumns>
+
+                <KanbanCardSettings HeaderField="Id" ContentField="Summary">
+                    <Template>
+                        @{
+                            var item = (QuestKanbanModel)context;
+                        }
+
+                        <div class="task-card">
+                            <div class="task-id">Task @item.Id</div>
+                            <div class="task-title">@item.Title</div>
+
+                            @if (!string.IsNullOrWhiteSpace(item.Summary))
+                            {
+                                <div class="task-summary">@item.Summary</div>
+                            }
+
+                            <div class="task-footer">
+                                <span class="task-assignee">@((item.Assignee ?? "Unassigned"))</span>
+                            </div>
+                        </div>
+                    </Template>
+
+                </KanbanCardSettings>
+                <KanbanDialogSettings></KanbanDialogSettings>
+
+                <KanbanEvents TValue="QuestKanbanModel"
+                              DragStart="@DragStartHandler"
+                              DragStop="@DragStopHandler" 
+                              DialogClose="@CardDialogClose"/>
+
+            </SfKanban>
+
+
+
+        }
+
     </Authorized>
 </AuthorizeView>
 
@@ -104,8 +133,11 @@
     private string _userIdFilter = "";
     private string _assigneeFilter = "";
 
-    
-    
+    private List<QuestKanbanModel> KanbanTasks { get; set; } = new();
+
+    private string? _dragSourceStatus;
+
+
     public class QuestKanbanModel
     {
         public string Id { get; set; } = "";
@@ -113,30 +145,42 @@
         public string Status { get; set; } = "";
         public string Summary { get; set; } = "";
         public string? Assignee { get; set; }
+
+
     }
 
-    private List<QuestKanbanModel> KanbanTasks { get; set; } = new();
 
-    
-    
+
+
+
+
+
     protected override async Task OnInitializedAsync()
     {
+        // connect to SignalR and subscribe to updates
         await HubService.ConnectAsync("https://localhost:7009/questhub");
-        // Subscribe to SignalR events
         HubService.OnQuestChanged += RefreshQuests;
         Console.WriteLine("init");
+
         try
         {
-            // Load both quests and users
+            // load quests and users in parallel
             var questTask = QuestService.GetAllQuestsAsync();
             var userTask = UserService.GetAllUsersAsync();
 
             await Task.WhenAll(questTask, userTask);
 
+            // store loaded data
             _allQuests = questTask.Result;
             _allUsers = userTask.Result;
-            
-            RefreshKanbanTasks();
+
+            RefreshKanbanTasks(); // build kanban display list
+
+            Console.WriteLine($"[INIT] Kanban tasks count = {KanbanTasks.Count}");
+            foreach (var t in KanbanTasks)
+            {
+                Console.WriteLine($"[INIT] Task {t.Id}: Status = {t.Status}");
+            }
         }
         catch (Exception ex)
         {
@@ -145,12 +189,10 @@
         finally
         {
             _isLoading = false;
-            await InvokeAsync(StateHasChanged);  
+            await InvokeAsync(StateHasChanged);
         }
-        
-      
     }
-    
+
     private void NavigateToLoginPage()
     {
         NavManager.NavigateTo("/login");
@@ -162,13 +204,12 @@
         try
         {
             
-            Console.WriteLine("starting to get the quests");
             _allQuests = await QuestService.GetAllQuestsAsync();
-            RefreshKanbanTasks();               // map to KanbanTasks
+            RefreshKanbanTasks(); // map to KanbanTasks
             await InvokeAsync(StateHasChanged); // trigger UI re-render
-            
-            Console.WriteLine("The Quest are :" +_allQuests.Count);
-            
+
+            Console.WriteLine("The Quest are :" + _allQuests.Count);
+
         }
         catch (Exception ex)
         {
@@ -202,32 +243,195 @@
             filtered = filtered.Where(q => q.Assignee != null && q.Assignee.Id == assigneeId);
         }
 
+        RefreshKanbanTasks();
         return filtered.ToList();
-    }
-    
-    public void DragStopHandler(DragEventArgs<QuestKanbanModel> args)
-    {
-        // Here you can customize your code
-    }
-    
-    private void RefreshKanbanTasks()
-    {
-        KanbanTasks = _allQuests.Select(q => new QuestKanbanModel {
-            Id        = q.Id.ToString(),
-            Title     = q.Title,
-            Status    = q.Status.ToString(),        // or map enum → string if you prefer
-            Summary   = q.Description ?? "",
-            Assignee  = q.Assignee != null ? q.Assignee.DisplayName : null
-        }).ToList();
+        
     }
 
-    
 
+
+
+    public void DragStartHandler(DragEventArgs<QuestKanbanModel> args)
+    {
+        // get the dragged card
+        var card = args.Data?.FirstOrDefault();
+        _dragSourceStatus = card?.Status;
+    }
+
+    //drag drop event handler
+    public async Task DragStopHandler(DragEventArgs<QuestKanbanModel> args)
+    {
+        // get the dragged card
+        var card = args.Data.FirstOrDefault();
+        if (card == null)
+            return;
+
+        var newStatus = card.Status;
+
+        // nothing to do if the card stayed in the same column
+        if (_dragSourceStatus == newStatus)
+            return;
+
+        // parse the card id to long
+        if (!long.TryParse(card.Id, out var questId))
+            return;
+
+        try
+        {
+            // find the original quest in the loaded list
+            var originalQuest = _allQuests.First(q => q.Id == questId);
+
+            // build updated dto keeping all fields same except status
+            var updated = BuildUpdatedQuestDto(
+                existing: originalQuest,
+                editedCard: null,          // no changes from dialog
+                newStatus: newStatus       // only status changed
+            );
+            // send the update request
+            await QuestService.UpdateQuestAsync(questId, updated);
+            Console.WriteLine($"Updated status of quest {questId} to {newStatus}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Drag update failed: " + ex.Message);
+            // if it fails, revert the status back in UI
+            if (_dragSourceStatus != null)
+                card.Status = _dragSourceStatus;
+
+            await InvokeAsync(StateHasChanged);
+        }
+        finally
+        {
+            _dragSourceStatus = null;
+        }
+    }
+    
+    // this method handles the kanban card menu closing
+    // like if i hit save than it should send update request
+    // if i hit delete send delete request
+    public async Task CardDialogClose(DialogCloseEventArgs<QuestKanbanModel> args)
+    {
+        // dialog was cancelled
+        if (args.Cancel == true)
+            return;
+
+        // DELETE
+        if (args.RequestType == CurrentAction.Delete && args.Data != null)
+        {
+            //get the card data
+            var card = args.Data;
+
+            if (!long.TryParse(card.Id, out var questId))
+                return;
+
+            try //try sending the delete request
+            {
+                await QuestService.DeleteQuestAsync(questId);
+                Console.WriteLine($"Deleted quest {questId}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Delete failed: " + ex.Message);
+            }
+
+            return;
+        }
+
+        // EDIT
+        if (args.RequestType == CurrentAction.Edit && args.Data != null)
+        {
+            // get the card data
+            var card = args.Data;
+
+            if (!long.TryParse(card.Id, out var questId))
+                return;
+
+            //find the proper QuestDTO from allQuests by id (bc Card dont have all informations)
+            var existing = _allQuests.FirstOrDefault(q => q.Id == questId);
+            if (existing == null)
+                return;
+
+            //update the QuestDto with the card fields that we might changed
+            var dto = new QuestDto
+            {
+                Id           = existing.Id,
+                Title        = card.Title,
+                Description  = string.IsNullOrWhiteSpace(card.Summary) ? null : card.Summary,
+                CreatedBy    = existing.CreatedBy,
+                Assignee     = existing.Assignee,
+                CreatedDate  = existing.CreatedDate,
+                StartDate    = existing.StartDate,
+                Deadline     = existing.Deadline,
+                FinishedDate = existing.FinishedDate,
+                Status       = Enum.Parse<QuestStatus>(card.Status)
+            };
+
+            try //try sending the update request
+            {
+                await QuestService.UpdateQuestAsync(questId, dto);
+                Console.WriteLine($"Updated quest {questId}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Edit failed: " + ex.Message);
+            }
+        }
+    }
+
+
+
+
+
+
+
+    
+    
+    private void RefreshKanbanTasks() //
+    { 
+        KanbanTasks = _allQuests
+            .Where(q => q.Status != QuestStatus.Backlog)
+            .Select(q => new QuestKanbanModel
+            {
+                Id       = q.Id.ToString(),
+                Title    = q.Title,
+                Status   = q.Status.ToString(),
+                Summary  = q.Description ?? "",
+                Assignee = q.Assignee?.DisplayName,
+            })
+            .ToList();
+    }
+    
     // NEW METHOD: Cleanup on component dispose
     public void Dispose()
     {
         HubService.OnQuestChanged -= RefreshQuests;
     }
+
+    private QuestDto BuildUpdatedQuestDto(
+        QuestDto existing,
+        QuestKanbanModel? editedCard = null,
+        string? newStatus = null)
+    {
+        return new QuestDto
+        {
+            Id           = existing.Id,
+            // if dialog provided an edited card, take values from there, otherwise keep original
+            Title        = editedCard?.Title      ?? existing.Title,
+            Description  = editedCard?.Summary    ?? existing.Description,
+            Assignee     = existing.Assignee, // or map from editedCard if you add assignee editing
+            CreatedBy    = existing.CreatedBy,
+            CreatedDate  = existing.CreatedDate,
+            StartDate    = existing.StartDate,
+            Deadline     = existing.Deadline,
+            FinishedDate = existing.FinishedDate,
+            Status       = newStatus != null 
+                ? Enum.Parse<QuestStatus>(newStatus) 
+                : existing.Status
+        };
+    }
+
+
+    
 }
 
     <style>
@@ -258,4 +462,55 @@
             border-radius: 4px;
             min-width: 150px;
         }
+
+        .task-card {
+            background: white;
+            padding: 12px 14px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+            border: 1px solid #e5e7eb;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            transition: transform 0.1s ease, box-shadow 0.1s ease;
+        }
+
+        .task-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+        }
+
+        .task-id {
+            font-weight: 600;
+            font-size: 14px;
+            color: #374151;
+        }
+
+        .task-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #111827;
+        }
+
+        .task-summary {
+            font-size: 14px;
+            color: #4b5563;
+            white-space: pre-wrap;
+        }
+
+        .task-footer {
+            margin-top: 10px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .task-assignee {
+            font-size: 12px;
+            color: #6b7280;
+            padding: 4px 8px;
+            border-radius: 6px;
+            background: #f3f4f6;
+        }
+
+
     </style>    
