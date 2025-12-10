@@ -6,6 +6,7 @@
 @inject QuestHubService HubService
 @inject NavigationManager NavManager
 
+@using System.Dynamic
 @using ApiContracts.Quest
 @using ApiContracts.User
 @using BlazorApp.Components.ComponentItems.KanbanBoard
@@ -13,6 +14,8 @@
 @using BlazorApp.Services.Auth
 @using BlazorApp.Services.Quest
 @implements IDisposable
+@* desired render mode define here *@
+@rendermode InteractiveAuto
 
 <AuthorizeView>
     <NotAuthorized>
@@ -71,7 +74,20 @@
                             QuestDtos="@GetFilteredQuests().Where(q => q.Status == status).ToList()" />
                 }
             </div>
+            
         }
+        <SfKanban TValue="QuestKanbanModel" KeyField="Status" DataSource="@KanbanTasks">
+            <KanbanColumns>
+                <KanbanColumn HeaderText="To Do"       KeyField="@(new List<string>{"ToDo"})" />
+                <KanbanColumn HeaderText="In Progress" KeyField="@(new List<string>{"InProgress"})" />
+                <KanbanColumn HeaderText="Review"      KeyField="@(new List<string>{"Review"})" />
+                <KanbanColumn HeaderText="Done"        KeyField="@(new List<string>{"Finished"})" />
+            </KanbanColumns>
+            <KanbanCardSettings HeaderField="Id" ContentField="Summary" />
+            <KanbanEvents TValue="QuestKanbanModel" DragStop="@DragStopHandler" />
+        </SfKanban>
+
+        
     </Authorized>
 </AuthorizeView>
 
@@ -89,11 +105,26 @@
     private string _assigneeFilter = "";
 
     
+    
+    public class QuestKanbanModel
+    {
+        public string Id { get; set; } = "";
+        public string Title { get; set; } = "";
+        public string Status { get; set; } = "";
+        public string Summary { get; set; } = "";
+        public string? Assignee { get; set; }
+    }
+
+    private List<QuestKanbanModel> KanbanTasks { get; set; } = new();
+
+    
+    
     protected override async Task OnInitializedAsync()
     {
+        await HubService.ConnectAsync("https://localhost:7009/questhub");
         // Subscribe to SignalR events
         HubService.OnQuestChanged += RefreshQuests;
-
+        Console.WriteLine("init");
         try
         {
             // Load both quests and users
@@ -104,6 +135,8 @@
 
             _allQuests = questTask.Result;
             _allUsers = userTask.Result;
+            
+            RefreshKanbanTasks();
         }
         catch (Exception ex)
         {
@@ -112,7 +145,10 @@
         finally
         {
             _isLoading = false;
+            await InvokeAsync(StateHasChanged);  
         }
+        
+      
     }
     
     private void NavigateToLoginPage()
@@ -125,11 +161,14 @@
     {
         try
         {
-            // Reload only quests (users don't change)
+            
+            Console.WriteLine("starting to get the quests");
             _allQuests = await QuestService.GetAllQuestsAsync();
-
-            // Trigger UI refresh on Blazor thread
-            await InvokeAsync(StateHasChanged);
+            RefreshKanbanTasks();               // map to KanbanTasks
+            await InvokeAsync(StateHasChanged); // trigger UI re-render
+            
+            Console.WriteLine("The Quest are :" +_allQuests.Count);
+            
         }
         catch (Exception ex)
         {
@@ -165,6 +204,24 @@
 
         return filtered.ToList();
     }
+    
+    public void DragStopHandler(DragEventArgs<QuestKanbanModel> args)
+    {
+        // Here you can customize your code
+    }
+    
+    private void RefreshKanbanTasks()
+    {
+        KanbanTasks = _allQuests.Select(q => new QuestKanbanModel {
+            Id        = q.Id.ToString(),
+            Title     = q.Title,
+            Status    = q.Status.ToString(),        // or map enum → string if you prefer
+            Summary   = q.Description ?? "",
+            Assignee  = q.Assignee != null ? q.Assignee.DisplayName : null
+        }).ToList();
+    }
+
+    
 
     // NEW METHOD: Cleanup on component dispose
     public void Dispose()

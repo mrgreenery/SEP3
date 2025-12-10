@@ -135,6 +135,7 @@
 
     protected override async Task OnInitializedAsync()
     {
+        await HubService.ConnectAsync("https://localhost:7009/questhub");
         // Subscribe to SignalR events
         HubService.OnQuestChanged += RefreshQuests;
         
