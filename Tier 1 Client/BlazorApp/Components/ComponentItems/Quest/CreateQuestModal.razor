@@ -1,57 +1,140 @@
+@using ApiContracts.Quest
+@using ApiContracts.User
+@using BlazorApp.Components.ComponentItems.ParameterEnums
 @using BlazorApp.Models
-@using SuperSimpleBlazorModal
+@using BlazorApp.Services.Auth
+@using Syncfusion.Blazor.Popups
+@using Syncfusion.Blazor.DataForm
+@using Syncfusion.Blazor.DropDowns
 
-<SimpleModal @ref="modalRef" Id="CreateQuestModal">
+@inject IQuestService QuestService
+@inject AuthenticationStateProvider AuthStateProvider
 
-    <h3>Create New Quest</h3>
+<SfDialog Width="50%" @ref="_modalRef" IsModal="true" Id="CreateQuestModal" Header="Create New Quest"
+          ShowCloseIcon="true" @bind-Visible="@IsVisible">
+    <DialogEvents OnOverlayModalClick="@OnOverlayClick"></DialogEvents>
+    <DialogTemplates>
+        <Content>
+            <SfDataForm Model="@FormModel" OnSubmit="@CreateQuest">
+                <FormValidator>
+                    <DataAnnotationsValidator></DataAnnotationsValidator>
+                </FormValidator>
 
-    <div class="quest-modal-content">
-        <label>Title</label>
-        <input class="form-control" @bind="Model.Title" />
+                <FormItems>
+                    <FormAutoGenerateItems/>
+                    <FormItem Field="@nameof(FormModel.AssigneeId)">
+                        <Template>
+                            <label class="e-form-label">Assignee</label>
 
-        <label>Description</label>
-        <textarea class="form-control" @bind="Model.Description"></textarea>
+                            <SfDropDownList TItem="UserDto"
+                                            TValue="long?"
+                                            DataSource="@ListOfUsers"
+                                            @bind-Value="FormModel.AssigneeId"
+                                            Placeholder="Unassigned">
+                                <DropDownListFieldSettings Text="DisplayName" Value="Id"/>
+                            </SfDropDownList>
+                        </Template>
+                    </FormItem>
+                    <FormItem Field="@nameof(FormModel.StartDate)"
+                              EditorType="FormEditorType.DateTimePicker"
+                              IsEnabled="IsStartDateEnabled"></FormItem>
+                    <FormItem Field="@nameof(FormModel.FinishedDate)"
+                              EditorType="FormEditorType.DateTimePicker"
+                              IsEnabled="IsFinishedDateEnabled"></FormItem>
+                </FormItems>
 
-        <label>Deadline (optional)</label>
-        <input type="date" class="form-control" @bind="Model.Deadline" />
+                @if (!string.IsNullOrWhiteSpace(_errorMessage))
+                {
+                    <p style="color:red">@_errorMessage</p>
+                }
 
-        <div class="quest-modal-buttons">
-            <button class="btn btn-primary" @onclick="Confirm">Confirm</button>
-            <button class="btn btn-secondary" @onclick="Cancel">Cancel</button>
-        </div>
-    </div>
-
-</SimpleModal>
+                <FormButtons>
+                    <Button Size="Size.Small" Look="ButtonLook.Danger" OnClick="@CloseModal">Cancel</Button>
+                    <Button Size="Size.Small" Type="submit">Create Quest</Button>
+                </FormButtons>
+            </SfDataForm>
+        </Content>
+    </DialogTemplates>
+</SfDialog>
 
 @code {
-    private SimpleModal? modalRef;
+    private SfDialog? _modalRef;
 
-    [Parameter] public EventCallback<QuestModel> OnConfirm { get; set; }
+    [Parameter] public EventCallback OnQuestCreated { get; set; }
     [Parameter] public EventCallback OnCancel { get; set; }
 
-    public QuestModel Model { get; set; } = new();
+    [Parameter] public List<UserDto> ListOfUsers { get; set; } = new();
+
+    private CreateQuestModel FormModel { get; set; } = new();
+    private bool IsVisible { get; set; } = false;
     
+    private bool IsStartDateEnabled =>
+        FormModel.Status != QuestStatus.Backlog &&
+        FormModel.Status != QuestStatus.ToDo;
 
-    public async Task Show()
+    private bool IsFinishedDateEnabled =>
+        FormModel.Status == QuestStatus.Finished;
+
+    private string _errorMessage = "";
+    
+    public Task ShowModal()
     {
-        Model = new QuestModel(); // reset on open
-        if (modalRef != null)
-            await modalRef.ShowModal();
+        _errorMessage = "";
+        FormModel = new CreateQuestModel();
+        IsVisible = true;
+        return Task.CompletedTask;
     }
 
-    private async Task Confirm()
+    private async Task CloseModal()
     {
-        await OnConfirm.InvokeAsync(Model);
-
-        if (modalRef != null)
-            await modalRef.CloseModal();
-    }
-
-    private async Task Cancel()
-    {
+        IsVisible = false;
         await OnCancel.InvokeAsync();
-
-        if (modalRef != null)
-            await modalRef.CloseModal();
     }
+    
+    private void OnOverlayClick(OverlayModalClickEventArgs arg)
+    {
+        this.IsVisible = false;
+    }
+
+    private async Task CreateQuest()
+    {
+        _errorMessage = "";
+        
+        var authProvider = (AuthProvider)AuthStateProvider;
+        var userId = await authProvider.GetUserIdAsync();
+
+        if (userId == null)
+        {
+            _errorMessage = "Error: User is not authenticated.";
+            return;
+        }
+
+        CreateQuestRequest request = new CreateQuestRequest
+        {
+            Title = FormModel.Title,
+            Description = FormModel.Description,
+            Status = FormModel.Status,
+            CreatedById = (long)userId,
+            AssigneeId = FormModel.AssigneeId,
+            Deadline = FormModel.Deadline,
+            StartDate = FormModel.StartDate,
+            FinishedDate = FormModel.FinishedDate
+        };
+
+        try
+        {
+            await QuestService.CreateQuestAsync(request);
+        }
+        catch (Exception e)
+        {
+            _errorMessage = $"Error: {e}";
+            return;
+        }
+
+        FormModel = new();
+        IsVisible = false;
+        
+        await OnQuestCreated.InvokeAsync();
+    }
+    
 }

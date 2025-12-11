@@ -7,11 +7,28 @@ namespace BlazorApp.Services.Auth;
 
 public class AuthProvider (HttpClient client) : AuthenticationStateProvider
 {
-    private ClaimsPrincipal currentClaimsPrincipal;
+    private ClaimsPrincipal? _currentClaimsPrincipal;
     
     public override async Task<AuthenticationState> GetAuthenticationStateAsync()
     {
-        return new AuthenticationState(currentClaimsPrincipal ?? new());
+        return new AuthenticationState(_currentClaimsPrincipal ?? new());
+    }
+
+    public async Task<long?> GetUserIdAsync()
+    {
+        var authState = await GetAuthenticationStateAsync();
+        var user = authState.User;
+        if (user?.Identity?.IsAuthenticated != true)
+            return null;
+
+        var idClaim = user.FindFirst("Id");
+        if (idClaim == null)
+            return null;
+
+        if (long.TryParse(idClaim.Value, out var id))
+            return id;
+
+        return null;
     }
 
     public async Task LoginUser(string email, string password)
@@ -66,9 +83,9 @@ public class AuthProvider (HttpClient client) : AuthenticationStateProvider
 
     public void Logout()
     {
-        currentClaimsPrincipal = new(); 
+        _currentClaimsPrincipal = new(); 
         NotifyAuthenticationStateChanged(Task.FromResult(
-            new AuthenticationState(currentClaimsPrincipal))
+            new AuthenticationState(_currentClaimsPrincipal))
         );
     }
 
@@ -90,9 +107,9 @@ public class AuthProvider (HttpClient client) : AuthenticationStateProvider
         
         ClaimsIdentity identity = new ClaimsIdentity(claims, "apiauth");
 
-        currentClaimsPrincipal = new ClaimsPrincipal(identity);
+        _currentClaimsPrincipal = new ClaimsPrincipal(identity);
         NotifyAuthenticationStateChanged(
-            Task.FromResult(new AuthenticationState(currentClaimsPrincipal))
+            Task.FromResult(new AuthenticationState(_currentClaimsPrincipal))
         );
     }
 
@@ -107,9 +124,9 @@ public class AuthProvider (HttpClient client) : AuthenticationStateProvider
         
         ClaimsIdentity identity = new ClaimsIdentity(claims, "apiauth");
 
-        currentClaimsPrincipal = new ClaimsPrincipal(identity);
+        _currentClaimsPrincipal = new ClaimsPrincipal(identity);
         NotifyAuthenticationStateChanged(
-            Task.FromResult(new AuthenticationState(currentClaimsPrincipal))
+            Task.FromResult(new AuthenticationState(_currentClaimsPrincipal))
         );
     }
 }
