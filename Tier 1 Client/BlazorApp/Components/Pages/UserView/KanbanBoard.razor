@@ -16,6 +16,8 @@
 @using BlazorApp.Components.Pages.Auth
 @using BlazorApp.Services.Auth
 @using BlazorApp.Services.Quest
+@using Syncfusion.Blazor.Calendars
+
 
 
 @implements IDisposable
@@ -113,13 +115,67 @@
                             }
 
                             <div class="task-footer">
-                                <span class="task-assignee">@((item.Assignee ?? "Unassigned"))</span>
+                                <span class="task-assignee">@((item.AssigneeName ?? "Unassigned"))</span>
                             </div>
                         </div>
                     </Template>
-
                 </KanbanCardSettings>
-                <KanbanDialogSettings></KanbanDialogSettings>
+                <KanbanDialogSettings>
+                    <Template Context="data">
+                        @if (data is QuestKanbanModel card)
+                        {
+                            <div class="kanban-edit-dialog">
+                
+                                <div class="field">
+                                    <label>Title</label>
+                                    <InputText class="e-input" @bind-Value="card.Title" />
+                                </div>
+
+                                <div class="field">
+                                    <label>Description</label>
+                                    <InputTextArea class="e-input"
+                                                   rows="4"
+                                                   @bind-Value="card.Summary" />
+                                </div>
+                                <div class="field">
+                                    <label>Deadline</label>
+                                    <SfDateTimePicker TValue="DateTime?"
+                                                      @bind-Value="card.Deadline"
+                                                      Placeholder="Select deadline"
+                                                      Format="dd.MM.yyyy HH:mm"
+                                                      ShowClearButton="true">
+                                    </SfDateTimePicker>
+                                </div>
+
+                                <div class="row">
+                                    <div class="field">
+                                        <label>Status</label>
+                                        <InputSelect class="e-input" @bind-Value="card.Status">
+                                            <option value="ToDo">To Do</option>
+                                            <option value="InProgress">In Progress</option>
+                                            <option value="Review">Review</option>
+                                            <option value="Finished">Done</option>
+                                        </InputSelect>
+                                    </div>
+
+                                    <div class="field">
+                                        <label>Assignee</label>
+                                        <InputSelect class="e-input" @bind-Value="card.AssigneeId">
+                                            <option value="">Unassigned</option>
+                                            @foreach (var user in _allUsers)
+                                            {
+                                                <option value="@user.Id">@user.DisplayName</option>
+                                            }
+                                        </InputSelect>
+                                    </div>
+                                </div>
+
+                            </div>
+                        }
+                    </Template>
+                </KanbanDialogSettings>
+
+                
 
                 <KanbanEvents TValue="QuestKanbanModel"
                               DragStart="@DragStartHandler"
@@ -160,8 +216,11 @@
         public string Title { get; set; } = "";
         public string Status { get; set; } = "";
         public string Summary { get; set; } = "";
-        public string? Assignee { get; set; }
+        public long? AssigneeId { get; set; }
+        public string? AssigneeName { get; set; }
+        public DateTime? Deadline { get; set; }
     }
+
     
     protected override async Task OnInitializedAsync()
     {
@@ -335,62 +394,59 @@
 
             return;
         }
-
-        // EDIT
+        //EDIT
         if (args.RequestType == CurrentAction.Edit && args.Data != null)
         {
-            // get the card data
             var card = args.Data;
 
             if (!long.TryParse(card.Id, out var questId))
                 return;
 
-            //find the proper QuestDTO from allQuests by id (bc Card dont have all informations)
             var existing = _allQuests.FirstOrDefault(q => q.Id == questId);
             if (existing == null)
                 return;
 
-            //update the QuestDto with the card fields that we might changed
+            var assignee = card.AssigneeId.HasValue
+                ? _allUsers.FirstOrDefault(u => u.Id == card.AssigneeId.Value)
+                : null;
+
             var dto = new QuestDto
             {
-                Id         = existing.Id,
-                Title        = card.Title,
-                Description  = string.IsNullOrWhiteSpace(card.Summary) ? null : card.Summary,
-                CreatedBy    = existing.CreatedBy,
-                Assignee     = existing.Assignee,
-                CreatedDate  = existing.CreatedDate,
-                StartDate    = existing.StartDate,
-                Deadline     = existing.Deadline,
-                FinishedDate = existing.FinishedDate,
-                Status       = Enum.Parse<QuestStatus>(card.Status)
+                Id            = existing.Id,
+                Title         = card.Title,
+                Description   = string.IsNullOrWhiteSpace(card.Summary) ? null : card.Summary,
+                Status        = Enum.Parse<QuestStatus>(card.Status),
+                CreatedBy     = existing.CreatedBy,
+                CreatedDate   = existing.CreatedDate,
+                Assignee      = assignee,
+                Deadline      = card.Deadline,   // NEW
+                StartDate     = existing.StartDate,
+                FinishedDate  = existing.FinishedDate
             };
 
-            try //try sending the update request
-            {
-                await QuestService.UpdateQuestAsync(questId, dto);
-                Console.WriteLine($"Updated quest {questId}");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Edit failed: " + ex.Message);
-            }
+
+            await QuestService.UpdateQuestAsync(questId, dto);
         }
+
     }
 
-    private void RefreshKanbanTasks() //
-    { 
+    private void RefreshKanbanTasks()
+    {
         KanbanTasks = _allQuests
             .Where(q => q.Status != QuestStatus.Backlog)
             .Select(q => new QuestKanbanModel
             {
-                Id       = q.Id.ToString(),
-                Title    = q.Title,
-                Status   = q.Status.ToString(),
-                Summary  = q.Description ?? "",
-                Assignee = q.Assignee?.DisplayName,
+                Id           = q.Id.ToString(),
+                Title        = q.Title,
+                Status       = q.Status.ToString(),
+                Summary      = q.Description ?? "",
+                AssigneeId   = q.Assignee?.Id,
+                AssigneeName = q.Assignee?.DisplayName,
+                Deadline     = q.Deadline
             })
             .ToList();
     }
+
     
     // NEW METHOD: Cleanup on component dispose
     public void Dispose()
@@ -520,6 +576,47 @@
             padding: 4px 8px;
             border-radius: 6px;
             background: #f3f4f6;
+        }
+        .kanban-edit-dialog {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            padding: 4px 2px;
+        }
+
+        .kanban-edit-dialog .field {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .kanban-edit-dialog label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .kanban-edit-dialog .row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .e-input {
+            border-radius: 6px;
+            padding: 8px 10px;
+        }
+
+        .e-input textarea {
+            resize: vertical;
+        }
+
+        .e-kanban-dialog .e-dlg-content {
+            background: #fafafa;
+        }
+
+        .e-datetimepicker {
+            width: 100%;
         }
 
 

@@ -26,6 +26,9 @@ builder.Services.AddScoped<IUserService, HttpUserService>();
 builder.Services.AddScoped<IQuestService, HttpQuestService>();
 builder.Services.AddScoped<QuestHubService>(); //adding signalR service
 builder.Services.AddSyncfusionBlazor();
+builder.Logging.SetMinimumLevel(LogLevel.Debug);
+builder.Logging.AddConsole();
+
 
 var app = builder.Build();
 
