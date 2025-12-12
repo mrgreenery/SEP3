@@ -1,0 +1,82 @@
+.top-section{
+    display: flex;
+    justify-content: space-between;
+    align-content: center;
+    padding: 15px;
+    background-color: #f5f5f5;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+.filters {
+    display: flex;
+    gap: 20px;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.filter-group label {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.filter-group input,
+.filter-group select {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    min-width: 150px;
+}
+
+.quest-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-top: 20px;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid #ddd;
+}
+
+.quest-table th,
+.quest-table td {
+    border-right: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    padding: 12px;
+    text-align: left;
+}
+
+.quest-table th:last-child,
+.quest-table td:last-child {
+    border-right: none;
+}
+
+.quest-table tr:last-child td {
+    border-bottom: none;
+}
+
+.quest-table th {
+    background-color: #65748A;
+    color: white;
+    font-weight: bold;
+}
+
+.quest-table thead tr:first-child th:first-child {
+    border-top-left-radius: 10px;
+}
+
+.quest-table thead tr:first-child th:last-child {
+    border-top-right-radius: 10px;
+}
+
+.quest-table tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.quest-table tr:hover {
+    background-color: #ddd;
+}
