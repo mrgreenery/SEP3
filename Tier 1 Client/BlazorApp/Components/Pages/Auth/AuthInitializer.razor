@@ -1,0 +1,17 @@
+@inject BlazorApp.Services.Auth.AuthProvider Auth
+
+@code {
+    private bool _initialized;
+
+    // Runs after the first interactive render
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender || _initialized)
+            return;
+
+        _initialized = true;
+
+        // This reads authState from localStorage and sets the ClaimsPrincipal
+        await Auth.TryRestoreSessionAsync();
+    }
+}

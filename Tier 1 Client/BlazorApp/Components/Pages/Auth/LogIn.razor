@@ -28,6 +28,14 @@
             <ValidationMessage For="@(() => model.Password)" />
         </div>
 
+         <!-- REMEMBER ME -->
+        <div class="form-group">
+            <label>
+                <input type="checkbox" @bind="rememberMe" />
+                Remember me
+            </label>
+        </div>
+
         <Button Look="ButtonLook.Primary" Size="Size.Big" Type="submit">SIGN IN</Button>
     </EditForm>
 
@@ -45,6 +53,7 @@
 
 @code {
     private LoginModel model = new();
+    private bool rememberMe ;
     private string? error;
 
     private async Task HandleLogin()
@@ -52,7 +61,7 @@
         try
         {
             var auth = (AuthProvider)AuthProvider;
-            await auth.LoginUser(model.Email, model.Password);
+            await auth.LoginUser(model.Email, model.Password, rememberMe);
 
             Nav.NavigateTo("/backlog");
         }

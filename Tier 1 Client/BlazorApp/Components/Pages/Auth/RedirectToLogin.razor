@@ -1,13 +1,32 @@
 @inject NavigationManager Nav
+@inject BlazorApp.Services.Auth.AuthProvider Auth
 
 @code {
-    protected override void OnInitialized()
+    private bool _checked;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        // avoid redirect loops if you want
-        var uri = Nav.Uri;
-        if (!uri.EndsWith("/login") && !uri.EndsWith("/register"))
+        // Run once, after the component is actually interactive
+        if (!firstRender || _checked)
+            return;
+
+        _checked = true;
+
+        // Try to restore the user from localStorage (authState)
+        await Auth.TryRestoreSessionAsync();
+
+        // Ask AuthProvider for the *current* auth state
+        var state          = await Auth.GetAuthenticationStateAsync();
+        var isAuthenticated = state.User.Identity?.IsAuthenticated ?? false;
+
+        // Only redirect if we are STILL not authenticated
+        if (!isAuthenticated)
         {
-            Nav.NavigateTo("/login");
+            var uri = Nav.Uri;
+            if (!uri.EndsWith("/login") && !uri.EndsWith("/register"))
+            {
+                Nav.NavigateTo("/login");
+            }
         }
     }
 }

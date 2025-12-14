@@ -1,6 +1,8 @@
 ﻿@rendermode InteractiveServer
+@using BlazorApp.Components.Pages.Auth
 
 <CascadingAuthenticationState>
+    <AuthInitializer />
     <Router AppAssembly="@typeof(Program).Assembly" >
         
         <Found Context="routeData">

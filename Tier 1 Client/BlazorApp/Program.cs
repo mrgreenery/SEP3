@@ -3,6 +3,9 @@ using BlazorApp.Services.Auth;
 using BlazorApp.Services.Quest;
 using BlazorApp.Services.User;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
+
+
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,11 +18,13 @@ builder.Services.AddScoped(sp => new HttpClient
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
-builder.Services.AddAuthorizationCore();
-builder.Services.AddScoped<AuthenticationStateProvider, AuthProvider>();
 builder.Services.AddScoped<IUserService, HttpUserService>();
 builder.Services.AddScoped<IQuestService, HttpQuestService>();
 builder.Services.AddSingleton<QuestHubService>(); //adding signalR service
+builder.Services.AddAuthorizationCore();
+builder.Services.AddScoped<AuthProvider>();
+builder.Services.AddScoped<AuthenticationStateProvider>(sp =>
+    sp.GetRequiredService<AuthProvider>());
 
 
 var app = builder.Build();

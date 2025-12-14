@@ -3,6 +3,7 @@ using ApiContracts.User;
 using Microsoft.AspNetCore.Mvc;
 using WebAPI.Services;
 using WebAPI.Services.Exceptions.User;
+using ApiContracts.Auth;
 
 namespace WebAPI.Controllers;
 
@@ -13,12 +14,15 @@ public class AuthController : ControllerBase
 {
     private readonly IUserService _userService;
     private readonly ILogger<AuthController> _logger;
+    private readonly ITokenService _tokenService;
 
     public AuthController(IUserService userService,
-        ILogger<AuthController> logger)
+        ILogger<AuthController> logger,
+        ITokenService tokenService)
     {
         _userService = userService;
         _logger = logger;
+        _tokenService = tokenService;
     }
     
     [HttpPost("register")]
@@ -39,7 +43,30 @@ public class AuthController : ControllerBase
                                    $"{newUserDto.Email}, " +
                                    $"display name: {newUserDto.DisplayName}");
 
-            return Results.Ok(newUserDto);
+             // AUTO LOGIN PART !!!
+        // rememberMe = true or false. Here I assume "normal" (short session that is ~ 0 min).
+        bool rememberMe = false;
+
+        var token = _tokenService.GenerateToken(
+            newUserDto.Id,
+            newUserDto.Email,
+            newUserDto.DisplayName,
+            rememberMe);
+
+        var expiresAt = rememberMe
+            ? DateTime.UtcNow.AddMinutes(180)
+            : DateTime.UtcNow.AddMinutes(0);
+
+      var authResponse = new AuthResponse
+        {
+            User = newUserDto,
+            Token = token,
+            ExpiresAt = expiresAt
+        };
+
+        return Results.Ok(authResponse);
+
+
         }
         catch (UserWithThisEmailAlreadyExists)
         {
@@ -87,11 +114,24 @@ public class AuthController : ControllerBase
                 throw new WrongPasswordException();
             }
 
-            _logger.LogInformation($"Success in signing user in: email: " +
-                                   $"{userDto.Email}, " +
-                                   $"display name: {userDto.DisplayName}");
+            var token = _tokenService.GenerateToken(
+                userDto.Id,
+                userDto.Email,
+                userDto.DisplayName,
+                request.RememberMe);
 
-            return Results.Ok(userDto);
+            int minutes = request.RememberMe ? 180 : 0;
+            var expiresAt = DateTime.UtcNow.AddMinutes(minutes);
+
+            var authResponse = new AuthResponse
+            {
+                User = userDto,
+                Token = token,
+                ExpiresAt = expiresAt
+            };
+
+            return Results.Ok(authResponse);
+
         }
         catch (UserWithThisEmailDoesNotExist)
         {

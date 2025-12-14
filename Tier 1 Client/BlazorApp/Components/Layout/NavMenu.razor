@@ -1,6 +1,7 @@
 ﻿@using BlazorApp.Components.ComponentItems
 @using BlazorApp.Components.ComponentItems.ParameterEnums
 @using BlazorApp.Services.Auth
+@using System.Threading.Tasks
 @inject AuthenticationStateProvider AuthProvider
 @inject NavigationManager NavManager
 
@@ -58,14 +59,14 @@
 </div>
 
 @code {
-    private void HandleLogOut()
+    private async Task HandleLogOut()
     {
         Console.WriteLine("LogOut() triggered");
         try
         {
             var auth = (AuthProvider)AuthProvider;
 
-            auth.Logout();
+            await auth.Logout();
 
             NavManager.NavigateTo("/");
         }

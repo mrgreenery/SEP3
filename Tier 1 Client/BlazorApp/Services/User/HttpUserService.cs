@@ -63,23 +63,39 @@ public class HttpUserService : IUserService
         authProvider.UpdateClaims(updatedUser);
     }
 
-    public async Task UpdateUserPasswordAsync(long id, string password)
+   public async Task UpdateUserPasswordAsync(long id, string email, string currentPassword, string newPassword)
+{
+    // create the request matching UpdateUserPasswordRequest
+    var request = new UpdateUserPasswordRequest
     {
-        // create the request
-        var request = new UpdateUserPasswordRequest
-        {
-            Id = id,
-            Password = password
-        };
+        Id = id,
+        Email = email,
+        CurrentPassword = currentPassword,
+        NewPassword = newPassword
+    };
 
         // call the web api to update the password
         var response = await client.PutAsJsonAsync(
             "api/users/password", request);
 
         // check if the api call was success or not
-        if (!response.IsSuccessStatusCode)
-            throw new Exception($"Failed to update password. Status: {response.StatusCode}");
+    if (!response.IsSuccessStatusCode)
+    {
+        if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+            throw new Exception("Current password is incorrect.");
+
+        if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+        {
+            var msg = await response.Content.ReadAsStringAsync();
+            throw new Exception(string.IsNullOrWhiteSpace(msg) ? "Invalid input." : msg);
+        }
+
+        var fallback = await response.Content.ReadAsStringAsync();
+        throw new Exception(string.IsNullOrWhiteSpace(fallback)
+            ? $"Failed to update password. Status: {(int)response.StatusCode}"
+            : fallback);
     }
+}
 
     public async Task<List<UserDto>> GetAllUsersAsync()
     {

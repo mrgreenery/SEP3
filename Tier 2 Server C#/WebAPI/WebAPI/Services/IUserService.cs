@@ -18,7 +18,7 @@ public interface IUserService
 
     Task<UserDto> UpdateUserEmailAsync(long id, string email);
 
-    Task UpdateUserPasswordAsync(long id, string password);
+    Task UpdateUserPasswordAsync(long id, string newPassword);
 
     Task DeleteUserAsync(long id);
 }

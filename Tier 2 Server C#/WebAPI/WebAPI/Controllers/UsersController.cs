@@ -154,13 +154,23 @@ public class UsersController : ControllerBase
         _logger.LogInformation("Update password requested. UserId={UserId}", request.Id);
 
         
-        //check if its empty (maybe the request didn't come from tier1)
-        // //if we need to implement tokens than delete this
-        if (string.IsNullOrWhiteSpace(request.Password))
-        {
-            _logger.LogWarning("Update password failed validation. UserId={UserId}", request.Id);
-            return Results.BadRequest("Password cannot be empty."); // 400 Bad Request
-        }
+        if (string.IsNullOrWhiteSpace(request.Email))
+    {
+        _logger.LogWarning("Update password failed validation: email empty. UserId={UserId}", request.Id);
+        return Results.BadRequest("Email cannot be empty."); // 400
+    }
+
+    if (string.IsNullOrWhiteSpace(request.CurrentPassword))
+    {
+        _logger.LogWarning("Update password failed validation: current password empty. UserId={UserId}", request.Id);
+        return Results.BadRequest("Current password cannot be empty."); // 400
+    }
+
+    if (string.IsNullOrWhiteSpace(request.NewPassword))
+    {
+        _logger.LogWarning("Update password failed validation: new password empty. UserId={UserId}", request.Id);
+        return Results.BadRequest("New password cannot be empty."); // 400
+    }
         
         if (request.Id <= 0)
         {
@@ -170,22 +180,40 @@ public class UsersController : ControllerBase
 
         try
         {
-            //send request to service to update password
-            await _userService.UpdateUserPasswordAsync(request.Id, request.Password);
-            _logger.LogInformation($"Update password succeeded. UserId={request.Id}");
-            return Results.Ok(); // 200 OK
-        }
-        catch (UserWithThisIdDoesNotExist)
+            // !!!! reuse the LOGIN logic from AuthController 
+        var loginResult = await _userService.LoginUser(request.Email, request.CurrentPassword);
+
+        // loginResult is null if password is wrong (per your tests)
+        if (loginResult is null || loginResult.Id != request.Id)
         {
-            _logger.LogWarning("Update password failed, user not found. UserId={UserId}", request.Id);
-            return Results.NotFound($"User with id {request.Id} not found."); // 404 not found
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e, "Update password failed unexpectedly. UserId={UserId}", request.Id);
+            _logger.LogWarning("Update password failed: current password incorrect. UserId={UserId}", request.Id);
+
             return Results.Problem(
-                title: "Failed to update password",
-                statusCode: StatusCodes.Status500InternalServerError
+            title: "Unauthorized",
+            detail: "Current password is incorrect.",
+            statusCode: StatusCodes.Status401Unauthorized
+        );
+
+        }
+
+
+        //  if login succeeds, update the password 
+        await _userService.UpdateUserPasswordAsync(request.Id, request.NewPassword);
+
+        _logger.LogInformation("Update password succeeded. UserId={UserId}", request.Id);
+        return Results.Ok(); // 200 OK
+    }
+    catch (UserWithThisIdDoesNotExist)
+    {
+        _logger.LogWarning("Update password failed, user not found. UserId={UserId}", request.Id);
+        return Results.NotFound($"User with id {request.Id} not found."); // 404
+    }
+    catch (Exception e)
+    {
+        _logger.LogError(e, "Update password failed unexpectedly. UserId={UserId}", request.Id);
+        return Results.Problem(
+            title: "Failed to update password",
+            statusCode: StatusCodes.Status500InternalServerError
             ); // 500 internal server error
         }
     }

@@ -6,7 +6,7 @@ import com.db.sep3.util.PasswordUtil;
 import com.google.protobuf.Empty;
 import com.sep3.data.grpc.CreateUserRequest;
 import com.sep3.data.grpc.DeleteUserRequest;
-import com.sep3.data.grpc.GetUserByIdRequest;
+import com.sep3.data.grpc.IdRequest;
 import com.sep3.data.grpc.LoginUserRequest;
 import com.sep3.data.grpc.UpdateUserNameRequest;
 import com.sep3.data.grpc.UserEntity;
@@ -16,6 +16,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import io.grpc.stub.StreamObserver;
+
 
 import java.util.List;
 import java.util.Optional;
@@ -99,8 +101,8 @@ class UserServiceImplTest {
     void getUserById_WithExistingUser_ShouldReturnUser() {
         // Arrange
         long userId = 1L;
-        GetUserByIdRequest request = GetUserByIdRequest.newBuilder()
-                .setUserId(userId)
+        IdRequest request = IdRequest.newBuilder()
+                .setId(userId)
                 .build();
 
         User user = new User();
@@ -125,8 +127,8 @@ class UserServiceImplTest {
     void getUserById_WithNonExistingUser_ShouldReturnNotFoundError() {
         // Arrange
         long userId = 999L;
-        GetUserByIdRequest request = GetUserByIdRequest.newBuilder()
-                .setUserId(userId)
+        IdRequest request = IdRequest.newBuilder()
+                .setId(userId)
                 .build();
 
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
@@ -207,7 +209,7 @@ class UserServiceImplTest {
     void updateUserName_WithExistingUser_ShouldUpdateDisplayName() {
         long userId = 1L;
         UpdateUserNameRequest request = UpdateUserNameRequest.newBuilder()
-                .setUserId(userId)
+                .setId(userId)
                 .setDisplayName("New Name")
                 .build();
 
@@ -271,7 +273,7 @@ class UserServiceImplTest {
     void deleteUser_WithExistingUser_ShouldDeleteAndReturnEmpty() {
         long userId = 1L;
         DeleteUserRequest request = DeleteUserRequest.newBuilder()
-                .setUserId(userId)
+                .setId(userId)
                 .build();
 
         User user = new User();
@@ -300,7 +302,7 @@ class UserServiceImplTest {
     void deleteUser_WithNonExistingUser_ShouldReturnNotFoundError() {
         long userId = 999L;
         DeleteUserRequest request = DeleteUserRequest.newBuilder()
-                .setUserId(userId)
+                .setId(userId)
                 .build();
 
         when(userRepository.existsById(userId)).thenReturn(false);
