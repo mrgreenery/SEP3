@@ -3,35 +3,36 @@
 @using BlazorApp.Components.ComponentItems.ParameterEnums
 @using BlazorApp.Models
 @using BlazorApp.Services.Auth
-@using Syncfusion.Blazor.Popups
 @using Syncfusion.Blazor.DataForm
 @using Syncfusion.Blazor.DropDowns
+@using Syncfusion.Blazor.Popups
 
 @inject IQuestService QuestService
 @inject AuthenticationStateProvider AuthStateProvider
 
-<SfDialog Width="50%" @ref="_modalRef" IsModal="true" Id="CreateQuestModal" Header="Create New Quest"
+
+<SfDialog Width="50%" @ref="_modalRef" IsModal="true" Id="EditQuestModal" Header="Edit Quest"
           ShowCloseIcon="true" @bind-Visible="@IsVisible">
     <DialogEvents OnOverlayModalClick="@OnOverlayClick"></DialogEvents>
     <DialogTemplates>
         <Content>
-            <SfDataForm Model="@FormModel" OnSubmit="@CreateQuest">
+            <SfDataForm Model="@FormModel" OnSubmit="@EditQuest">
                 <FormValidator>
                     <DataAnnotationsValidator></DataAnnotationsValidator>
                 </FormValidator>
 
                 <FormItems>
                     <FormAutoGenerateItems/>
-                    <FormItem Field="@nameof(FormModel.AssigneeId)">
+                    <FormItem Field="@nameof(FormModel.Assignee)">
                         <Template>
                             <label class="e-form-label">Assignee</label>
 
                             <SfDropDownList TItem="UserDto"
-                                            TValue="long?"
+                                            TValue="UserDto?"
                                             DataSource="@ListOfUsers"
-                                            @bind-Value="FormModel.AssigneeId"
+                                            @bind-Value="FormModel.Assignee"
                                             Placeholder="Unassigned">
-                                <DropDownListFieldSettings Text="DisplayName" Value="Id"/>
+                                <DropDownListFieldSettings Text="DisplayName" Value="UserDto"/>
                             </SfDropDownList>
                         </Template>
                     </FormItem>
@@ -49,53 +50,76 @@
                 }
 
                 <FormButtons>
-                    <Button Size="Size.Small" Look="ButtonLook.Danger" OnClick="@CloseModal">Cancel</Button>
+                    <Button Size="Size.Small" Look="ButtonLook.Secondary" OnClick="@CloseModal">Cancel</Button>
                     <Button Size="Size.Small" Type="submit">Create Quest</Button>
                 </FormButtons>
             </SfDataForm>
         </Content>
     </DialogTemplates>
 </SfDialog>
-
 @code {
-
-    [Parameter] public EventCallback OnQuestCreated { get; set; }
-    [Parameter] public EventCallback OnCancel { get; set; }
+    
+    [Parameter] public EventCallback OnQuestEdited { get; set; }
     [Parameter] public List<UserDto> ListOfUsers { get; set; } = new();
-
+    
     private SfDialog? _modalRef;
-    private CreateQuestModel FormModel { get; set; } = new();
+    private QuestModel FormModel { get; set; } = new();
+    private QuestDto? QuestDto { get; set; }
     private bool IsVisible { get; set; } = false;
     private string _errorMessage = "";
     
     private bool IsStartDateEnabled =>
-        FormModel.Status != QuestStatus.Backlog &&
-        FormModel.Status != QuestStatus.ToDo;
+        (FormModel.Status != QuestStatus.Backlog &&
+         FormModel.Status != QuestStatus.ToDo) ||
+        FormModel.StartDate != null;
 
     private bool IsFinishedDateEnabled =>
-        FormModel.Status == QuestStatus.Finished;
-
+        FormModel.Status == QuestStatus.Finished ||
+        FormModel.FinishedDate != null;
     
-    public Task ShowModal()
+    public Task ShowModal(QuestDto questToEdit)
     {
         _errorMessage = "";
-        FormModel = new CreateQuestModel();
+        QuestDto = questToEdit;
+
+        if (QuestDto != null)
+        {
+            FormModel = new QuestModel
+            {
+                Id = QuestDto.Id,
+                Title = QuestDto.Title,
+                Description = QuestDto.Description,
+                Status = QuestDto.Status,
+                CreatedDate = QuestDto.CreatedDate,
+                CreatedById = QuestDto.CreatedBy,
+                Assignee = QuestDto.Assignee,
+                Deadline = QuestDto.Deadline,
+                StartDate = QuestDto.StartDate,
+                FinishedDate = QuestDto.FinishedDate
+            };
+        }
+        else
+        {
+            FormModel = new QuestModel();
+            _errorMessage = "Failed to load quest data";
+        }
+        
         IsVisible = true;
         return Task.CompletedTask;
     }
-
+    
     private async Task CloseModal()
     {
+        QuestDto = null;
         IsVisible = false;
-        await OnCancel.InvokeAsync();
     }
-    
+
     private void OnOverlayClick(OverlayModalClickEventArgs arg)
     {
         this.IsVisible = false;
     }
 
-    private async Task CreateQuest()
+    private async Task EditQuest()
     {
         _errorMessage = "";
         
@@ -108,32 +132,38 @@
             return;
         }
 
-        CreateQuestRequest request = new CreateQuestRequest
+        if (QuestDto == null)
         {
+            _errorMessage = "Quest data are empty, unable to create request";
+            return;
+        }
+        
+        QuestDto request = new QuestDto
+        {
+            Id = QuestDto.Id,
             Title = FormModel.Title,
             Description = FormModel.Description,
             Status = FormModel.Status,
-            CreatedById = (long)userId,
-            AssigneeId = FormModel.AssigneeId,
+            CreatedDate = FormModel.CreatedDate,
+            CreatedBy = FormModel.CreatedById,
+            Assignee = FormModel.Assignee,
             Deadline = FormModel.Deadline,
             StartDate = FormModel.StartDate,
             FinishedDate = FormModel.FinishedDate
         };
-
+        
         try
         {
-            await QuestService.CreateQuestAsync(request);
+            await QuestService.UpdateQuestAsync(QuestDto.Id, request);
         }
         catch (Exception e)
         {
             _errorMessage = $"Error: {e}";
-            return;
         }
-
+        
         IsVisible = false;
         FormModel = new();
         
-        await OnQuestCreated.InvokeAsync();
+        await OnQuestEdited.InvokeAsync();
     }
-    
 }

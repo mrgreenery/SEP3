@@ -1,0 +1,104 @@
+@using ApiContracts.Quest
+@using BlazorApp.Components.ComponentItems.ParameterEnums
+@using BlazorApp.Services.Auth
+@using Syncfusion.Blazor.Popups
+@inject IQuestService QuestService
+@inject AuthenticationStateProvider AuthStateProvider
+
+<SfDialog Width="50%" @ref="_modalRef" IsModal="true" Id="DeleteQuestModal" Header="Edit Quest"
+          ShowCloseIcon="true" @bind-Visible="@IsVisible">
+    <DialogEvents OnOverlayModalClick="@OnOverlayClick"></DialogEvents>
+    <DialogTemplates>
+        <Content>
+            @if (QuestDto != null)
+            {
+                <div class="flex-column align-items-center justify-content-center">
+                    <h3>Are you sure you want to delete this task?</h3>
+                    <p>@QuestDto.Title</p>
+                </div>
+            }
+            
+            @if (!_errorMessage.Equals(""))
+            {
+                <div style="color: red">@_errorMessage</div>
+            }
+
+            <hr/>
+            <div class="flex-row align-items-center justify-content-center">
+                <Button Size="Size.Small" Look="ButtonLook.Secondary" OnClick="@CloseModal">Cancel</Button>
+                <Button Size="Size.Small" Look="ButtonLook.Danger" OnClick="@DeleteQuest">Delete quest</Button>
+            </div>
+        </Content>
+    </DialogTemplates>
+</SfDialog>
+@code {
+    
+    [Parameter] public EventCallback OnQuestDeleted { get; set; }
+    [Parameter] public EventCallback OnCancel { get; set; }
+    
+    private SfDialog? _modalRef;
+    private QuestDto? QuestDto { get; set; }
+    private bool IsVisible { get; set; } = false;
+    private string _errorMessage = "";
+    
+    public async Task ShowModal(QuestDto questToDelete)
+    {
+        QuestDto = questToDelete;
+        if (QuestDto == null) _errorMessage = "Error loading quest";
+        else _errorMessage = "";
+        
+        
+        IsVisible = true;
+        
+        await InvokeAsync(StateHasChanged);
+
+        if (_modalRef is not null)
+            await _modalRef.ShowAsync();
+    }
+
+    private async Task CloseModal()
+    {
+        IsVisible = false;
+        QuestDto = null;
+        
+        if (_modalRef is not null)
+            await _modalRef.HideAsync();
+    }
+    
+    private async void OnOverlayClick(OverlayModalClickEventArgs arg)
+    {
+        await CloseModal();
+    }
+
+    private async Task DeleteQuest()
+    {
+        _errorMessage = "";
+        
+        var authProvider = (AuthProvider)AuthStateProvider;
+        var userId = await authProvider.GetUserIdAsync();
+
+        if (userId == null)
+        {
+            _errorMessage = "Error: User is not authenticated.";
+            return;
+        }
+
+        if (QuestDto == null)
+        {
+            _errorMessage = "Quest data are empty, unable to create request";
+            return;
+        }
+        
+        try
+        {
+            await QuestService.DeleteQuestAsync(QuestDto.Id);
+        }
+        catch (Exception e)
+        {
+            _errorMessage = $"Error: {e}";
+        }
+
+        await CloseModal();
+        await OnQuestDeleted.InvokeAsync();
+    }
+}
