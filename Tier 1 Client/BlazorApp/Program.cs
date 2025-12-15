@@ -23,15 +23,13 @@ builder.Services.AddScoped(sp => new HttpClient
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 builder.Services.AddAuthorizationCore();
-builder.Services.AddScoped<AuthenticationStateProvider, AuthProvider>();
 builder.Services.AddScoped<IUserService, HttpUserService>();
 builder.Services.AddScoped<IQuestService, HttpQuestService>();
 builder.Services.AddSingleton<QuestHubService>(); //adding signalR service
 builder.Services.AddAuthorizationCore();
 builder.Services.AddScoped<AuthProvider>();
 builder.Services.AddScoped<AuthenticationStateProvider>(sp =>
-    sp.GetRequiredService<AuthProvider>());
-builder.Services.AddScoped<QuestHubService>(); //adding signalR service
+    sp.GetRequiredService<AuthProvider>()); 
 builder.Services.AddSyncfusionBlazor();
 builder.Logging.SetMinimumLevel(LogLevel.Debug);
 builder.Logging.AddConsole();

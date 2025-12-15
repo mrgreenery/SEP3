@@ -26,6 +26,23 @@ public class AuthProvider  : AuthenticationStateProvider
         var principal = currentClaimsPrincipal ?? new ClaimsPrincipal();
         return Task.FromResult(new AuthenticationState(principal));
     }
+    
+    public async Task<long?> GetUserIdAsync()
+    {
+        var authState = await GetAuthenticationStateAsync();
+        var user = authState.User;
+        if (user?.Identity?.IsAuthenticated != true)
+            return null;
+
+        var idClaim = user.FindFirst("Id");
+        if (idClaim == null)
+            return null;
+
+        if (long.TryParse(idClaim.Value, out var id))
+            return id;
+
+        return null;
+    }
 
     public async Task TryRestoreSessionAsync()
 {
