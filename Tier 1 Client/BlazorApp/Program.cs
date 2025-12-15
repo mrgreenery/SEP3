@@ -6,9 +6,13 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 
 
+using Syncfusion.Blazor;
 
 
 var builder = WebApplication.CreateBuilder(args);
+
+Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("Ngo9BigBOggjHTQxAR8/V1JFaF5cXGRCf1FpRmJGdld5fUVHYVZUTXxaS00DNHVRdkdmWH1eeXRdR2ZeV0d0WEBWYEg=");
+
 
 builder.Services.AddScoped(sp => new HttpClient
 {
@@ -18,6 +22,8 @@ builder.Services.AddScoped(sp => new HttpClient
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+builder.Services.AddAuthorizationCore();
+builder.Services.AddScoped<AuthenticationStateProvider, AuthProvider>();
 builder.Services.AddScoped<IUserService, HttpUserService>();
 builder.Services.AddScoped<IQuestService, HttpQuestService>();
 builder.Services.AddSingleton<QuestHubService>(); //adding signalR service
@@ -25,6 +31,10 @@ builder.Services.AddAuthorizationCore();
 builder.Services.AddScoped<AuthProvider>();
 builder.Services.AddScoped<AuthenticationStateProvider>(sp =>
     sp.GetRequiredService<AuthProvider>());
+builder.Services.AddScoped<QuestHubService>(); //adding signalR service
+builder.Services.AddSyncfusionBlazor();
+builder.Logging.SetMinimumLevel(LogLevel.Debug);
+builder.Logging.AddConsole();
 
 
 var app = builder.Build();
