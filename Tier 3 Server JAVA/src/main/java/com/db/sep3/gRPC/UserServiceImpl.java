@@ -23,7 +23,6 @@ public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase {
             System.out.println("=== Creating User ===");
             System.out.println("Email: " + request.getEmail());
             System.out.println("Display name: " + request.getDisplayName());
-            System.out.println("Password: *********** ");
 
             //Create JPA entity
             User user = new User();
@@ -175,7 +174,6 @@ public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase {
     @Override
     public void updateUserName(UpdateUserNameRequest request, StreamObserver<UserEntity> responseObserver) {
         try {
-
             //get user from request id
             User user = userRepository.findById(request.getUserId())
                     .orElseThrow(() ->
@@ -208,7 +206,6 @@ public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase {
     @Override
     public void updateUserEmail(UpdateUserEmailRequest request, StreamObserver<UserEntity> responseObserver) {
         try {
-
             //get user from request id
             User user = userRepository.findById(request.getUserId())
                     .orElseThrow(() ->
@@ -241,7 +238,6 @@ public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase {
     @Override
     public void updateUserPassword(UpdateUserPasswordRequest request, StreamObserver<UserEntity> responseObserver) {
         try {
-
             //get user from request id
             User user = userRepository.findById(request.getUserId())
                     .orElseThrow(() ->

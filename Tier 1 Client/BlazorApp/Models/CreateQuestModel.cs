@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 using ApiContracts.Quest;
-using ApiContracts.User;
 
 namespace BlazorApp.Models;
 

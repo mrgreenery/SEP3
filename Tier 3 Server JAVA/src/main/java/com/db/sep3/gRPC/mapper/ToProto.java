@@ -32,7 +32,6 @@ public class ToProto {
         }
 
         return builder.build();
-
     }
 
     //util method for converting User to UserEntity

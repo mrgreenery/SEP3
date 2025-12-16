@@ -1,7 +1,6 @@
-using ApiContracts;
 using ApiContracts.User;
 
-namespace BlazorApp.Services.Auth;
+namespace BlazorApp.Services.User;
 
 public interface IUserService
 {

@@ -5,13 +5,11 @@ import com.db.sep3.entities.Quest;
 import com.sep3.data.grpc.CreateQuestRequest;
 import com.sep3.data.grpc.QuestEntity;
 import io.grpc.stub.StreamObserver;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -40,7 +38,7 @@ class QuestServiceImplTest {
                 .build();
 
         CreateQuestRequest request = CreateQuestRequest.newBuilder()
-                .setQuest(questEntity)
+                .set(questEntity)
                 .build();
 
         Quest savedQuest = new Quest();
@@ -48,9 +46,9 @@ class QuestServiceImplTest {
         savedQuest.setTitle("Test Quest");
         savedQuest.setDescription("Test Description");
         savedQuest.setStatus("backlog");
-        savedQuest.setCreatedAt(java.sql.Date.valueOf("2025-01-01"));
+        savedQuest.setCreatedDate(java.sql.Date.valueOf("2025-01-01"));
         savedQuest.setStartDate(java.sql.Date.valueOf("2025-01-01"));
-        savedQuest.setEndDate(java.sql.Date.valueOf("2025-12-31"));
+        savedQuest.setFinishedDate(java.sql.Date.valueOf("2025-12-31"));
 
         when(questRepository.save(any(Quest.class))).thenReturn(savedQuest);
 

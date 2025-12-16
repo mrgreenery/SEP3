@@ -23,7 +23,7 @@ public class QuestHubService : IAsyncDisposable
         await _hubConnection.StartAsync();
     }
 
-    public async Task DisconnectAsync()
+    private async Task DisconnectAsync()
     {
         if (_hubConnection is not null)
         {

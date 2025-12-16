@@ -1,18 +1,29 @@
-using WebAPI.Services;
 using Data;
-using Grpc.Net.Client;
 using WebAPI.Hubs;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using WebAPI.Services.Implementations;
+using WebAPI.Services.Interfaces;
+using WebAPI.Services.Util;
 
 var builder = WebApplication.CreateBuilder(args); 
 
+// --------------------
+// Core services
+// --------------------
 builder.Services.AddControllers();
+builder.Services.AddAuthorization();
+//OpenAPI
 builder.Services.AddOpenApi(); 
+//SignalR
+builder.Services.AddSignalR();
 
 
-// Configure JWT options (Remember me token)
+// --------------------
+// JWT authentication
+// --------------------
+// Configure JWT options ("Remember me" token)
 var jwtSection = builder.Configuration.GetSection("Jwt");
 builder.Services.Configure<JwtOptions>(jwtSection);
 
@@ -39,15 +50,13 @@ builder.Services
         };
     });
 
-builder.Services.AddAuthorization();
 
-// our token generator
-builder.Services.AddScoped<ITokenService, TokenService>();
-
-// Configure gRPC client
-
+// --------------------
+// gRPC clients
+// --------------------
 AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
 
+// Configure gRPC client
 builder.Services.AddGrpcClient<UserService.UserServiceClient>(options =>
 {
     options.Address = new Uri("http://localhost:9090");
@@ -56,16 +65,21 @@ builder.Services.AddGrpcClient<UserService.UserServiceClient>(options =>
 builder.Services.AddGrpcClient<QuestService.QuestServiceClient>(options =>
 {
     options.Address = new Uri("http://localhost:9090");
-
 });
 
+
+// --------------------
+// Application services
+// --------------------
 builder.Services.AddScoped<IQuestService, QuestServiceImpl>();
 builder.Services.AddScoped<IUserService, UserServiceImpl>();
-builder.Services.AddSignalR();
+builder.Services.AddScoped<ITokenService, TokenService>();
 
+
+// --------------------
+// Pipeline
+// --------------------
 var app = builder.Build();
-
-app.MapControllers();
 
 if (app.Environment.IsDevelopment())
 {
@@ -73,14 +87,12 @@ if (app.Environment.IsDevelopment())
     app.UseDeveloperExceptionPage(); //shows detailed errors
 }
 
-// authentication & authorization
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.MapControllers();
 
-app.MapGet("/", () => Results.Ok("Tier 2 is up"));
-
-//map hub endpoint
-app.MapHub<QuestHub>("/questhub"); 
+//map hub endpoint for SignalR
+app.MapHub<QuestHub>("/questhub");
 
 app.Run();

@@ -1,4 +1,3 @@
-
 using ApiContracts.Quest;
 using ApiContracts.User;
 using Data;
@@ -6,9 +5,10 @@ using apiQuestStatus = ApiContracts.Quest.QuestStatus;
 
 namespace WebAPI.Services.Util;
 
-public class DtoMapper ()
+public static class DtoMapper
 {
 
+    // translates UserEntity object to UserDto
     public static UserDto UserToDto(UserEntity user)
     {
         return new UserDto
@@ -19,6 +19,7 @@ public class DtoMapper ()
         };
     }
 
+    // translates QuestEntity object to QuestDto
     public static QuestDto QuestToDto(QuestEntity quest)
     {
         return new QuestDto
@@ -35,8 +36,4 @@ public class DtoMapper ()
             FinishedDate = quest.FinishedDate?.ToDateTime(),
         };
     }
-
-
-
-
 }

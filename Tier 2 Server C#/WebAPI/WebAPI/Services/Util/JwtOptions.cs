@@ -1,8 +1,6 @@
-using System;
+namespace WebAPI.Services.Util;
 
-namespace WebAPI.Services;
-
-public class JwtOptions
+public record JwtOptions
 {
     public string Key { get; set; } = string.Empty;
     public string Issuer { get; set; } = string.Empty;

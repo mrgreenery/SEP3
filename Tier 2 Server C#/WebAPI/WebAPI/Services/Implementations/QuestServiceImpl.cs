@@ -3,13 +3,13 @@ using Data;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using WebAPI.Services.Exceptions.User;
+using WebAPI.Services.Interfaces;
 using WebAPI.Services.Util;
-using CreateQuestRequest = ApiContracts.Quest.CreateQuestRequest;
 using Enum = System.Enum;
 using grpcQuestStatus = Data.QuestStatus;
 using apiQuestStatus = ApiContracts.Quest.QuestStatus;
 
-namespace WebAPI.Services;
+namespace WebAPI.Services.Implementations;
 
 public class QuestServiceImpl : IQuestService
 {
@@ -21,39 +21,42 @@ public class QuestServiceImpl : IQuestService
     }
 
     //  CREATE 
-    public async Task<QuestDto> CreateQuestAsync(CreateQuestRequest request)
+    public async Task<QuestDto> CreateQuestAsync(string title, 
+        string? description, apiQuestStatus apiStatus, long createdById, 
+        long? assigneeId, DateTime? startDate, DateTime? deadline, 
+        DateTime? finishedDate)
     {
-        if (string.IsNullOrWhiteSpace(request.Title))
-            throw new ArgumentException("Title is required", nameof(request.Title));
+        if (string.IsNullOrWhiteSpace(title))
+            throw new ArgumentException("Title is required", nameof(title));
         
-        var status = request.Status == default
+        var status = apiStatus == default
             ? apiQuestStatus.Backlog
-            : request.Status;
+            : apiStatus;
 
         var grpcRequest = new Data.CreateQuestRequest
         {
-            Title = request.Title,
+            Title = title,
             Status = Enum.Parse<grpcQuestStatus>(status.ToString()),
-            CreatedBy = request.CreatedById
+            CreatedBy = createdById
         };
 
-        if (!string.IsNullOrWhiteSpace(request.Description))
-            grpcRequest.Description = request.Description;
+        if (!string.IsNullOrWhiteSpace(description))
+            grpcRequest.Description = description;
 
-        if (request.AssigneeId.HasValue)
-            grpcRequest.AssigneeId = request.AssigneeId.Value;
+        if (assigneeId.HasValue)
+            grpcRequest.AssigneeId = assigneeId.Value;
 
-        if (request.StartDate.HasValue)
+        if (startDate.HasValue)
             grpcRequest.StartDate = Timestamp.FromDateTime(
-                DateTime.SpecifyKind(request.StartDate.Value, DateTimeKind.Utc));
+                DateTime.SpecifyKind(startDate.Value, DateTimeKind.Utc));
 
-        if (request.Deadline.HasValue)
+        if (deadline.HasValue)
             grpcRequest.Deadline = Timestamp.FromDateTime(
-                DateTime.SpecifyKind(request.Deadline.Value, DateTimeKind.Utc));
+                DateTime.SpecifyKind(deadline.Value, DateTimeKind.Utc));
 
-        if (request.FinishedDate.HasValue)
+        if (finishedDate.HasValue)
             grpcRequest.FinishedDate = Timestamp.FromDateTime(
-                DateTime.SpecifyKind(request.FinishedDate.Value, DateTimeKind.Utc));
+                DateTime.SpecifyKind(finishedDate.Value, DateTimeKind.Utc));
 
         try
         {
@@ -65,8 +68,7 @@ public class QuestServiceImpl : IQuestService
             throw new Exception($"gRPC CreateQuest failed: {ex.StatusCode} - {ex.Status.Detail}", ex);
         }
     }
-
-
+    
     //  GET ALL 
     public async Task<List<QuestDto>> GetAllQuestsAsync()
     {
@@ -91,8 +93,7 @@ public class QuestServiceImpl : IQuestService
     //  UPDATE 
     public async Task UpdateQuestAsync(long id, QuestDto quest)
     {
-
-        var grpcRequest = new Data.UpdateQuestRequest
+        var grpcRequest = new UpdateQuestRequest
         {
             QuestId = id,
             Title = quest.Title,

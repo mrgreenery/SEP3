@@ -7,8 +7,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-
-import java.sql.Date;
 import java.time.Instant;
 
 public interface QuestRepository extends JpaRepository<Quest, Long> {
@@ -35,7 +33,6 @@ public interface QuestRepository extends JpaRepository<Quest, Long> {
     // date-based (use field names that actually exist on Quest)
     Page<Quest> findByDeadlineBefore(Instant date, Pageable pageable);
     Page<Quest> findByStartDateAfter(Instant date, Pageable pageable);
-
 
   // title search (case-insensitive)
   Page<Quest> findByTitleContainingIgnoreCase(String phrase, Pageable pageable);

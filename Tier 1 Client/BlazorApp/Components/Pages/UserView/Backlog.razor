@@ -8,7 +8,7 @@
 @using BlazorApp.Services.Auth
 @using BlazorApp.Services.Quest
 @using BlazorApp.Components.ComponentItems.Quest
-
+@using BlazorApp.Services.User
 @inject IQuestService QuestService
 @inject IUserService UserService
 @inject QuestHubService HubService
@@ -230,7 +230,7 @@
         return filtered.ToList();
     }
 
-    // NEW METHOD: Cleanup on component dispose
+    //Cleanup on component dispose
     public void Dispose()
     {
         HubService.OnQuestChanged -= RefreshQuests;

@@ -1,6 +1,4 @@
-using System;
-
-namespace WebAPI.Services;
+namespace WebAPI.Services.Interfaces;
 
 public interface ITokenService
 {
