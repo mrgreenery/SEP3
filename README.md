@@ -75,15 +75,15 @@ This starts the gRPC server and connects to PostgreSQL.
 
 Start the application tier (.NET Web API):
 
-cd tier-2-api  
-dotnet run  
+cd SEP3/Tier 2 Server C#/WebAPI/WebAPI  
+dotnet run --launch-profile https  
 
 This exposes REST endpoints for the client and communicates with the data tier via gRPC.
 
 Start the presentation tier (Blazor client):
 
-cd tier-1-client  
-dotnet run  
+cd SEP3/Tier 1 Client/BlazorApp  
+dotnet run --launch-profile https
 
 Open the application in the browser using the URL shown in the console.
 
