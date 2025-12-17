@@ -17,13 +17,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import io.grpc.stub.StreamObserver;
-
-
 import java.util.List;
 import java.util.Optional;
-
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.*;
 
@@ -144,7 +140,6 @@ class UserServiceImplTest {
     }
 
     // ---------- logUser (login) ----------
-
     @Test
     void logUser_WithValidCredentials_ShouldReturnUser() {
         // Arrange
@@ -209,7 +204,7 @@ class UserServiceImplTest {
     void updateUserName_WithExistingUser_ShouldUpdateDisplayName() {
         long userId = 1L;
         UpdateUserNameRequest request = UpdateUserNameRequest.newBuilder()
-                .setId(userId)
+                .setUserId(userId)
                 .setDisplayName("New Name")
                 .build();
 
@@ -240,7 +235,6 @@ class UserServiceImplTest {
     }
 
     // ---------- getAllUsers ----------
-
     @Test
     void getAllUsers_ShouldReturnUserList() {
         User u1 = new User();
@@ -268,12 +262,11 @@ class UserServiceImplTest {
     }
 
     // ---------- deleteUser ----------
-
     @Test
     void deleteUser_WithExistingUser_ShouldDeleteAndReturnEmpty() {
         long userId = 1L;
         DeleteUserRequest request = DeleteUserRequest.newBuilder()
-                .setId(userId)
+                .setUserId(userId)
                 .build();
 
         User user = new User();
@@ -302,7 +295,7 @@ class UserServiceImplTest {
     void deleteUser_WithNonExistingUser_ShouldReturnNotFoundError() {
         long userId = 999L;
         DeleteUserRequest request = DeleteUserRequest.newBuilder()
-                .setId(userId)
+                .setUserId(userId)
                 .build();
 
         when(userRepository.existsById(userId)).thenReturn(false);

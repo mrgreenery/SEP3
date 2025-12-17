@@ -2,8 +2,8 @@ using ApiContracts.Quest;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using WebAPI.Hubs;
-using WebAPI.Services;
 using WebAPI.Services.Exceptions.User;
+using WebAPI.Services.Interfaces;
 
 namespace WebAPI.Controllers;
 
@@ -24,15 +24,15 @@ public class QuestsController : ControllerBase
         _logger = logger;
 		_hubContext = hubContext;
     }
-
+    
     //  CREATE QUEST 
     // POST /api/quests
     [HttpPost]
     public async Task<IResult> CreateQuest([FromBody] CreateQuestRequest request)
     {
-            _logger.LogInformation("Creating quest: {Title}", request.Title);
+        _logger.LogInformation("Creating quest: {Title}", request.Title);
 
-         if (string.IsNullOrWhiteSpace(request.Title))
+        if (string.IsNullOrWhiteSpace(request.Title))
         {
             _logger.LogWarning("Create quest validation failed: title is empty");
             return Results.BadRequest("Title is required."); // 400
@@ -40,9 +40,12 @@ public class QuestsController : ControllerBase
 
         try
         {
-            var created = await _questService.CreateQuestAsync(request);
+            var created = await _questService.CreateQuestAsync(
+                request.Title, request.Description, request.Status, 
+                request.CreatedById, request.AssigneeId, request.StartDate, 
+                request.Deadline, request.FinishedDate);
             
-            // SIGNALR broadcast
+            // SignalR broadcast
             await _hubContext.Clients.All.SendAsync("QuestCreated", created);
             _logger.LogInformation("SignalR broadcast: QuestCreated {Id}", created.Id);
             
@@ -63,13 +66,12 @@ public class QuestsController : ControllerBase
             ); // 500 only for unexpected stuff
         }
     }
-
+    
     //  GET ALL QUESTS 
     // GET /api/quests
     [HttpGet]
     public async Task<IResult> GetAllQuests()
     {
-        
        _logger.LogInformation("Get all quests requested");
 
         try
@@ -82,7 +84,6 @@ public class QuestsController : ControllerBase
             // service says "no users"
             _logger.LogWarning(ex, "No Quests found");
             return Results.NotFound("No quest found."); // 404
-            
         }
         catch (Exception e)
         {
@@ -93,8 +94,7 @@ public class QuestsController : ControllerBase
             ); // 500 only for unexpected stuff
         }
     }
-
-
+    
     //  UPDATE QUEST 
     // PUT /api/quests/{id}
     // Request: QuestDto (overwrite)
@@ -141,7 +141,7 @@ public class QuestsController : ControllerBase
 
         }
     }
-
+    
     //  DELETE QUEST 
     // DELETE /api/quests/{id}
     // Response: 204 No Content

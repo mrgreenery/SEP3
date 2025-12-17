@@ -1,25 +1,18 @@
 @page "/kanbanboard"
 
-
-@inject IQuestService QuestService
-@inject IUserService UserService
-@inject QuestHubService HubService
-@inject NavigationManager NavManager
-
-@using System.Dynamic
 @using ApiContracts.Quest
 @using ApiContracts.User
 @using BlazorApp.Components.ComponentItems
-@using BlazorApp.Components.ComponentItems.KanbanBoard
 @using BlazorApp.Components.ComponentItems.ParameterEnums
 @using BlazorApp.Components.ComponentItems.Quest
 @using BlazorApp.Components.Pages.Auth
 @using BlazorApp.Services.Auth
 @using BlazorApp.Services.Quest
+@using BlazorApp.Services.User
 @using Syncfusion.Blazor.Calendars
-
-
-
+@inject IQuestService QuestService
+@inject IUserService UserService
+@inject QuestHubService HubService
 @implements IDisposable
 @* desired render mode define here *@
 @rendermode InteractiveAuto

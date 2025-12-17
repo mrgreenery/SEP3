@@ -1,26 +1,24 @@
 @page "/account"
 
 @using System.Security.Claims
-@using BlazorApp.Services.User
 @using BlazorApp.Services.Auth
 @using System.ComponentModel.DataAnnotations
-@using Microsoft.AspNetCore.Components.Authorization
-@using Microsoft.AspNetCore.Components.Forms
 @using ApiContracts.User
-
-
+@using BlazorApp.Models
+@using BlazorApp.Services.User
 @inject AuthenticationStateProvider AuthProvider
 @inject IUserService UserService
-@inject BlazorApp.Services.Auth.AuthProvider Auth
+@inject AuthProvider Auth
+
+<PageTitle>AccountPage</PageTitle>
 
 <AuthorizeView Context="authState">
     <NotAuthorized>
         <p>You must be logged in to view this page.</p>
         <a href="/login">Go to Login</a>
     </NotAuthorized>
-
+    
     <Authorized>
-
     @{
         var user = authState.User;
 
@@ -34,38 +32,38 @@
             "";
 
         var idClaim = user.FindFirst("Id")?.Value;
-        long.TryParse(idClaim, out userId); // update userId live too
+        long.TryParse(idClaim, out _userId); // update userId live too
     }
         <h3>Account</h3>
 
-        @if (!isEditing)
+        @if (!_isEditing)
         {
             <p><strong>Display name:</strong> @displayNameLive</p>
             <p><strong>Email:</strong> @emailLive</p>
 
             <button class="btn btn-primary" @onclick="() => StartEdit(displayNameLive, emailLive)">Edit</button>
 
-            @if (!string.IsNullOrWhiteSpace(statusMessage))
+            @if (!string.IsNullOrWhiteSpace(_statusMessage))
             {
-                <p class="mt-3" style="color:@(isError ? "red" : "green")">@statusMessage</p>
+                <p class="mt-3" style="color:@(_isError ? "red" : "green")">@_statusMessage</p>
             }
         }
         else
         {
-            <EditForm Model="@editModel" OnValidSubmit="@SaveChanges">
+            <EditForm Model="@_editModel" OnValidSubmit="@SaveChanges">
                 <DataAnnotationsValidator />
                 <ValidationSummary />
 
                 <div class="mb-3">
                     <label class="form-label">Display name</label>
-                    <InputText class="form-control" @bind-Value="editModel.DisplayName" />
-                    <ValidationMessage For="@(() => editModel.DisplayName)" />
+                    <InputText class="form-control" @bind-Value="_editModel.DisplayName" />
+                    <ValidationMessage For="@(() => _editModel.DisplayName)" />
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label">Email</label>
-                    <InputText class="form-control" @bind-Value="editModel.Email" />
-                    <ValidationMessage For="@(() => editModel.Email)" />
+                    <InputText class="form-control" @bind-Value="_editModel.Email" />
+                    <ValidationMessage For="@(() => _editModel.Email)" />
                 </div>
 
                 <hr />
@@ -73,37 +71,37 @@
 
                 <div class="mb-3">
                     <label class="form-label">Current password</label>
-                    <InputText type="password" class="form-control" @bind-Value="editModel.CurrentPassword" />
-                    @if (!string.IsNullOrWhiteSpace(passwordError))
+                    <InputText type="password" class="form-control" @bind-Value="_editModel.CurrentPassword" />
+                    @if (!string.IsNullOrWhiteSpace(_passwordError))
                     {
-                        <div class="text-danger">@passwordError</div>
+                        <div class="text-danger">@_passwordError</div>
                     }
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label">New password</label>
-                    <InputText type="password" class="form-control" @bind-Value="editModel.NewPassword" />
-                    @if (!string.IsNullOrWhiteSpace(newPasswordError))
+                    <InputText type="password" class="form-control" @bind-Value="_editModel.NewPassword" />
+                    @if (!string.IsNullOrWhiteSpace(_newPasswordError))
                     {
-                        <div class="text-danger">@newPasswordError</div>
+                        <div class="text-danger">@_newPasswordError</div>
                     }
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label">Confirm new password</label>
-                    <InputText type="password" class="form-control" @bind-Value="editModel.ConfirmNewPassword" />
-                    @if (!string.IsNullOrWhiteSpace(confirmError))
+                    <InputText type="password" class="form-control" @bind-Value="_editModel.ConfirmNewPassword" />
+                    @if (!string.IsNullOrWhiteSpace(_confirmError))
                     {
-                        <div class="text-danger">@confirmError</div>
+                        <div class="text-danger">@_confirmError</div>
                     }
                 </div>
 
                 <button type="submit" class="btn btn-success">Save</button>
                 <button type="button" class="btn btn-secondary ms-2" @onclick="CancelEdit">Cancel</button>
 
-                @if (!string.IsNullOrWhiteSpace(statusMessage))
+                @if (!string.IsNullOrWhiteSpace(_statusMessage))
                 {
-                    <p class="mt-3" style="color:@(isError ? "red" : "green")">@statusMessage</p>
+                    <p class="mt-3" style="color:@(_isError ? "red" : "green")">@_statusMessage</p>
                 }
             </EditForm>
         }
@@ -111,20 +109,20 @@
 </AuthorizeView>
 
 @code {
-    private long userId;
-    private string email = "";
-    private string displayName = "";
+    private long _userId;
+    private string _email = "";
+    private string _displayName = "";
 
-    private bool isEditing;
+    private bool _isEditing;
 
-    private string? statusMessage;
-    private bool isError;
+    private string? _statusMessage;
+    private bool _isError;
 
-    private string? passwordError;
-    private string? newPasswordError;
-    private string? confirmError;
+    private string? _passwordError;
+    private string? _newPasswordError;
+    private string? _confirmError;
 
-    private AccountEditModel editModel = new();
+    private AccountEditModel _editModel = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -134,28 +132,28 @@
         if (user.Identity?.IsAuthenticated == true)
         {
             var idClaim = user.FindFirst("Id")?.Value;
-            if (!long.TryParse(idClaim, out userId))
-                userId = 0;
+            if (!long.TryParse(idClaim, out _userId))
+                _userId = 0;
 
-            displayName = user.FindFirst(ClaimTypes.Name)?.Value
+            _displayName = user.FindFirst(ClaimTypes.Name)?.Value
                           ?? user.Identity?.Name
                           ?? "";
 
-            email = user.FindFirst(ClaimTypes.Email)?.Value
+            _email = user.FindFirst(ClaimTypes.Email)?.Value
                     ?? "";
         }
     }
 
     private void StartEdit(string currentName, string currentEmail)
     {
-        statusMessage = null;
-        isError = false;
+        _statusMessage = null;
+        _isError = false;
 
-        passwordError = null;
-        newPasswordError = null;
-        confirmError = null;
+        _passwordError = null;
+        _newPasswordError = null;
+        _confirmError = null;
 
-        editModel = new AccountEditModel
+        _editModel = new AccountEditModel
         {
             DisplayName = currentName,
             Email = currentEmail,
@@ -164,86 +162,85 @@
             ConfirmNewPassword = ""
         };
 
-        isEditing = true;
+        _isEditing = true;
     }
-
-
+    
     private void CancelEdit()
     {
-        isEditing = false;
+        _isEditing = false;
 
-        passwordError = null;
-        newPasswordError = null;
-        confirmError = null;
+        _passwordError = null;
+        _newPasswordError = null;
+        _confirmError = null;
     }
 
     private async Task SaveChanges()
     {
-        statusMessage = null;
-        isError = false;
+        _statusMessage = null;
+        _isError = false;
 
-        passwordError = null;
-        newPasswordError = null;
-        confirmError = null;
+        _passwordError = null;
+        _newPasswordError = null;
+        _confirmError = null;
 
-        if (userId <= 0)
+        if (_userId <= 0)
         {
-            isError = true;
-            statusMessage = "Cannot update: user id is missing. Please log out and log in again.";
+            _isError = true;
+            _statusMessage = "Cannot update: user id is missing. Please log out and log in again.";
             return;
         }
 
         bool wantsPasswordChange =
-            !string.IsNullOrWhiteSpace(editModel.CurrentPassword) ||
-            !string.IsNullOrWhiteSpace(editModel.NewPassword) ||
-            !string.IsNullOrWhiteSpace(editModel.ConfirmNewPassword);
+            !string.IsNullOrWhiteSpace(_editModel.CurrentPassword) ||
+            !string.IsNullOrWhiteSpace(_editModel.NewPassword) ||
+            !string.IsNullOrWhiteSpace(_editModel.ConfirmNewPassword);
 
         if (wantsPasswordChange)
         {
-            if (string.IsNullOrWhiteSpace(editModel.CurrentPassword))
+            if (string.IsNullOrWhiteSpace(_editModel.CurrentPassword))
             {
-                passwordError = "Current password is required.";
+                _passwordError = "Current password is required.";
                 return;
             }
 
-            if (string.IsNullOrWhiteSpace(editModel.NewPassword) || editModel.NewPassword.Length < 6)
+            if (string.IsNullOrWhiteSpace(_editModel.NewPassword) || _editModel.NewPassword.Length < 6)
             {
-                newPasswordError = "New password must be at least 6 characters.";
+                _newPasswordError = "New password must be at least 6 characters.";
                 return;
             }
 
-            if (!string.Equals(editModel.NewPassword, editModel.ConfirmNewPassword, StringComparison.Ordinal))
+            if (!string.Equals(_editModel.NewPassword, _editModel.ConfirmNewPassword, StringComparison.Ordinal))
             {
-                confirmError = "Passwords do not match.";
+                _confirmError = "Passwords do not match.";
                 return;
             }
         }
 
         try
         {
-            var changedName = !string.Equals(editModel.DisplayName, displayName, StringComparison.Ordinal);
-            var changedEmail = !string.Equals(editModel.Email, email, StringComparison.OrdinalIgnoreCase);
+            var changedName = !string.Equals(_editModel.DisplayName, _displayName, StringComparison.Ordinal);
+            var changedEmail = !string.Equals(_editModel.Email, _email, StringComparison.OrdinalIgnoreCase);
 
             // Apply updates to backend
             if (changedName)
             {
-                await UserService.UpdateUserNameAsync(userId, editModel.DisplayName);
-                displayName = editModel.DisplayName;
+                await UserService.UpdateUserNameAsync(_userId, _editModel.DisplayName);
+                _displayName = _editModel.DisplayName;
             }
 
             if (changedEmail)
             {
-                await UserService.UpdateUserEmailAsync(userId, editModel.Email);
-                email = editModel.Email;
+                await UserService.UpdateUserEmailAsync(_userId, _editModel.Email);
+                _email = _editModel.Email;
             }
 
             if (wantsPasswordChange)
             {
                 await UserService.UpdateUserPasswordAsync(
-                    userId,
-                    email, // updated email if changed
-                    editModel.CurrentPassword!,
-                    editModel.NewPassword!
+                    _userId,
+                    _email, // updated email if changed
+                    _editModel.CurrentPassword!,
+                    _editModel.NewPassword!
                 );
             }
 
@@ -252,40 +249,26 @@
             {
                 var updatedUser = new UserDto
                 {
-                    Id = userId,
-                    DisplayName = displayName,
-                    Email = email
+                    Id = _userId,
+                    DisplayName = _displayName,
+                    Email = _email
                 };
 
                 await Auth.UpdateClaimsAndPersistAsync(updatedUser);
             }
 
             // Clear sensitive fields
-            editModel.CurrentPassword = "";
-            editModel.NewPassword = "";
-            editModel.ConfirmNewPassword = "";
+            _editModel.CurrentPassword = "";
+            _editModel.NewPassword = "";
+            _editModel.ConfirmNewPassword = "";
 
-            statusMessage = "Account updated successfully.";
-            isEditing = false;
+            _statusMessage = "Account updated successfully.";
+            _isEditing = false;
         }
         catch (Exception ex)
         {
-            isError = true;
-            statusMessage = ex.Message;
+            _isError = true;
+            _statusMessage = ex.Message;
         }
-    }
-
-
-    public class AccountEditModel
-    {
-        [Required]
-        public string DisplayName { get; set; } = "";
-
-        [Required, EmailAddress]
-        public string Email { get; set; } = "";
-
-        public string? CurrentPassword { get; set; }
-        public string? NewPassword { get; set; }
-        public string? ConfirmNewPassword { get; set; }
     }
 }

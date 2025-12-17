@@ -1,12 +1,12 @@
-
-using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using WebAPI.Services.Interfaces;
+using WebAPI.Services.Util;
 
-namespace WebAPI.Services;
+namespace WebAPI.Services.Implementations;
 
 public class TokenService : ITokenService
 {

@@ -1,5 +1,3 @@
-using ApiContracts.User;
-
 namespace ApiContracts.Quest;
 
 public record CreateQuestRequest

@@ -1,23 +1,34 @@
 using System.ComponentModel.DataAnnotations;
 using ApiContracts.Quest;
+using ApiContracts.User;
 
 namespace BlazorApp.Models;
 
-public class CreateQuestModel : IValidatableObject
+public class QuestModel : IValidatableObject
 {
+    [Required][Editable(false)]
+    [Display(Name = "Quest ID")]
+    public long Id { get; set; }
+    
     [Required(ErrorMessage = "Quest title cannot be empty")] 
     [Display(Name = "Title")]
     public string Title { get; set; } = "";
     
     [Display(Name = "Description")]
     [DataType(DataType.MultilineText)]
-    public string Description { get; set; } = "";
+    public string? Description { get; set; } = "";
     
     [Display(Name = "Status")]
     public QuestStatus Status { get; set; } = QuestStatus.Backlog;
+
+    [Required][Display(Name = "Created at:")] [Editable(false)]
+    public DateTime CreatedDate { get; set; }
+
+    [Required][Display(Name = "Created by:")][Editable(false)]
+    public UserDto CreatedById { get; set; }
     
     [Display(Name = "Assignee")]
-    public long? AssigneeId { get; set; }
+    public UserDto? Assignee { get; set; }
     
     [Display(Name = "Deadline")]
     public DateTime? Deadline {get; set; }
@@ -47,7 +58,7 @@ public class CreateQuestModel : IValidatableObject
                 "Start Date cannot be set when quest status is: Backlog or ToDo",
                 new[] { nameof(StartDate) });
         }
-        
+
         if (Status != QuestStatus.Finished && FinishedDate is not null)
         {
             yield return new ValidationResult(

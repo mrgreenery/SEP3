@@ -3,11 +3,8 @@ package com.db.sep3.entities;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.sql.Date;
 import java.time.Instant;
-import java.util.LinkedHashSet;
-import java.util.Set;
+
 
 @Entity @Table(name = "quest")
 public class Quest {

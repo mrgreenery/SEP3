@@ -9,13 +9,13 @@ namespace BlazorApp.Services.User;
 public class HttpUserService : IUserService
 {
     
-    private readonly HttpClient client;
-    private readonly AuthProvider authProvider;
+    private readonly HttpClient _client;
+    private readonly AuthProvider _authProvider;
     
     public HttpUserService (HttpClient client, AuthenticationStateProvider authStateProvider)
     { 
-        this.client = client;
-        authProvider = (AuthProvider)authStateProvider;
+        _client = client;
+        _authProvider = (AuthProvider)authStateProvider;
     }
 
     public async Task UpdateUserNameAsync(long id, string displayName)
@@ -26,7 +26,7 @@ public class HttpUserService : IUserService
             DisplayName = displayName
         };
 
-        var response = await client.PutAsJsonAsync(
+        var response = await _client.PutAsJsonAsync(
             "api/users/display-name", request);  
         
         var updatedUser = await response.Content.ReadFromJsonAsync<UserDto>(
@@ -34,7 +34,7 @@ public class HttpUserService : IUserService
                           ?? throw new Exception("Could not update user");
         
         // Update Claims after successfully updating user 
-        authProvider.UpdateClaims(updatedUser);
+        _authProvider.UpdateClaims(updatedUser);
     }
 
     public async Task UpdateUserEmailAsync(long id, string email)
@@ -47,7 +47,7 @@ public class HttpUserService : IUserService
         };
 
         //call the web api endpoint to update email
-        var response = await client.PutAsJsonAsync(
+        var response = await _client.PutAsJsonAsync(
             "api/users/email", request);
         
         //check if the api call was success or not
@@ -60,47 +60,47 @@ public class HttpUserService : IUserService
                           ?? throw new Exception("Could not parse updated user");
         
         //update the claims with new email
-        authProvider.UpdateClaims(updatedUser);
+        _authProvider.UpdateClaims(updatedUser);
     }
 
    public async Task UpdateUserPasswordAsync(long id, string email, string currentPassword, string newPassword)
-{
-    // create the request matching UpdateUserPasswordRequest
-    var request = new UpdateUserPasswordRequest
     {
-        Id = id,
-        Email = email,
-        CurrentPassword = currentPassword,
-        NewPassword = newPassword
-    };
-
-        // call the web api to update the password
-        var response = await client.PutAsJsonAsync(
-            "api/users/password", request);
-
-        // check if the api call was success or not
-    if (!response.IsSuccessStatusCode)
-    {
-        if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
-            throw new Exception("Current password is incorrect.");
-
-        if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+        // create the request matching UpdateUserPasswordRequest
+        var request = new UpdateUserPasswordRequest
         {
-            var msg = await response.Content.ReadAsStringAsync();
-            throw new Exception(string.IsNullOrWhiteSpace(msg) ? "Invalid input." : msg);
-        }
+            Id = id,
+            Email = email,
+            CurrentPassword = currentPassword,
+            NewPassword = newPassword
+        };
 
-        var fallback = await response.Content.ReadAsStringAsync();
-        throw new Exception(string.IsNullOrWhiteSpace(fallback)
-            ? $"Failed to update password. Status: {(int)response.StatusCode}"
-            : fallback);
+            // call the web api to update the password
+            var response = await _client.PutAsJsonAsync(
+                "api/users/password", request);
+
+            // check if the api call was success or not
+        if (!response.IsSuccessStatusCode)
+        {
+            if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                throw new Exception("Current password is incorrect.");
+
+            if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+            {
+                var msg = await response.Content.ReadAsStringAsync();
+                throw new Exception(string.IsNullOrWhiteSpace(msg) ? "Invalid input." : msg);
+            }
+
+            var fallback = await response.Content.ReadAsStringAsync();
+            throw new Exception(string.IsNullOrWhiteSpace(fallback)
+                ? $"Failed to update password. Status: {(int)response.StatusCode}"
+                : fallback);
+        }
     }
-}
 
     public async Task<List<UserDto>> GetAllUsersAsync()
     {
         // call api endpoint to get all users
-        var response = await client.GetAsync("api/users");
+        var response = await _client.GetAsync("api/users");
 
         // check if response is succes or not
         if (!response.IsSuccessStatusCode)
@@ -115,11 +115,10 @@ public class HttpUserService : IUserService
     public async Task DeleteUserAsync(long id)
     {
         // Call api to delete user
-        var response = await client.DeleteAsync($"api/users/{id}");
+        var response = await _client.DeleteAsync($"api/users/{id}");
 
         // If delete failed, throw an exception
         if (!response.IsSuccessStatusCode)
             throw new Exception($"Failed to delete user. Status: {response.StatusCode}");
-        
     }
 }

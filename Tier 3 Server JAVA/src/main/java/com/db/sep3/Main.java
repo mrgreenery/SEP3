@@ -15,7 +15,6 @@ public class Main
     SpringApplication.run(Main.class, args);
   }
 
-
   @Bean CommandLineRunner seedAndRead(UserRepository users,
       QuestRepository tasks)
   {

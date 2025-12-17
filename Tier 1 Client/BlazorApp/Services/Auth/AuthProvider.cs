@@ -4,26 +4,25 @@ using ApiContracts.User;
 using ApiContracts.Auth;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.JSInterop;
-using System.Threading.Tasks;
 
 namespace BlazorApp.Services.Auth;
 
 public class AuthProvider  : AuthenticationStateProvider
 {
-    private readonly HttpClient client;
-    private readonly IJSRuntime jsRuntime;
-    private ClaimsPrincipal currentClaimsPrincipal = new();
+    private readonly HttpClient _client;
+    private readonly IJSRuntime _jsRuntime;
+    private ClaimsPrincipal _currentClaimsPrincipal = new();
 
     private const string AuthStorageKey = "authState";
 
      public AuthProvider(HttpClient client, IJSRuntime jsRuntime)
     {
-        this.client = client;
-        this.jsRuntime = jsRuntime;
+        this._client = client;
+        this._jsRuntime = jsRuntime;
     }
     public override Task<AuthenticationState> GetAuthenticationStateAsync()
     {
-        var principal = currentClaimsPrincipal ?? new ClaimsPrincipal();
+        var principal = _currentClaimsPrincipal ?? new ClaimsPrincipal();
         return Task.FromResult(new AuthenticationState(principal));
     }
     
@@ -45,52 +44,52 @@ public class AuthProvider  : AuthenticationStateProvider
     }
 
     public async Task TryRestoreSessionAsync()
-{
-    string? json;
-
-    try
     {
-        json = await jsRuntime.InvokeAsync<string?>(
-            "localStorage.getItem", AuthStorageKey);
+        string? json;
+
+        try
+        {
+            json = await _jsRuntime.InvokeAsync<string?>(
+                "localStorage.getItem", AuthStorageKey);
+        }
+        catch
+        {
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(json))
+            return;
+
+        var auth = JsonSerializer.Deserialize<AuthResponse>(
+            json,
+            new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+        if (auth is null || auth.User is null)
+            return;
+
+        // Only enforce expire if ExpiresAt was actually set
+        if (auth.ExpiresAt != default && auth.ExpiresAt <= DateTime.UtcNow)
+        {
+            await _jsRuntime.InvokeVoidAsync("localStorage.removeItem", AuthStorageKey);
+            return;
+        }
+
+        var user = auth.User;
+
+        var claims = new List<Claim>
+        {
+            new("Id", user.Id.ToString()),
+            new(ClaimTypes.Name, user.DisplayName),
+            new(ClaimTypes.Email, user.Email),
+            new("token", auth.Token)
+        };
+
+        var identity = new ClaimsIdentity(claims, "apiauth");
+        _currentClaimsPrincipal = new ClaimsPrincipal(identity);
+
+        NotifyAuthenticationStateChanged(
+            Task.FromResult(new AuthenticationState(_currentClaimsPrincipal)));
     }
-    catch
-    {
-        return;
-    }
-
-    if (string.IsNullOrWhiteSpace(json))
-        return;
-
-    var auth = JsonSerializer.Deserialize<AuthResponse>(
-        json,
-        new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-
-    if (auth is null || auth.User is null)
-        return;
-
-    // Only enforce expire if ExpiresAt was actually set
-    if (auth.ExpiresAt != default && auth.ExpiresAt <= DateTime.UtcNow)
-    {
-        await jsRuntime.InvokeVoidAsync("localStorage.removeItem", AuthStorageKey);
-        return;
-    }
-
-    var user = auth.User;
-
-    var claims = new List<Claim>
-    {
-        new("Id", user.Id.ToString()),
-        new(ClaimTypes.Name, user.DisplayName),
-        new(ClaimTypes.Email, user.Email),
-        new("token", auth.Token)
-    };
-
-    var identity = new ClaimsIdentity(claims, "apiauth");
-    currentClaimsPrincipal = new ClaimsPrincipal(identity);
-
-    NotifyAuthenticationStateChanged(
-        Task.FromResult(new AuthenticationState(currentClaimsPrincipal)));
-}
 
     public async Task LoginUser(string email, string password, bool rememberMe)
     {
@@ -102,7 +101,7 @@ public class AuthProvider  : AuthenticationStateProvider
             RememberMe = rememberMe
         };
 
-        HttpResponseMessage response = await client.PostAsJsonAsync(
+        HttpResponseMessage response = await _client.PostAsJsonAsync(
             "auth/login", request);
 
         // Check if response message is successful
@@ -128,7 +127,7 @@ public class AuthProvider  : AuthenticationStateProvider
         };
         
         // Send request and receive response message
-        HttpResponseMessage response = await client.PostAsJsonAsync(
+        HttpResponseMessage response = await _client.PostAsJsonAsync(
             "auth/register", request);
 
         // Check if response message is successful
@@ -144,10 +143,10 @@ public class AuthProvider  : AuthenticationStateProvider
 
     public async Task Logout()
     {
-        currentClaimsPrincipal = new(); 
-        await jsRuntime.InvokeVoidAsync("localStorage.removeItem", AuthStorageKey);
+        _currentClaimsPrincipal = new(); 
+        await _jsRuntime.InvokeVoidAsync("localStorage.removeItem", AuthStorageKey);
         NotifyAuthenticationStateChanged(Task.FromResult(
-            new AuthenticationState(currentClaimsPrincipal))
+            new AuthenticationState(_currentClaimsPrincipal))
         );
     }
 
@@ -159,12 +158,10 @@ public class AuthProvider  : AuthenticationStateProvider
             {
                 PropertyNameCaseInsensitive = true
             })?? throw new Exception("Invalid auth response from server.");;
-
-
+        
         UserDto authUser = auth.User;
-
-
-            // Build claims
+        
+        // Build claims
         List<Claim> claims = new List<Claim>()
         {
             new Claim("Id", authUser.Id.ToString()),
@@ -172,20 +169,19 @@ public class AuthProvider  : AuthenticationStateProvider
             new Claim(ClaimTypes.Email, authUser.Email),
             new Claim("token", auth.Token)
         };
-
         
         var identity = new ClaimsIdentity(claims, "apiauth");
 
-        currentClaimsPrincipal = new ClaimsPrincipal(identity);
+        _currentClaimsPrincipal = new ClaimsPrincipal(identity);
 
         if (rememberMe)
         {
             string json = JsonSerializer.Serialize(auth);
-            await jsRuntime.InvokeVoidAsync("localStorage.setItem", AuthStorageKey, json);
+            await _jsRuntime.InvokeVoidAsync("localStorage.setItem", AuthStorageKey, json);
         }
 
         NotifyAuthenticationStateChanged(
-            Task.FromResult(new AuthenticationState(currentClaimsPrincipal))
+            Task.FromResult(new AuthenticationState(_currentClaimsPrincipal))
         );
     }
 
@@ -200,16 +196,16 @@ public class AuthProvider  : AuthenticationStateProvider
         
         ClaimsIdentity identity = new ClaimsIdentity(claims, "apiauth");
 
-        currentClaimsPrincipal = new ClaimsPrincipal(identity);
+        _currentClaimsPrincipal = new ClaimsPrincipal(identity);
         NotifyAuthenticationStateChanged(
-            Task.FromResult(new AuthenticationState(currentClaimsPrincipal))
+            Task.FromResult(new AuthenticationState(_currentClaimsPrincipal))
         );
     }
 
     public async Task UpdateClaimsAndPersistAsync(UserDto dto)
     {
         // rebuild claims (keep token!)
-        var token = currentClaimsPrincipal.FindFirst("token")?.Value;
+        var token = _currentClaimsPrincipal.FindFirst("token")?.Value;
 
         var claims = new List<Claim>
         {
@@ -222,16 +218,20 @@ public class AuthProvider  : AuthenticationStateProvider
             claims.Add(new Claim("token", token));
 
         var identity = new ClaimsIdentity(claims, "apiauth");
-        currentClaimsPrincipal = new ClaimsPrincipal(identity);
+        _currentClaimsPrincipal = new ClaimsPrincipal(identity);
 
         // update localStorage if authState exists
         try
         {
-            var json = await jsRuntime.InvokeAsync<string?>("localStorage.getItem", AuthStorageKey);
+            var json =
+                await _jsRuntime.InvokeAsync<string?>("localStorage.getItem",
+                    AuthStorageKey);
             if (!string.IsNullOrWhiteSpace(json))
             {
                 var existing = JsonSerializer.Deserialize<AuthResponse>(
-                    json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    json,
+                    new JsonSerializerOptions
+                        { PropertyNameCaseInsensitive = true });
 
                 if (existing != null)
                 {
@@ -243,15 +243,17 @@ public class AuthProvider  : AuthenticationStateProvider
                     };
 
                     var updatedJson = JsonSerializer.Serialize(updated);
-                    await jsRuntime.InvokeVoidAsync("localStorage.setItem", AuthStorageKey, updatedJson);
+                    await _jsRuntime.InvokeVoidAsync("localStorage.setItem",
+                        AuthStorageKey, updatedJson);
                 }
             }
         }
-        catch { }
-
-
+        catch (Exception e)
+        {
+            // TODO: handle exception
+        }
+        
         NotifyAuthenticationStateChanged(
-            Task.FromResult(new AuthenticationState(currentClaimsPrincipal)));
+            Task.FromResult(new AuthenticationState(_currentClaimsPrincipal)));
     }
-
 }

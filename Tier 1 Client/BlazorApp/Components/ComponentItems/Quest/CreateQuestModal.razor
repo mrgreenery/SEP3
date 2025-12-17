@@ -3,6 +3,7 @@
 @using BlazorApp.Components.ComponentItems.ParameterEnums
 @using BlazorApp.Models
 @using BlazorApp.Services.Auth
+@using BlazorApp.Services.Quest
 @using Syncfusion.Blazor.Popups
 @using Syncfusion.Blazor.DataForm
 @using Syncfusion.Blazor.DropDowns
@@ -58,15 +59,15 @@
 </SfDialog>
 
 @code {
-    private SfDialog? _modalRef;
 
     [Parameter] public EventCallback OnQuestCreated { get; set; }
     [Parameter] public EventCallback OnCancel { get; set; }
-
     [Parameter] public List<UserDto> ListOfUsers { get; set; } = new();
 
+    private SfDialog? _modalRef;
     private CreateQuestModel FormModel { get; set; } = new();
     private bool IsVisible { get; set; } = false;
+    private string _errorMessage = "";
     
     private bool IsStartDateEnabled =>
         FormModel.Status != QuestStatus.Backlog &&
@@ -75,7 +76,6 @@
     private bool IsFinishedDateEnabled =>
         FormModel.Status == QuestStatus.Finished;
 
-    private string _errorMessage = "";
     
     public Task ShowModal()
     {
@@ -103,27 +103,19 @@
         var authProvider = (AuthProvider)AuthStateProvider;
         var userId = await authProvider.GetUserIdAsync();
 
-        if (userId == null)
-        {
-            _errorMessage = "Error: User is not authenticated.";
-            return;
-        }
-
-        CreateQuestRequest request = new CreateQuestRequest
-        {
-            Title = FormModel.Title,
-            Description = FormModel.Description,
-            Status = FormModel.Status,
-            CreatedById = (long)userId,
-            AssigneeId = FormModel.AssigneeId,
-            Deadline = FormModel.Deadline,
-            StartDate = FormModel.StartDate,
-            FinishedDate = FormModel.FinishedDate
-        };
-
         try
         {
-            await QuestService.CreateQuestAsync(request);
+            if (userId != null)
+            {
+                await QuestService.CreateQuestAsync(FormModel.Title, FormModel.Description, 
+                    FormModel.Status, userId.Value, FormModel.AssigneeId, 
+                    FormModel.StartDate, FormModel.Deadline, FormModel.FinishedDate);
+            }
+            else
+            {
+                _errorMessage = "Error: User is not authenticated.";
+                return;
+            }
         }
         catch (Exception e)
         {
@@ -131,8 +123,8 @@
             return;
         }
 
-        FormModel = new();
         IsVisible = false;
+        FormModel = new();
         
         await OnQuestCreated.InvokeAsync();
     }

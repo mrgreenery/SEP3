@@ -14,31 +14,31 @@
     
     <h1>REGISTER</h1>
 
-    <EditForm Model="@model" OnValidSubmit="@HandleRegister" class="form-body">
+    <EditForm Model="@_model" OnValidSubmit="@HandleRegister" class="form-body">
         <DataAnnotationsValidator />
 
         <div class="form-group">
             <label>Display name:</label>
-            <InputText class="input-line" @bind-Value="model.FullName" />
-            <ValidationMessage For="@(() => model.FullName)" />
+            <InputText class="input-line" @bind-Value="_model.FullName" />
+            <ValidationMessage For="@(() => _model.FullName)" />
         </div>
 
         <div class="form-group">
             <label>E-mail:</label>
-            <InputText class="input-line" @bind-Value="model.Email" />
-            <ValidationMessage For="@(() => model.Email)" />
+            <InputText class="input-line" @bind-Value="_model.Email" />
+            <ValidationMessage For="@(() => _model.Email)" />
         </div>
 
         <div class="form-group">
             <label>Password:</label>
-            <InputText type="password" class="input-line" @bind-Value="model.Password" />
-            <ValidationMessage For="@(() => model.Password)" />
+            <InputText type="password" class="input-line" @bind-Value="_model.Password" />
+            <ValidationMessage For="@(() => _model.Password)" />
         </div>
 
         <div class="form-group">
             <label>Repeat Password:</label>
-            <InputText type="password" class="input-line" @bind-Value="model.RepeatPassword" />
-            <ValidationMessage For="@(() => model.RepeatPassword)" />
+            <InputText type="password" class="input-line" @bind-Value="_model.RepeatPassword" />
+            <ValidationMessage For="@(() => _model.RepeatPassword)" />
         </div>
         
             <Button Look="ButtonLook.Primary" Size="Size.Big" Type="submit">CREATE ACCOUNT</Button>
@@ -55,13 +55,13 @@
 </div>
 
 
-@if (!string.IsNullOrEmpty(error))
+@if (!string.IsNullOrEmpty(_error))
 {
-    <p style="color:red">@error</p>
+    <p style="color:red">@_error</p>
 }
 @code {
-    private RegisterModel model = new();
-    private string? error;
+    private RegisterModel _model = new();
+    private string? _error;
 
     private async Task HandleRegister()
     {
@@ -71,17 +71,16 @@
             var auth = (AuthProvider)AuthProvider;
 
             await auth.CreateUser(
-                model.FullName,
-                model.Email,
-                model.Password
+                _model.FullName,
+                _model.Email,
+                _model.Password
             );
 
             Nav.NavigateTo("/");
         }
         catch (Exception ex)
         {
-            error = ex.Message;
+            _error = ex.Message;
         }
     }
-
 }

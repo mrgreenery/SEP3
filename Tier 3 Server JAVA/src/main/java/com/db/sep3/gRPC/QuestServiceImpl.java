@@ -8,10 +8,7 @@ import com.db.sep3.gRPC.mapper.ToProto;
 import com.google.protobuf.Empty;
 import com.sep3.data.grpc.*;
 import io.grpc.stub.StreamObserver;
-
-import java.sql.Date;
 import java.time.Instant;
-
 import com.db.sep3.DAO.QuestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import net.devh.boot.grpc.server.service.GrpcService;

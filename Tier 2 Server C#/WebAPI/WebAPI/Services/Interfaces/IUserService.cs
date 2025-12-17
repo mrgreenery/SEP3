@@ -1,10 +1,6 @@
-using ApiContracts;
 using ApiContracts.User;
-using Data;
-using WebAPI.Entities;
 
-namespace WebAPI.Services;
-
+namespace WebAPI.Services.Interfaces;
 
 public interface IUserService
 {

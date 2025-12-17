@@ -1,9 +1,8 @@
-using ApiContracts;
 using ApiContracts.User;
 using Microsoft.AspNetCore.Mvc;
-using WebAPI.Services;
 using WebAPI.Services.Exceptions.User;
 using ApiContracts.Auth;
+using WebAPI.Services.Interfaces;
 
 namespace WebAPI.Controllers;
 
@@ -25,9 +24,9 @@ public class AuthController : ControllerBase
         _tokenService = tokenService;
     }
     
+    //REGISTER USER
     [HttpPost("register")]
-    public async Task<IResult> Register(
-        [FromBody] CreateUserRequest request)
+    public async Task<IResult> Register([FromBody] CreateUserRequest request)
     {
         try
         {
@@ -44,29 +43,27 @@ public class AuthController : ControllerBase
                                    $"display name: {newUserDto.DisplayName}");
 
              // AUTO LOGIN PART !!!
-        // rememberMe = true or false. Here I assume "normal" (short session that is ~ 0 min).
-        bool rememberMe = false;
+            // rememberMe = true or false. Here I assume "normal" (short session that is ~ 0 min).
+            bool rememberMe = false;
 
-        var token = _tokenService.GenerateToken(
-            newUserDto.Id,
-            newUserDto.Email,
-            newUserDto.DisplayName,
-            rememberMe);
+            var token = _tokenService.GenerateToken(
+                newUserDto.Id,
+                newUserDto.Email,
+                newUserDto.DisplayName,
+                rememberMe);
 
-        var expiresAt = rememberMe
-            ? DateTime.UtcNow.AddMinutes(180)
-            : DateTime.UtcNow.AddMinutes(0);
+            var expiresAt = rememberMe
+                ? DateTime.UtcNow.AddMinutes(180)
+                : DateTime.UtcNow.AddMinutes(0);
 
-      var authResponse = new AuthResponse
-        {
-            User = newUserDto,
-            Token = token,
-            ExpiresAt = expiresAt
-        };
+            var authResponse = new AuthResponse
+                {
+                    User = newUserDto,
+                    Token = token,
+                    ExpiresAt = expiresAt
+                };
 
-        return Results.Ok(authResponse);
-
-
+            return Results.Ok(authResponse);
         }
         catch (UserWithThisEmailAlreadyExists)
         {
@@ -91,15 +88,15 @@ public class AuthController : ControllerBase
         {
             _logger.LogError(e, "Error while registering user");
             return Results.Problem(
-        detail: "Unexpected error occurred while processing your request.",
-        statusCode: StatusCodes.Status500InternalServerError,
-        title: "Internal Server Error");
+                detail: "Unexpected error occurred while processing your request.",
+                statusCode: StatusCodes.Status500InternalServerError,
+                title: "Internal Server Error");
         }
     }
 
+    //LOGIN USER
     [HttpPost("login")]
-    public async Task<IResult> Login(
-        [FromBody] LoginRequest request)
+    public async Task<IResult> Login([FromBody] LoginRequest request)
     {
         try
         {
