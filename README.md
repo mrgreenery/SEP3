@@ -14,7 +14,7 @@ The system is split into three independent tiers that communicate using HTTP and
 
 QuestBoard follows a three-tier architecture:
 
-
+![Architecture](documents/Architecture.png)
 
 - Presentation Tier  
   Blazor WebAssembly client responsible for UI and user interaction
